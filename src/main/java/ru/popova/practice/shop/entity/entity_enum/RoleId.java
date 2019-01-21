@@ -1,4 +1,4 @@
-package ru.popova.practice.shop.domain;
+package ru.popova.practice.shop.entity.entity_enum;
 
 public enum RoleId {
 
