@@ -1,4 +1,4 @@
-package ru.popova.practice.shop.entity.entity_enum;
+package ru.popova.practice.shop.entity.id;
 
 public enum CategoryId {
 
