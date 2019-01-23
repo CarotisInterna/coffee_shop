@@ -73,43 +73,13 @@ CREATE TABLE IF NOT EXISTS drink_order (
   id SERIAL NOT NULL PRIMARY KEY,
   order_id INT NOT NULL REFERENCES orders (id),
   drink_id INT NOT NULL REFERENCES drink (id),
-  quantity SMALLINT NOT NULL CHECK (quantity > 0 AND quantity < 51)
+  quantity SMALLINT NOT NULL CHECK (quantity > 0)
 );
 
 --create table with customer's drink configs
 CREATE TABLE IF NOT EXISTS topping_for_drink_in_order (
   drink_order_id INT NOT NULL REFERENCES drink_order (id),
   topping_id INT NOT NULL REFERENCES topping (id),
-  quantity SMALLINT NOT NULL CHECK (quantity > 0 AND quantity < 4),
+  quantity SMALLINT NOT NULL CHECK (quantity > 0),
   CONSTRAINT uc_topping_in_drink UNIQUE (drink_order_id, topping_id)
 );
-
---create table with orders and items
--- CREATE TABLE IF NOT EXISTS order_drink_topping (
---   order_id INT NOT NULL REFERENCES orders (id) ON DELETE CASCADE,
---   drink_topping_id INT NOT NULL REFERENCES drink_topping (id) ON DELETE CASCADE,
---   quantity SMALLINT NOT NULL CHECK (quantity > 0 AND quantity < 51)
--- );
-
---create table with ordered drinks
--- CREATE TABLE IF NOT EXISTS order_drink (
---   id SERIAL NOT NULL PRIMARY KEY,
---   order_id INT NOT NULL REFERENCES orders (id) ON DELETE CASCADE,
---   drink_id INT NOT NULL REFERENCES drink (id) ON DELETE CASCADE,
---   quantity SMALLINT NOT NULL CHECK (quantity > 0 AND quantity < 51)
--- );
---
--- --create table with toppings for ordered drinks
--- CREATE TABLE IF NOT EXISTS toppings_for_ordered_drinks (
---   order_drink_id INT NOT NULL REFERENCES order_drink (id) ON DELETE CASCADE,
---   topping_id INT NOT NULL REFERENCES topping (id) ON DELETE CASCADE,
---   quantity SMALLINT NOT NULL CHECK (quantity > 0 AND quantity < 5),
---   CONSTRAINT uc_drink_with_topping_in_order UNIQUE (order_drink_id, topping_id)
--- );
---create table with drinks and toppings selected by customer
--- CREATE TABLE IF NOT EXISTS drink_topping (
---   id SERIAL NOT NULL PRIMARY KEY,
---   drink_id INT NOT NULL REFERENCES drink (id) ON DELETE CASCADE,
---   topping_id INT NOT NULL REFERENCES topping (id) ON DELETE CASCADE,
---   quantity SMALLINT NOT NULL CHECK (quantity > 0 AND quantity < 4)
--- );
