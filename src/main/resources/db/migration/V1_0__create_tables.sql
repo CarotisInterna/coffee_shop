@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS category (
 CREATE TABLE IF NOT EXISTS drink (
   id SERIAL NOT NULL PRIMARY KEY,
   name VARCHAR(20) NOT NULL,
-  price REAL NOT NULL CHECK (price > 0),
+  price DECIMAL NOT NULL CHECK (price > 0),
   volume SMALLINT NOT NULL CHECK (volume > 0),
   description TEXT,
   CONSTRAINT uc_name_volume UNIQUE (name, volume)
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS drink_img (
 CREATE TABLE IF NOT EXISTS topping (
   id SERIAL NOT NULL PRIMARY KEY,
   name VARCHAR(40) NOT NULL UNIQUE,
-  price REAL NOT NULL CHECK (price > 0)
+  price DECIMAL NOT NULL CHECK (price > 0)
 );
 
 
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS orders (
   id SERIAL NOT NULL PRIMARY KEY,
   status_id INT NOT NULL REFERENCES order_status (id),
   customer_id INT NOT NULL REFERENCES app_user (id),
-  total REAL NOT NULL CHECK (total > 0),
+  total DECIMAL NOT NULL CHECK (total > 0),
   address TEXT NOT NULL,
   date TIMESTAMP NOT NULL
 );
