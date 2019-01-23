@@ -21,7 +21,7 @@ public class AppUserRepositoryTest {
 
     @Test
     public void Test() {
-        AppUserEntity user = new AppUserEntity(1, "alex", "alex", "123456789", "asasasasasa")
+        AppUserEntity user = new AppUserEntity(1, "alex", "alex", "123456789", "asasasasasa");
     }
 
 }
