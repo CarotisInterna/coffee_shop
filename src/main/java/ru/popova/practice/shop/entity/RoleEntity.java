@@ -1,10 +1,10 @@
 package ru.popova.practice.shop.entity;
 
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.DynamicUpdate;
-import ru.popova.practice.shop.entity.entity_enum.RoleId;
+import ru.popova.practice.shop.entity.id.RoleId;
 
 import javax.persistence.*;
 
@@ -12,7 +12,9 @@ import javax.persistence.*;
 @Setter
 @Entity
 @Table(name = "role")
-public class RoleEntity {
+@AllArgsConstructor
+@NoArgsConstructor
+public class RoleEntity extends AbstractCoffeeShopEntity<RoleId> {
     @Id
     @Enumerated(EnumType.ORDINAL)
     private RoleId id;

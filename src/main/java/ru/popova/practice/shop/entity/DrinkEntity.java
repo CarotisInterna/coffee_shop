@@ -5,29 +5,37 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "drink")
-public class DrinkEntity {
+public class DrinkEntity extends AbstractCoffeeShopEntity<Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
     private String name;
-    private Double price;
+    private BigDecimal price;
     private Integer volume;
     private String description;
 
-    @OneToMany(mappedBy = "drink")
-    private List<DrinkCategoryEntity> drinkCategory;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "drink_category",
+            joinColumns = {
+                    @JoinColumn(name = "drink_id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "category_id")
+            }
+    )
+    private List<CategoryEntity> categories;
 
     @OneToMany(mappedBy = "drink")
-    private List<DrinkImageEntity> drinkImage;
+    private List<DrinkImageEntity> images;
 
-    @OneToMany(mappedBy = "drink")
-    private List<DrinkOrderEntity> drinkOrder;
 }

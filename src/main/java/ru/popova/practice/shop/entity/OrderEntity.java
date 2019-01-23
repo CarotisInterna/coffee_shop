@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "orders")
-public class OrderEntity {
+public class OrderEntity extends AbstractCoffeeShopEntity<Integer>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -29,14 +31,13 @@ public class OrderEntity {
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private AppUserEntity appUser;
 
-    private Double total;
+    private BigDecimal total;
     private String address;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp;
+    private LocalDateTime date;
 
-    @OneToMany(mappedBy = "order")
-    private List<DrinkOrderEntity> drinkOrder;
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    private List<DrinkOrderEntity> drinks;
 
 
 }
