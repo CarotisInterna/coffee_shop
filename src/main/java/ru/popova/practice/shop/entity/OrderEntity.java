@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -13,12 +15,12 @@ import java.sql.Timestamp;
 public class OrderEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp timestamp;
-
+    /**
+     *
+     */
     @ManyToOne
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     private OrderStatusEntity orderStatus;
@@ -26,5 +28,15 @@ public class OrderEntity {
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private AppUserEntity appUser;
+
+    private Double total;
+    private String address;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date timestamp;
+
+    @OneToMany(mappedBy = "order")
+    private List<DrinkOrderEntity> drinkOrder;
+
 
 }

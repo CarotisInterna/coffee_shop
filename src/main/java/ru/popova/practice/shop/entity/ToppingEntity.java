@@ -1,21 +1,25 @@
 package ru.popova.practice.shop.entity;
 
+
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity
 @Getter
 @Setter
-@Table(name = "drink_img")
-public class DrinkImageEntity {
+@Entity
+@Table(name = "topping")
+public class ToppingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
-    private String image;
+
+    private String name;
+    private Double price;
 
     @ManyToOne
-    private DrinkEntity drink;
+    private ToppingForDrinkInOrderEntity toppingForDrinkInOrder;
+
 }

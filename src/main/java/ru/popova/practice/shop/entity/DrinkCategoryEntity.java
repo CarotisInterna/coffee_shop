@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 @Setter
 @Getter
+@Entity
 @Table(name = "drink_category")
 public class DrinkCategoryEntity {
 
@@ -15,10 +16,10 @@ public class DrinkCategoryEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("drinkId")
-    private DrinkEntity drinkEntity;
+    private DrinkEntity drink;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("categoryId")
-    private CategoryEntity categoryEntity;
+    private CategoryEntity category;
 
 }

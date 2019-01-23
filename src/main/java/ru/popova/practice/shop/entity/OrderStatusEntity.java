@@ -3,6 +3,7 @@ package ru.popova.practice.shop.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.popova.practice.shop.entity.entity_enum.OrderStatusId;
 
 import javax.persistence.*;
 
@@ -13,7 +14,7 @@ import javax.persistence.*;
 public class OrderStatusEntity{
     @Id
     @Enumerated(EnumType.ORDINAL)
-    private Integer id;
+    private OrderStatusId id;
     private String name;
 
 }

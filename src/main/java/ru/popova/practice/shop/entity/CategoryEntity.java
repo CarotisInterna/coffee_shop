@@ -2,6 +2,7 @@ package ru.popova.practice.shop.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.popova.practice.shop.entity.entity_enum.CategoryId;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 public class CategoryEntity {
     @Id
     @Enumerated(EnumType.ORDINAL)
-    private Integer id;
+    private CategoryId id;
     private String name;
 
     @OneToMany(mappedBy = "category")

@@ -14,9 +14,11 @@ import java.util.List;
 public class DrinkEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
     private String name;
+    private Double price;
     private Integer volume;
     private String description;
 
@@ -25,4 +27,7 @@ public class DrinkEntity {
 
     @OneToMany(mappedBy = "drink")
     private List<DrinkImageEntity> drinkImage;
+
+    @OneToMany(mappedBy = "drink")
+    private List<DrinkOrderEntity> drinkOrder;
 }
