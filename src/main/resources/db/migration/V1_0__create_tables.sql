@@ -83,3 +83,9 @@ CREATE TABLE IF NOT EXISTS topping_for_drink_in_order (
   quantity SMALLINT NOT NULL CHECK (quantity > 0),
   CONSTRAINT uc_topping_in_drink UNIQUE (drink_order_id, topping_id)
 );
+
+--проверка sequence
+INSERT INTO app_user(username, full_name, password, phone_number, address, role_id) VALUES('alex2', 'alex', '123',
+                '1234567892',
+                'asasasasasa',
+                0)
