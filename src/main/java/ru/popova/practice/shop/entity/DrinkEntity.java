@@ -8,6 +8,9 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * класс сущности напитка
+ */
 @Getter
 @Setter
 @Entity
@@ -18,11 +21,26 @@ public class DrinkEntity extends AbstractCoffeeShopEntity<Integer> {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
+    /**
+     *наименование напитка
+     */
     private String name;
+    /**
+     *цена напитка
+     */
     private BigDecimal price;
+    /**
+     *объем напитка
+     */
     private Integer volume;
+    /**
+     *описание напитка
+     */
     private String description;
 
+    /**
+     *список категорий напитка
+     */
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "drink_category",
@@ -35,6 +53,9 @@ public class DrinkEntity extends AbstractCoffeeShopEntity<Integer> {
     )
     private List<CategoryEntity> categories;
 
+    /**
+     *список изображений
+     */
     @OneToMany(mappedBy = "drink")
     private List<DrinkImageEntity> images;
 

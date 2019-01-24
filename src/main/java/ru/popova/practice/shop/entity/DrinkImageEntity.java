@@ -5,6 +5,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+/**
+ * класс сущности изображения напитка
+ */
 @Entity
 @Getter
 @Setter
@@ -14,6 +17,9 @@ public class DrinkImageEntity extends AbstractCoffeeShopEntity<Integer>{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
+    /**
+     *путь до изображения в файловой системе
+     */
     private String image;
 
     @ManyToOne

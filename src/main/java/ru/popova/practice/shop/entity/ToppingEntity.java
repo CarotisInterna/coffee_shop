@@ -7,6 +7,9 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
+/**
+ * класс сущности топпинга
+ */
 @Getter
 @Setter
 @Entity
@@ -17,7 +20,13 @@ public class ToppingEntity extends AbstractCoffeeShopEntity<Integer> {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
+    /**
+     *наименование топпинга
+     */
     private String name;
+    /**
+     *цена за одну порцию топпинга
+     */
     private BigDecimal price;
 
 }

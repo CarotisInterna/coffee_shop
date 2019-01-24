@@ -2,22 +2,28 @@ package ru.popova.practice.shop.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.popova.practice.shop.entity.id.CategoryId;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
+/**
+ * класс сущности категории напитков
+ */
 @Getter
 @Setter
 @Entity
 @Table(name = "category")
-public class CategoryEntity extends AbstractCoffeeShopEntity<CategoryId>{
+public class CategoryEntity extends AbstractCoffeeShopEntity<Integer>{
     @Id
-    @Enumerated(EnumType.ORDINAL)
-    private CategoryId id;
+    private Integer id;
+    /**
+     *наименования категории напитков
+     */
     private String name;
 
+    /**
+     *список напитков для категории
+     */
     @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
     private List<DrinkEntity> drinks;
 }
