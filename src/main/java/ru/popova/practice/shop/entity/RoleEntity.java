@@ -7,6 +7,7 @@ import lombok.Setter;
 import ru.popova.practice.shop.entity.code.RoleCode;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 
 /**
  * класс сущности роли пользователя
@@ -17,7 +18,7 @@ import javax.persistence.*;
 @Table(name = "role")
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleEntity extends AbstractCoffeeShopEntity<RoleCode> {
+public class RoleEntity extends AbstractCoffeeShopEntity<Integer> {
     @Id
     private Integer id;
 
