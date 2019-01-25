@@ -85,7 +85,12 @@ CREATE TABLE IF NOT EXISTS topping_for_drink_in_order (
 );
 
 --проверка sequence
-INSERT INTO app_user(username, full_name, password, phone_number, address, role_id) VALUES('alex2', 'alex', '123',
-                '1234567892',
-                'asasasasasa',
-                0)
+-- INSERT INTO app_user(username, full_name, password, phone_number, address, role_id) VALUES('alex2', 'alex', '123',
+--                 '1234567892',
+--                 'asasasasasa',
+--                 0);
+
+INSERT INTO category(id, category_name) VALUES(1, 'горячее');
+INSERT INTO drink(id, name, price, volume, description) VALUES(1, 'эспрессо', 100, 50, 'супер кофе');
+INSERT INTO drink(id, name, price, volume, description) VALUES(2, 'молоко', 50, 250, 'супер молоко');
+
