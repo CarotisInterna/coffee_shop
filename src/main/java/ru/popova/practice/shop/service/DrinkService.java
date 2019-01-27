@@ -10,6 +10,7 @@ import ru.popova.practice.shop.entity.DrinkOrderEntity;
 import ru.popova.practice.shop.repository.DrinkEntityRepository;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 public class DrinkService implements AbstractMapper<DrinkEntity, DrinkDto>{
@@ -17,12 +18,23 @@ public class DrinkService implements AbstractMapper<DrinkEntity, DrinkDto>{
 
     /**
      * получение списка продуктов
-     * @param pageable
-     * @return список продуетов
+     * @param pageable параметры запроса
+     * @return список продуктов
      */
     @Transactional
     public Page<DrinkDto> getDrinks(Pageable pageable) {
         return drinkEntityRepository.findAll(pageable).map(this::toDto);
+    }
+
+    /**
+     * получение напитка по id
+     * @param id идентификатор напитка
+     * @return напиток
+     */
+    @Transactional
+    public Optional<DrinkDto> getDrinkById(Integer id) {
+        Optional<DrinkEntity> drinkEntity = drinkEntityRepository.findById(id);
+        return drinkEntity.map(this::toDto);
     }
 
     @Override
