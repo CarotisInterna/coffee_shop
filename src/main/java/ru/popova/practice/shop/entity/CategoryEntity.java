@@ -19,6 +19,7 @@ public class CategoryEntity extends AbstractCoffeeShopEntity<Integer>{
     /**
      *наименования категории напитков
      */
+    @Column(name = "category_name")
     private String name;
 
     /**
