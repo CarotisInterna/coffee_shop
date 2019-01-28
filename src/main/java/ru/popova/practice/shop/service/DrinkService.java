@@ -3,15 +3,16 @@ package ru.popova.practice.shop.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.popova.practice.shop.dto.DrinkDto;
-import ru.popova.practice.shop.entity.DrinkEntity;
-import ru.popova.practice.shop.mapper.AbstractMapper;
+import ru.popova.practice.shop.entity.CategoryEntity;
 import ru.popova.practice.shop.mapper.DrinkMapper;
+import ru.popova.practice.shop.repository.CategoryEntityRepository;
 import ru.popova.practice.shop.repository.DrinkEntityRepository;
+import ru.popova.practice.shop.util.SearchCriteria;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ public class DrinkService {
 
     private DrinkMapper drinkMapper;
     private DrinkEntityRepository drinkEntityRepository;
+    private CategoryEntityRepository categoryEntityRepository;
 
     /**
      * получение списка напитков
@@ -51,15 +53,25 @@ public class DrinkService {
      */
     @Transactional
     public List<DrinkDto> getDrinksByCategory(Integer id) {
-        return drinkEntityRepository.findAllByCategories(id)
+        Optional<CategoryEntity> category = categoryEntityRepository.findById(id);
+        if (!category.isPresent()) {
+            return Collections.emptyList();
+        }
+        return drinkEntityRepository.findAllByCategoriesContains(category.get())
                 .stream()
                 .map(drinkMapper::toDto)
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public Page<DrinkDto> search (SearchCriteria searchCriteria, Pageable pageable) {
+
+    }
+
     @Autowired
-    public DrinkService(DrinkEntityRepository drinkEntityRepository, DrinkMapper drinkMapper) {
+    public DrinkService(DrinkEntityRepository drinkEntityRepository, DrinkMapper drinkMapper, CategoryEntityRepository categoryEntityRepository) {
         this.drinkEntityRepository = drinkEntityRepository;
         this.drinkMapper = drinkMapper;
+        this.categoryEntityRepository = categoryEntityRepository;
     }
 }
