@@ -3,56 +3,63 @@ package ru.popova.practice.shop.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.popova.practice.shop.dto.DrinkDto;
 import ru.popova.practice.shop.entity.DrinkEntity;
-import ru.popova.practice.shop.entity.DrinkOrderEntity;
+import ru.popova.practice.shop.mapper.AbstractMapper;
+import ru.popova.practice.shop.mapper.DrinkMapper;
 import ru.popova.practice.shop.repository.DrinkEntityRepository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-public class DrinkService implements AbstractMapper<DrinkEntity, DrinkDto>{
+public class DrinkService {
+
+    private DrinkMapper drinkMapper;
     private DrinkEntityRepository drinkEntityRepository;
 
     /**
-     * получение списка продуктов
-     * @param pageable параметры запроса
-     * @return список продуктов
+     * получение списка напитков
+     * @param pageable
+     * @return список напитков
      */
     @Transactional
     public Page<DrinkDto> getDrinks(Pageable pageable) {
-        return drinkEntityRepository.findAll(pageable).map(this::toDto);
+        return drinkEntityRepository.findAll(pageable)
+                .map(drinkMapper::toDto);
     }
 
     /**
      * получение напитка по id
      * @param id идентификатор напитка
-     * @return напиток
+     * @return дто напитка
      */
     @Transactional
     public Optional<DrinkDto> getDrinkById(Integer id) {
-        Optional<DrinkEntity> drinkEntity = drinkEntityRepository.findById(id);
-        return drinkEntity.map(this::toDto);
+        return drinkEntityRepository.findById(id)
+                .map(drinkMapper::toDto);
     }
 
-    @Override
-    public DrinkDto toDto(DrinkEntity drinkEntity) {
-        if (drinkEntity == null) {
-            return  null;
-        }
-
-        DrinkDto drink = new DrinkDto();
-        drink.setName(drinkEntity.getName());
-        drink.setPrice(drinkEntity.getPrice());
-        drink.setVolume(drinkEntity.getVolume());
-        drink.setDescription(drinkEntity.getDescription());
-        return drink;
+    /**
+     * получение списка напитков конкретной категории
+     * @param id идентификатор напитка
+     * @return список напитков
+     */
+    @Transactional
+    public List<DrinkDto> getDrinksByCategory(Integer id) {
+        return drinkEntityRepository.findAllByCategories(id)
+                .stream()
+                .map(drinkMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Autowired
-    public DrinkService(DrinkEntityRepository drinkEntityRepository) {
+    public DrinkService(DrinkEntityRepository drinkEntityRepository, DrinkMapper drinkMapper) {
         this.drinkEntityRepository = drinkEntityRepository;
+        this.drinkMapper = drinkMapper;
     }
 }

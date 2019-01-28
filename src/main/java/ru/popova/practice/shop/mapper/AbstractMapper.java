@@ -1,4 +1,4 @@
-package ru.popova.practice.shop.service;
+package ru.popova.practice.shop.mapper;
 
 public interface AbstractMapper<E, D> {
     /**
@@ -7,4 +7,11 @@ public interface AbstractMapper<E, D> {
      * @return дто
      */
     D toDto(E entity);
+
+    /**
+     * маппинг дто в сущность
+     * @param dto дто
+     * @return сущность
+     */
+    E toEntity(D dto);
 }

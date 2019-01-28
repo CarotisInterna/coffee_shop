@@ -13,14 +13,14 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/drinks")
+@RequestMapping("/api/drinks")
 public class DrinkController {
 
     private DrinkService drinkService;
 
     /**
      * получение списка напитков
-     * @param pageable параметры запроса
+     * @param pageable
      * @return список напитков
      */
     @GetMapping
@@ -30,15 +30,28 @@ public class DrinkController {
     }
 
     /**
-     * получение напитка по id
-     * @param id  идентификатор напитка
-     * @return напиток или ошибка 404
+     * получение списка напитков конкретной категории
+     * @param categoryId идентификатор категории
+     * @return список напитков заданной категории
      */
-    @GetMapping("/{id}")
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<List<DrinkDto>> getDrinksByCategory(@PathVariable Integer categoryId) {
+        List<DrinkDto> drinks = drinkService.getDrinksByCategory(categoryId);
+        return ResponseEntity.ok(drinks);
+    }
+
+    /**
+     * получение напитка по id
+     * @param id идентификатор напитка
+     * @return напиток или 404
+     */
+    @GetMapping("/{categoryId}/{id}")
     public ResponseEntity<DrinkDto> getDrinkById(@PathVariable Integer id) {
         return drinkService.getDrinkById(id)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity
+                        .notFound()
+                        .build());
     }
 
     @Autowired
