@@ -7,8 +7,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.popova.practice.shop.dto.DrinkDto;
+import ru.popova.practice.shop.dto.PageDto;
+import ru.popova.practice.shop.mapper.PageMapper;
 import ru.popova.practice.shop.service.DrinkService;
-import ru.popova.practice.shop.util.SearchCriteria;
+import ru.popova.practice.shop.specification.SearchCriteria;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.List;
 public class DrinkController {
 
     private DrinkService drinkService;
+    private PageMapper pageMapper;
 
     /**
      * получение списка напитков
@@ -34,26 +37,34 @@ public class DrinkController {
 
     /**
      * метод для поиска напитков по параметрам
-     * @param name имя для поиска
-     * @param price цена для поиска
-     * @param volume объем для поиска
+     *
+     * @param name        имя
+     * @param lowerPrice  нижняя граница цены
+     * @param upperPrice  верхняя граница цены
+     * @param lowerVolume нижняя граница объема
+     * @param upperVolume верхняя граница объема
+     * @param categoryId  идентификатор категории напитка
      * @param pageable
      * @return список напитков по параметрам
      */
     @GetMapping("/search")
-    public ResponseEntity<List<DrinkDto>> getDrinks(@RequestParam("name") String name,
-                                                    @RequestParam("price") BigDecimal price,
-                                                    @RequestParam("volume") Integer volume,
-                                                    @RequestParam("categoryId") Integer categoryId,
-                                                    @PageableDefault Pageable pageable) {
+    public ResponseEntity<PageDto<DrinkDto>> getDrinks(@RequestParam(value = "name", required = false) String name,
+                                                       @RequestParam(value = "lower_price", required = false) BigDecimal lowerPrice,
+                                                       @RequestParam(value = "upper_price", required = false) BigDecimal upperPrice,
+                                                       @RequestParam(value = "lower_volume", required = false) Integer lowerVolume,
+                                                       @RequestParam(value = "upper_volume", required = false) Integer upperVolume,
+                                                       @RequestParam(value = "category_id", required = false) Integer categoryId,
+                                                       @PageableDefault Pageable pageable) {
         SearchCriteria searchCriteria = SearchCriteria.builder()
                 .name(name)
-                .price(price)
-                .volume(volume)
+                .lowerPrice(lowerPrice)
+                .upperPrice(upperPrice)
+                .lowerVolume(lowerVolume)
+                .upperVolume(upperVolume)
                 .categoryId(categoryId)
                 .build();
-        Page<DrinkDto> drinks = drinkService.getDrinks(pageable);
-        return ResponseEntity.ok(drinks.getContent());
+        Page<DrinkDto> drinks = drinkService.search(searchCriteria, pageable);
+        return ResponseEntity.ok(pageMapper.toDto(drinks));
     }
 
     /**
@@ -84,7 +95,8 @@ public class DrinkController {
     }
 
     @Autowired
-    public DrinkController(DrinkService drinkService) {
+    public DrinkController(DrinkService drinkService, PageMapper pageMapper) {
         this.drinkService = drinkService;
+        this.pageMapper = pageMapper;
     }
 }
