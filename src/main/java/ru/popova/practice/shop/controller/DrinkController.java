@@ -10,7 +10,7 @@ import ru.popova.practice.shop.dto.DrinkDto;
 import ru.popova.practice.shop.dto.PageDto;
 import ru.popova.practice.shop.mapper.PageMapper;
 import ru.popova.practice.shop.service.DrinkService;
-import ru.popova.practice.shop.specification.SearchCriteria;
+import ru.popova.practice.shop.specification.DrinkSearchCriteria;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -55,7 +55,7 @@ public class DrinkController {
                                                        @RequestParam(value = "upper_volume", required = false) Integer upperVolume,
                                                        @RequestParam(value = "category_id", required = false) Integer categoryId,
                                                        @PageableDefault Pageable pageable) {
-        SearchCriteria searchCriteria = SearchCriteria.builder()
+        DrinkSearchCriteria drinkSearchCriteria = DrinkSearchCriteria.builder()
                 .name(name)
                 .lowerPrice(lowerPrice)
                 .upperPrice(upperPrice)
@@ -63,8 +63,7 @@ public class DrinkController {
                 .upperVolume(upperVolume)
                 .categoryId(categoryId)
                 .build();
-        Page<DrinkDto> drinks = drinkService.search(searchCriteria, pageable);
-        return ResponseEntity.ok(pageMapper.toDto(drinks));
+        return ResponseEntity.ok(drinkService.search(drinkSearchCriteria, pageable));
     }
 
     /**

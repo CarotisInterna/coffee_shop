@@ -6,15 +6,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.popova.practice.shop.dto.DrinkDto;
+import ru.popova.practice.shop.dto.PageDto;
 import ru.popova.practice.shop.entity.CategoryEntity;
 import ru.popova.practice.shop.entity.CategoryEntity_;
 import ru.popova.practice.shop.entity.DrinkEntity;
 import ru.popova.practice.shop.entity.DrinkEntity_;
 import ru.popova.practice.shop.mapper.DrinkMapper;
+import ru.popova.practice.shop.mapper.PageMapper;
 import ru.popova.practice.shop.repository.CategoryEntityRepository;
 import ru.popova.practice.shop.repository.DrinkEntityRepository;
 import ru.popova.practice.shop.specification.SpecificationBuilder;
-import ru.popova.practice.shop.specification.SearchCriteria;
+import ru.popova.practice.shop.specification.DrinkSearchCriteria;
 
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
@@ -29,6 +31,7 @@ import java.util.stream.Collectors;
 public class DrinkService {
 
     private DrinkMapper drinkMapper;
+    private PageMapper pageMapper;
     private DrinkEntityRepository drinkEntityRepository;
     private CategoryEntityRepository categoryEntityRepository;
 
@@ -74,41 +77,52 @@ public class DrinkService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * поиск напитков по заданным параметрам
+     * @param drinkSearchCriteria параметры поиска
+     * @param pageable
+     * @return список напитков
+     */
     @Transactional
-    public Page<DrinkDto> search(SearchCriteria searchCriteria, Pageable pageable) {
+    public PageDto<DrinkDto> search(DrinkSearchCriteria drinkSearchCriteria, Pageable pageable) {
         SpecificationBuilder<DrinkEntity> specificationBuilder = new SpecificationBuilder<>();
 
-        Optional.ofNullable(searchCriteria.getName())
+        Optional.ofNullable(drinkSearchCriteria.getName())
+                .filter(name -> !name.isEmpty())
                 .ifPresent(name ->
                         specificationBuilder.with(((root, query, builder) ->
                                 builder.like(root.get(DrinkEntity_.name), name)
                         )));
 
-        BigDecimal lowerPrice = searchCriteria.getLowerPrice();
-        BigDecimal upperPrice = searchCriteria.getUpperPrice();
+        BigDecimal lowerPrice = drinkSearchCriteria.getLowerPrice();
+        BigDecimal upperPrice = drinkSearchCriteria.getUpperPrice();
 
         specificationBuilder.between(DrinkEntity_.price, lowerPrice, upperPrice);
 
-        Integer lowerVolume = searchCriteria.getLowerVolume();
-        Integer upperVolume = searchCriteria.getUpperVolume();
+        Integer lowerVolume = drinkSearchCriteria.getLowerVolume();
+        Integer upperVolume = drinkSearchCriteria.getUpperVolume();
 
         specificationBuilder.between(DrinkEntity_.volume, lowerVolume, upperVolume);
 
-        Optional.ofNullable(searchCriteria.getCategoryId())
+        Optional.ofNullable(drinkSearchCriteria.getCategoryId())
                 .ifPresent(categoryId ->
                         specificationBuilder.with(((root, query, builder) -> {
                             Join<DrinkEntity, CategoryEntity> join = root.join(DrinkEntity_.categories, JoinType.LEFT);
                             return builder.equal(join.get(CategoryEntity_.id), categoryId);
                         })));
 
-
-        return drinkEntityRepository.findAll(Specification.where(specificationBuilder.build()), pageable).map(drinkMapper::toDto);
+        Page<DrinkDto> drinks = drinkEntityRepository.findAll(Specification.where(specificationBuilder.build()), pageable).map(drinkMapper::toDto);
+        return pageMapper.toDto(drinks);
     }
 
     @Autowired
-    public DrinkService(DrinkEntityRepository drinkEntityRepository, DrinkMapper drinkMapper, CategoryEntityRepository categoryEntityRepository) {
+    public DrinkService(DrinkEntityRepository drinkEntityRepository,
+                        DrinkMapper drinkMapper,
+                        PageMapper pageMapper,
+                        CategoryEntityRepository categoryEntityRepository) {
         this.drinkEntityRepository = drinkEntityRepository;
         this.drinkMapper = drinkMapper;
+        this.pageMapper = pageMapper;
         this.categoryEntityRepository = categoryEntityRepository;
     }
 }
