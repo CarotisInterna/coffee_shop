@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS drink_img (
 CREATE TABLE IF NOT EXISTS topping (
   id SERIAL NOT NULL PRIMARY KEY,
   name VARCHAR(40) NOT NULL UNIQUE,
-  price DECIMAL NOT NULL CHECK (price > 0)
+  price DECIMAL NOT NULL CHECK (price > -1)
 );
 
 
@@ -100,4 +100,7 @@ INSERT INTO drink_img(image, drink_id) VALUES ('milk', 2);
 INSERT INTO drink_category(drink_id, category_id) VALUES(1, 1);
 INSERT INTO drink_category(drink_id, category_id) VALUES(1, 2);
 INSERT INTO drink_category(drink_id, category_id) VALUES(2, 3);
+INSERT INTO topping(name, price) VALUES('сахар', 0);
+INSERT INTO topping(name, price) VALUES('сливки', 15);
+INSERT INTO topping(name, price) VALUES('мармеладные мишки', 20);
 
