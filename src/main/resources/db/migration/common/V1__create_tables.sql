@@ -1,6 +1,7 @@
 --create table with roles
 CREATE TABLE IF NOT EXISTS role (
   id SERIAL NOT NULL PRIMARY KEY,
+  code VARCHAR(20) NOT NULL UNIQUE,
   name VARCHAR(20) NOT NULL UNIQUE
 );
 
@@ -34,6 +35,7 @@ CREATE TABLE IF NOT EXISTS drink (
 --create table with drink category
 CREATE TABLE IF NOT EXISTS drink_category (
   drink_id INT NOT NULL REFERENCES drink (id),
+  code VARCHAR(20) NOT NULL UNIQUE,
   category_id INT NOT NULL REFERENCES category (id)
 );
 
@@ -89,18 +91,3 @@ CREATE TABLE IF NOT EXISTS topping_for_drink_in_order (
 --                 '1234567892',
 --                 'asasasasasa',
 --                 0);
-
--- INSERT INTO category(id, category_name) VALUES(1, 'горячее');
--- INSERT INTO category(id, category_name) VALUES(2, 'кофе');
--- INSERT INTO category(id, category_name) VALUES(3, 'холодное');
--- INSERT INTO drink(id, name, price, volume, description) VALUES(1, 'эспрессо', 100, 50, 'супер кофе');
--- INSERT INTO drink(id, name, price, volume, description) VALUES(2, 'молоко', 50, 250, 'супер молоко');
--- INSERT INTO drink_img(image, drink_id) VALUES ('espresso', 1);
--- INSERT INTO drink_img(image, drink_id) VALUES ('milk', 2);
--- INSERT INTO drink_category(drink_id, category_id) VALUES(1, 1);
--- INSERT INTO drink_category(drink_id, category_id) VALUES(1, 2);
--- INSERT INTO drink_category(drink_id, category_id) VALUES(2, 3);
--- INSERT INTO topping(name, price) VALUES('сахар', 0);
--- INSERT INTO topping(name, price) VALUES('сливки', 15);
--- INSERT INTO topping(name, price) VALUES('мармеладные мишки', 20);
-
