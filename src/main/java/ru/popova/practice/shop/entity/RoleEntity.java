@@ -25,7 +25,7 @@ public class RoleEntity extends AbstractCoffeeShopEntity<Integer> {
     /**
      * код роли пользователя
      */
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private RoleCode code;
     /**
      * наименование роли пользователя

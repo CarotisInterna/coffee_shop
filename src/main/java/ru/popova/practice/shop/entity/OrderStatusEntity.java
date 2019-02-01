@@ -16,10 +16,15 @@ import javax.persistence.*;
 @Table(name = "order_status")
 public class OrderStatusEntity extends AbstractCoffeeShopEntity<OrderStatusCode> {
     @Id
-    @Enumerated(EnumType.ORDINAL)
-    private OrderStatusCode id;
+    private Integer id;
+
     /**
-     *наименование статуса заказа
+     * код статуса заказа
+     */
+    @Enumerated(EnumType.STRING)
+    private OrderStatusCode orderStatusCode;
+    /**
+     * наименование статуса заказа
      */
     private String name;
 
