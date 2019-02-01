@@ -5,7 +5,7 @@ package ru.popova.practice.shop.entity.code;
  */
 public enum RoleCode {
 
-    CUSTOMER,
+    ROLE_USER,
 
-    SALESMAN
+    ROLE_VENDOR
 }
