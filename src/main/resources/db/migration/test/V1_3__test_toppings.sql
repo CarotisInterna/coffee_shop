@@ -11,3 +11,5 @@ INSERT INTO topping(name, price) VALUES('Сироп малиновый', 10);
 INSERT INTO topping(name, price) VALUES('Карамель', 15);
 INSERT INTO topping(name, price) VALUES('Маршмеллоу', 20);
 INSERT INTO topping(name, price) VALUES('Печенье', 15);
+
+INSERT INTO app_user(username, full_name, password, phone_number, address, role_id) values ('user', 'user', '0000', '1234556788', 'asasassaassa', 1);
