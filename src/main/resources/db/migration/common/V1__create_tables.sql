@@ -35,7 +35,6 @@ CREATE TABLE IF NOT EXISTS drink (
 --create table with drink category
 CREATE TABLE IF NOT EXISTS drink_category (
   drink_id INT NOT NULL REFERENCES drink (id),
-  code VARCHAR(20) NOT NULL UNIQUE,
   category_id INT NOT NULL REFERENCES category (id)
 );
 
@@ -57,6 +56,7 @@ CREATE TABLE IF NOT EXISTS topping (
 --create table with order statuses
 CREATE TABLE IF NOT EXISTS order_status (
   id SERIAL NOT NULL PRIMARY KEY,
+  code VARCHAR(20) NOT NULL UNIQUE,
   status_name VARCHAR(20) NOT NULL UNIQUE
 );
 
