@@ -1,17 +1,20 @@
 package ru.popova.practice.shop.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.popova.practice.shop.dto.DrinkDto;
+import ru.popova.practice.shop.dto.NewDrinkDto;
 import ru.popova.practice.shop.dto.PageDto;
 import ru.popova.practice.shop.entity.CategoryEntity;
 import ru.popova.practice.shop.entity.CategoryEntity_;
 import ru.popova.practice.shop.entity.DrinkEntity;
 import ru.popova.practice.shop.entity.DrinkEntity_;
 import ru.popova.practice.shop.mapper.DrinkMapper;
+import ru.popova.practice.shop.mapper.NewDrinkMapper;
 import ru.popova.practice.shop.mapper.PageMapper;
 import ru.popova.practice.shop.repository.CategoryEntityRepository;
 import ru.popova.practice.shop.repository.DrinkEntityRepository;
@@ -27,11 +30,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class DrinkService {
 
     private DrinkMapper drinkMapper;
     private PageMapper pageMapper;
+    private NewDrinkMapper newDrinkMapper;
     private DrinkEntityRepository drinkEntityRepository;
     private CategoryEntityRepository categoryEntityRepository;
 
@@ -115,14 +120,23 @@ public class DrinkService {
         return pageMapper.toDto(drinks);
     }
 
+    @Transactional
+    public DrinkDto saveDrink(NewDrinkDto newDrinkDto) {
+        DrinkEntity drinkEntity = newDrinkMapper.toEntity(newDrinkDto);
+        DrinkEntity saved = drinkEntityRepository.save(drinkEntity);
+        log.info("{}", saved.getId());
+        return drinkMapper.toDto(saved);
+    }
+
     @Autowired
     public DrinkService(DrinkEntityRepository drinkEntityRepository,
                         DrinkMapper drinkMapper,
                         PageMapper pageMapper,
-                        CategoryEntityRepository categoryEntityRepository) {
+                        NewDrinkMapper newDrinkMapper, CategoryEntityRepository categoryEntityRepository) {
         this.drinkEntityRepository = drinkEntityRepository;
         this.drinkMapper = drinkMapper;
         this.pageMapper = pageMapper;
+        this.newDrinkMapper = newDrinkMapper;
         this.categoryEntityRepository = categoryEntityRepository;
     }
 }

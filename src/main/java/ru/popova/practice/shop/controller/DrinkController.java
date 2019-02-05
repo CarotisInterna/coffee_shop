@@ -7,6 +7,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.popova.practice.shop.dto.DrinkDto;
+import ru.popova.practice.shop.dto.NewDrinkDto;
 import ru.popova.practice.shop.dto.PageDto;
 import ru.popova.practice.shop.mapper.PageMapper;
 import ru.popova.practice.shop.service.DrinkService;
@@ -91,6 +92,11 @@ public class DrinkController {
                 .orElse(ResponseEntity
                         .notFound()
                         .build());
+    }
+
+    @PostMapping
+    public ResponseEntity<DrinkDto> saveDrink(@RequestBody NewDrinkDto newDrinkDto) {
+        return ResponseEntity.ok(drinkService.saveDrink(newDrinkDto));
     }
 
     @Autowired
