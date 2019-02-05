@@ -18,10 +18,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/", "/api/**", "/v2/api-docs").permitAll()
+                .antMatchers("/", "/v2/api-docs").permitAll()
+                .antMatchers("/api/categories").hasRole("VENDOR")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
+                .loginPage("/login")
+                .failureUrl("/login?error")
+                .permitAll()
                 .and()
                 .csrf().disable();
     }
