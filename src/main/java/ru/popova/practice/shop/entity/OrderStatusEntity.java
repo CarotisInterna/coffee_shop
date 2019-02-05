@@ -3,7 +3,6 @@ package ru.popova.practice.shop.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GeneratorType;
 import ru.popova.practice.shop.entity.code.OrderStatusCode;
 
 import javax.persistence.*;
@@ -17,6 +16,7 @@ import javax.persistence.*;
 @Table(name = "order_status")
 public class OrderStatusEntity extends AbstractCoffeeShopEntity<Integer> {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     /**

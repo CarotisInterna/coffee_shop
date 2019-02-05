@@ -2,7 +2,6 @@ package ru.popova.practice.shop.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.loader.entity.CascadeEntityJoinWalker;
 
 import javax.persistence.*;
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.List;
 public class DrinkOrderEntity extends AbstractCoffeeShopEntity<Integer>{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     /**

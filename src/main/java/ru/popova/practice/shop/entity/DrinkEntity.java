@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ import java.util.List;
 public class DrinkEntity extends AbstractCoffeeShopEntity<Integer> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     /**
@@ -51,12 +52,12 @@ public class DrinkEntity extends AbstractCoffeeShopEntity<Integer> {
                     @JoinColumn(name = "category_id")
             }
     )
-    private List<CategoryEntity> categories;
+    private List<CategoryEntity> categories = new ArrayList<>();
 
     /**
      *список изображений
      */
-    @OneToMany(mappedBy = "drink")
+    @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
     private List<DrinkImageEntity> images;
 
 }

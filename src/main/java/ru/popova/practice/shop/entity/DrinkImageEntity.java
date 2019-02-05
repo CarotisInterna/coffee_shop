@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class DrinkImageEntity extends AbstractCoffeeShopEntity<Integer>{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     /**
      *путь до изображения в файловой системе

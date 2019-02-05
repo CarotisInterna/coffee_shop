@@ -7,7 +7,6 @@ import lombok.Setter;
 import ru.popova.practice.shop.entity.code.RoleCode;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 
 /**
  * класс сущности роли пользователя
@@ -20,6 +19,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 @NoArgsConstructor
 public class RoleEntity extends AbstractCoffeeShopEntity<Integer> {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     /**

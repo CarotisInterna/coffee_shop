@@ -15,6 +15,7 @@ import java.util.List;
 @Table(name = "category")
 public class CategoryEntity extends AbstractCoffeeShopEntity<Integer>{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     /**
      *наименования категории напитков
