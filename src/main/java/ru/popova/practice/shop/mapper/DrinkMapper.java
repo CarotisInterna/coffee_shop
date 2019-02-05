@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.popova.practice.shop.dto.DrinkDto;
+import ru.popova.practice.shop.entity.CategoryEntity;
 import ru.popova.practice.shop.entity.DrinkEntity;
 import ru.popova.practice.shop.entity.DrinkImageEntity;
 
@@ -35,12 +36,27 @@ public class DrinkMapper implements AbstractMapper<DrinkEntity, DrinkDto> {
                         .map(DrinkImageEntity::getImage)
                         .map(imageName -> imagesPath + imageName + imagesSuffix)
                         .collect(Collectors.toList()));
+        List<CategoryEntity> categories = drinkEntity.getCategories();
+        drink.setCategories(categories.isEmpty() ? null :
+                categories.stream()
+                        .map(CategoryEntity::getName)
+                        .collect(Collectors.toList()));
         drink.setDescription(drinkEntity.getDescription());
         return drink;
     }
 
     @Override
-    public DrinkEntity toEntity(DrinkDto dto) {
-        return null;
+    public DrinkEntity toEntity(DrinkDto drinkDto) {
+        if (drinkDto == null) {
+            return null;
+        }
+        DrinkEntity drink = new DrinkEntity();
+        drink.setName(drinkDto.getName());
+        drink.setPrice(drinkDto.getPrice());
+        drink.setVolume(drinkDto.getVolume());
+        List<String> images = drinkDto.getImages();
     }
+
+    public DrinkImageEntity toEntity()
+
 }

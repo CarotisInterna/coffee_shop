@@ -18,4 +18,5 @@ public class DrinkDto {
     private Integer volume;
     private List<String> images;
     private String description;
+    private List<String> categories;
 }
