@@ -2,7 +2,6 @@ package ru.popova.practice.shop.mapper;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import ru.popova.practice.shop.dto.DrinkDto;
 import ru.popova.practice.shop.entity.CategoryEntity;
 import ru.popova.practice.shop.entity.DrinkEntity;
@@ -47,16 +46,6 @@ public class DrinkMapper implements AbstractMapper<DrinkEntity, DrinkDto> {
 
     @Override
     public DrinkEntity toEntity(DrinkDto drinkDto) {
-        if (drinkDto == null) {
-            return null;
-        }
-        DrinkEntity drink = new DrinkEntity();
-        drink.setName(drinkDto.getName());
-        drink.setPrice(drinkDto.getPrice());
-        drink.setVolume(drinkDto.getVolume());
-        List<String> images = drinkDto.getImages();
+        throw new UnsupportedOperationException();
     }
-
-    public DrinkImageEntity toEntity()
-
 }
