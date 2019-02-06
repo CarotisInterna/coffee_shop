@@ -6,6 +6,7 @@ import ru.popova.practice.shop.dto.NewDrinkDto;
 import ru.popova.practice.shop.entity.CategoryEntity;
 import ru.popova.practice.shop.entity.DrinkEntity;
 import ru.popova.practice.shop.entity.DrinkImageEntity;
+import ru.popova.practice.shop.exception.NotFoundException;
 import ru.popova.practice.shop.repository.CategoryEntityRepository;
 
 import java.util.List;
@@ -37,7 +38,7 @@ public class NewDrinkMapper implements AbstractMapper<DrinkEntity, NewDrinkDto> 
         for (Integer c : categories) {
 
             CategoryEntity category = categoryEntityRepository.findById(c)
-                    .orElseThrow(() -> new RuntimeException("Not found"));
+                    .orElseThrow(() -> new NotFoundException("Категория не найдена"));
 
             drink.getCategories().add(category);
         }
