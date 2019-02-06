@@ -1,6 +1,6 @@
 package ru.popova.practice.shop.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,23 +13,24 @@ import ru.popova.practice.shop.repository.ToppingEntityRepository;
 import javax.transaction.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class ToppingService {
 
-    private ToppingMapper toppingMapper;
-    private PageMapper pageMapper;
-    private ToppingEntityRepository toppingEntityRepository;
+    private final ToppingMapper toppingMapper;
+    private final PageMapper pageMapper;
+    private final ToppingEntityRepository toppingEntityRepository;
 
+    /**
+     * получение топпингов
+     *
+     * @param pageable
+     * @return список топпингов
+     */
     @Transactional
-    public PageDto<ToppingDto> getToppings(Pageable pageable){
+    public PageDto<ToppingDto> getToppings(Pageable pageable) {
         Page<ToppingDto> toppings = toppingEntityRepository.findAll(pageable)
                 .map(toppingMapper::toDto);
         return pageMapper.toDto(toppings);
     }
 
-    @Autowired
-    public ToppingService(ToppingMapper toppingMapper, ToppingEntityRepository toppingEntityRepository, PageMapper pageMapper) {
-        this.toppingMapper = toppingMapper;
-        this.pageMapper = pageMapper;
-        this.toppingEntityRepository = toppingEntityRepository;
-    }
 }

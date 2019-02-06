@@ -1,7 +1,7 @@
 package ru.popova.practice.shop.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,8 +18,8 @@ import ru.popova.practice.shop.mapper.NewDrinkMapper;
 import ru.popova.practice.shop.mapper.PageMapper;
 import ru.popova.practice.shop.repository.CategoryEntityRepository;
 import ru.popova.practice.shop.repository.DrinkEntityRepository;
-import ru.popova.practice.shop.specification.SpecificationBuilder;
 import ru.popova.practice.shop.specification.DrinkSearchCriteria;
+import ru.popova.practice.shop.specification.SpecificationBuilder;
 
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
@@ -32,13 +32,14 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class DrinkService {
 
-    private DrinkMapper drinkMapper;
-    private PageMapper pageMapper;
-    private NewDrinkMapper newDrinkMapper;
-    private DrinkEntityRepository drinkEntityRepository;
-    private CategoryEntityRepository categoryEntityRepository;
+    private final DrinkMapper drinkMapper;
+    private final PageMapper pageMapper;
+    private final NewDrinkMapper newDrinkMapper;
+    private final DrinkEntityRepository drinkEntityRepository;
+    private final CategoryEntityRepository categoryEntityRepository;
 
     /**
      * получение списка напитков
@@ -84,6 +85,7 @@ public class DrinkService {
 
     /**
      * поиск напитков по заданным параметрам
+     *
      * @param drinkSearchCriteria параметры поиска
      * @param pageable
      * @return список напитков
@@ -120,6 +122,12 @@ public class DrinkService {
         return pageMapper.toDto(drinks);
     }
 
+    /**
+     * сохранение напитка
+     *
+     * @param newDrinkDto новый напиток
+     * @return напиток
+     */
     @Transactional
     public DrinkDto saveDrink(NewDrinkDto newDrinkDto) {
         DrinkEntity drinkEntity = newDrinkMapper.toEntity(newDrinkDto);
@@ -128,15 +136,4 @@ public class DrinkService {
         return drinkMapper.toDto(saved);
     }
 
-    @Autowired
-    public DrinkService(DrinkEntityRepository drinkEntityRepository,
-                        DrinkMapper drinkMapper,
-                        PageMapper pageMapper,
-                        NewDrinkMapper newDrinkMapper, CategoryEntityRepository categoryEntityRepository) {
-        this.drinkEntityRepository = drinkEntityRepository;
-        this.drinkMapper = drinkMapper;
-        this.pageMapper = pageMapper;
-        this.newDrinkMapper = newDrinkMapper;
-        this.categoryEntityRepository = categoryEntityRepository;
-    }
 }

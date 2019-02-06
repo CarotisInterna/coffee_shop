@@ -1,6 +1,6 @@
 package ru.popova.practice.shop.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,22 +13,24 @@ import ru.popova.practice.shop.repository.CategoryEntityRepository;
 import javax.transaction.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryService {
 
-    private CategoryMapper categoryMapper;
-    private PageMapper pageMapper;
-    private CategoryEntityRepository categoryEntityRepository;
+    private final CategoryMapper categoryMapper;
+    private final PageMapper pageMapper;
+    private final CategoryEntityRepository categoryEntityRepository;
 
+    /**
+     * получение категорий
+     *
+     * @param pageable
+     * @return список категорий
+     */
     @Transactional
-    public PageDto<CategoryDto> getCategories(Pageable pageable){
+    public PageDto<CategoryDto> getCategories(Pageable pageable) {
         Page<CategoryDto> categories = categoryEntityRepository.findAll(pageable)
                 .map(categoryMapper::toDto);
         return pageMapper.toDto(categories);
     }
 
-    public CategoryService(CategoryMapper categoryMapper, PageMapper pageMapper, CategoryEntityRepository categoryEntityRepository) {
-        this.categoryMapper = categoryMapper;
-        this.pageMapper = pageMapper;
-        this.categoryEntityRepository = categoryEntityRepository;
-    }
 }

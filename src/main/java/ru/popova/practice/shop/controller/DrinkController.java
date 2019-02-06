@@ -1,6 +1,6 @@
 package ru.popova.practice.shop.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -13,16 +13,19 @@ import ru.popova.practice.shop.mapper.PageMapper;
 import ru.popova.practice.shop.service.DrinkService;
 import ru.popova.practice.shop.specification.DrinkSearchCriteria;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
 
 
 @RestController
 @RequestMapping("/api/drinks")
+@RequiredArgsConstructor
 public class DrinkController {
 
-    private DrinkService drinkService;
-    private PageMapper pageMapper;
+    private final DrinkService drinkService;
+    private final PageMapper pageMapper;
+
 
     /**
      * получение списка напитков
@@ -94,14 +97,14 @@ public class DrinkController {
                         .build());
     }
 
+    /**
+     * сохранение напитка
+     *
+     * @param newDrinkDto новый напиток
+     * @return сохраненный напиок
+     */
     @PostMapping
-    public ResponseEntity<DrinkDto> saveDrink(@RequestBody NewDrinkDto newDrinkDto) {
+    public ResponseEntity<DrinkDto> saveDrink(@RequestBody @Valid NewDrinkDto newDrinkDto) {
         return ResponseEntity.ok(drinkService.saveDrink(newDrinkDto));
-    }
-
-    @Autowired
-    public DrinkController(DrinkService drinkService, PageMapper pageMapper) {
-        this.drinkService = drinkService;
-        this.pageMapper = pageMapper;
     }
 }

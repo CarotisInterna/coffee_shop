@@ -6,6 +6,7 @@ import ru.popova.practice.shop.entity.CategoryEntity;
 
 @Component
 public class CategoryMapper implements AbstractMapper<CategoryEntity, CategoryDto> {
+
     @Override
     public CategoryDto toDto(CategoryEntity entity) {
         if (entity == null) {

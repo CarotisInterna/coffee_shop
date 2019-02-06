@@ -1,6 +1,6 @@
 package ru.popova.practice.shop.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +13,11 @@ import ru.popova.practice.shop.service.CategoryService;
 
 @RestController
 @RequestMapping("/api/categories")
+@RequiredArgsConstructor
 public class CategoryController {
-    private CategoryService categoryService;
+
+    private final CategoryService categoryService;
+
 
     /**
      * получение списка категорий
@@ -27,9 +30,4 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getCategories(pageable));
     }
 
-
-    @Autowired
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
 }

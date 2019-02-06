@@ -12,9 +12,7 @@ import ru.popova.practice.shop.entity.AppUserEntity;
 import ru.popova.practice.shop.repository.AppUserEntityRepository;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -22,12 +20,19 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private AppUserEntityRepository appUserEntityRepository;
 
+    /**
+     * поиск пользователя по имени пользователя
+     * @param username имя пользователя
+     * @return информация о пользователе
+     * @throws UsernameNotFoundException если имя пользователя не найдено
+     * @see CustomUserDetails
+     */
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUserEntity appUserEntity = appUserEntityRepository.findAppUserEntityByUsername(username);
         if (appUserEntity == null) {
-            throw new UsernameNotFoundException("username was not found");
+            throw new UsernameNotFoundException("имя пользователя не найдено");
         }
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
@@ -35,7 +40,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return CustomUserDetails
                 .builder()
-                .id(appUserEntity.getId())
                 .username(appUserEntity.getUsername())
                 .password(appUserEntity.getPassword())
                 .grantedAuthorities(grantedAuthorities)

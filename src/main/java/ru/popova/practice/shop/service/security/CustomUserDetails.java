@@ -7,16 +7,26 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * информация о пользователе
+ */
 @Builder
 public class CustomUserDetails implements UserDetails {
 
-    private Integer id;
+    /**
+     * имя пользователя
+     */
     private String username;
+    /**
+     * пароль
+     */
     private String password;
+    /**
+     * список привилегий
+     */
     private List<GrantedAuthority> grantedAuthorities;
 
-    public CustomUserDetails(Integer id, String username, String password, List<GrantedAuthority> grantedAuthorities) {
-        this.id = id;
+    public CustomUserDetails(String username, String password, List<GrantedAuthority> grantedAuthorities) {
         this.username = username;
         this.password = password;
         this.grantedAuthorities = grantedAuthorities;

@@ -29,17 +29,17 @@ public class DrinkMapper implements AbstractMapper<DrinkEntity, DrinkDto> {
         drink.setName(drinkEntity.getName());
         drink.setPrice(drinkEntity.getPrice());
         drink.setVolume(drinkEntity.getVolume());
-        List<DrinkImageEntity> drinkImages = drinkEntity.getImages();
-        drink.setImages(drinkImages.isEmpty() ? null :
-                drinkImages.stream()
-                        .map(DrinkImageEntity::getImage)
-                        .map(imageName -> imagesPath + imageName + imagesSuffix)
-                        .collect(Collectors.toList()));
-        List<CategoryEntity> categories = drinkEntity.getCategories();
-        drink.setCategories(categories.isEmpty() ? null :
-                categories.stream()
-                        .map(CategoryEntity::getName)
-                        .collect(Collectors.toList()));
+        List<String> images = drinkEntity.getImages()
+                .stream()
+                .map(DrinkImageEntity::getImage)
+                .map(imageName -> imagesPath + imageName + imagesSuffix)
+                .collect(Collectors.toList());
+        drink.setImages(images);
+        List<String> categories = drinkEntity.getCategories()
+                .stream()
+                .map(CategoryEntity::getName)
+                .collect(Collectors.toList());
+        drink.setCategories(categories);
         drink.setDescription(drinkEntity.getDescription());
         return drink;
     }

@@ -6,6 +6,7 @@ import ru.popova.practice.shop.entity.ToppingEntity;
 
 @Component
 public class ToppingMapper implements AbstractMapper<ToppingEntity, ToppingDto> {
+
     @Override
     public ToppingDto toDto(ToppingEntity entity) {
         if (entity == null) {
