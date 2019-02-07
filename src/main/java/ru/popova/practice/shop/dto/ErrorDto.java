@@ -14,9 +14,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ErrorDto {
-    List<String> message = new ArrayList<>();
+    private String field;
 
-    public ErrorDto(String ... errors)  {
-        message.addAll(Arrays.asList(errors));
-    }
+    private String message;
+//    List<String> message = new ArrayList<>();
+//
+//    public ErrorDto(String ... errors)  {
+//        message.addAll(Arrays.asList(errors));
+//    }
 }
