@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import ru.popova.practice.shop.dto.AppUserLoginDto;
 
 @Service
-public class AuthenticationService {
+public class SecurityService {
 
     private AuthenticationManager authenticationManager;
 
