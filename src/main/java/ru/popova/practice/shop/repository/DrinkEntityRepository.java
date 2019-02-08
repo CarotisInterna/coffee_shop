@@ -10,4 +10,7 @@ import java.util.List;
 
 public interface DrinkEntityRepository extends JpaRepository<DrinkEntity, Integer>, JpaSpecificationExecutor<DrinkEntity> {
     List<DrinkEntity> findAllByCategoriesContains(CategoryEntity category);
+
+    DrinkEntity findDrinkEntityByNameAndVolume(String name, Integer volume);
+
 }

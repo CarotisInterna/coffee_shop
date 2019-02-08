@@ -1,5 +1,6 @@
 package ru.popova.practice.shop.service;
 
+import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import ru.popova.practice.shop.entity.CategoryEntity;
 import ru.popova.practice.shop.entity.CategoryEntity_;
 import ru.popova.practice.shop.entity.DrinkEntity;
 import ru.popova.practice.shop.entity.DrinkEntity_;
+import ru.popova.practice.shop.exception.AlreadyExistsException;
 import ru.popova.practice.shop.mapper.DrinkMapper;
 import ru.popova.practice.shop.mapper.NewDrinkMapper;
 import ru.popova.practice.shop.mapper.PageMapper;
@@ -130,10 +132,21 @@ public class DrinkService {
      */
     @Transactional
     public DrinkDto saveDrink(NewDrinkDto newDrinkDto) {
+//        String name = newDrinkDto.getName();
+//        Integer volume = newDrinkDto.getVolume();
+//        DrinkEntity existed = drinkEntityRepository.findDrinkEntityByNameAndVolume(name, volume);
+//        if (existed != null) {
+//            throw new AlreadyExistsException("name, volume", "Напиток с таким именем в таком объеме уже существует");
+//        }
         DrinkEntity drinkEntity = newDrinkMapper.toEntity(newDrinkDto);
         DrinkEntity saved = drinkEntityRepository.save(drinkEntity);
         log.info("{}", saved.getId());
         return drinkMapper.toDto(saved);
+    }
+
+    @Transactional
+    public DrinkDto findDrinkByNameAndVolume(String name, Integer volume) {
+        return drinkMapper.toDto(drinkEntityRepository.findDrinkEntityByNameAndVolume(name, volume));
     }
 
 }
