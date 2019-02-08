@@ -4,10 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 /**
  * полная информация о пользователе
@@ -22,6 +19,7 @@ public class AppUserDto extends AppUserLoginDto {
     String fullName;
 
     @NotBlank(message = "Номер телефона не может быть пустым или пробелом")
+    @Pattern(regexp = "\\(?([0-9]{3})\\)?([ .-]?)([0-9]{3})([0-9]{4})", message = "Неверный формат ввода номера телефона")
     String phoneNumber;
 
     @NotBlank(message = "Адрес не может быть пустым или пробелом")

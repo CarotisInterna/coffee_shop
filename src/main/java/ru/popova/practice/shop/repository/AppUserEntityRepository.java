@@ -6,4 +6,6 @@ import ru.popova.practice.shop.entity.AppUserEntity;
 
 public interface AppUserEntityRepository extends CrudRepository<AppUserEntity, Integer> {
     AppUserEntity findAppUserEntityByUsername(String username);
+
+    AppUserEntity findAppUserEntityByPhoneNumber(String phoneNumber);
 }
