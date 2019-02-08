@@ -29,6 +29,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(validationErrors(e), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(AlreadyExistsException.class)
+    public ResponseEntity<ErrorDto> handleAlreadyExistException(AlreadyExistsException e) {
+        return new ResponseEntity<>(errorDto(e.getObjectName(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PasswordMismatchException.class)
+    public ResponseEntity<ErrorDto> handlePasswordMismatchException(PasswordMismatchException e) {
+        return new ResponseEntity<>(errorDto(e.getObjectName(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
     private ErrorDto errorDto(String objectName, String message) {
         return new ErrorDto(objectName ,message);
     }
