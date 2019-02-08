@@ -3,6 +3,7 @@ package ru.popova.practice.shop.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.popova.practice.shop.validator.drink.NameAndVolumeUnique;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
@@ -11,6 +12,7 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
+@NameAndVolumeUnique(message = "Напиток с таким наименованием в таком объеме уже существует")
 public class NewDrinkDto {
 
     @NotBlank(message = "Наименование не может быть пустым или пробелом")
