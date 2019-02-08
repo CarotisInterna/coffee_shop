@@ -1,16 +1,15 @@
 package ru.popova.practice.shop.exception;
 
-import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.popova.practice.shop.dto.ErrorDto;
+import ru.popova.practice.shop.dto.ListErrorDto;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -22,23 +21,28 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorDto> handleNotFoundException(NotFoundException e) {
-        return new ResponseEntity<>(errorDto(e.getMessage()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorDto(e.getObjectName(), e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return new ResponseEntity<>(errorDto(ex), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ListErrorDto> handleValidationException(ValidationException e) {
+        return new ResponseEntity<>(validationErrors(e), HttpStatus.BAD_REQUEST);
     }
 
-    private ErrorDto errorDto(String message) {
-        return new ErrorDto(message);
+    private ErrorDto errorDto(String objectName, String message) {
+        return new ErrorDto(objectName ,message);
     }
 
-    private ErrorDto errorDto(MethodArgumentNotValidException ex) {
-        return new ErrorDto(ex.getBindingResult()
-                .getAllErrors()
+    private ListErrorDto validationErrors(ValidationException ex) {
+        List<ErrorDto> collectedErrors = ex.getBindingResult().getAllErrors()
                 .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.toList()));
+                .filter(error -> error instanceof FieldError)
+                .map(err -> {
+                    FieldError error = (FieldError) err;
+                    return new ErrorDto(error.getField(), error.getDefaultMessage());
+                })
+                .collect(Collectors.toList());
+        return new ListErrorDto(collectedErrors);
+
     }
 }

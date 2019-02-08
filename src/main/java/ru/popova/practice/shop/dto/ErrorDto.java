@@ -5,10 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,9 +13,4 @@ public class ErrorDto {
     private String field;
 
     private String message;
-//    List<String> message = new ArrayList<>();
-//
-//    public ErrorDto(String ... errors)  {
-//        message.addAll(Arrays.asList(errors));
-//    }
 }

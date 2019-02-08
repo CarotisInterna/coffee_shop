@@ -5,10 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.popova.practice.shop.dto.DrinkDto;
 import ru.popova.practice.shop.dto.NewDrinkDto;
 import ru.popova.practice.shop.dto.PageDto;
+import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.mapper.PageMapper;
 import ru.popova.practice.shop.service.DrinkService;
 import ru.popova.practice.shop.specification.DrinkSearchCriteria;
@@ -104,7 +106,10 @@ public class DrinkController {
      * @return сохраненный напиок
      */
     @PostMapping
-    public ResponseEntity<DrinkDto> saveDrink(@RequestBody @Valid NewDrinkDto newDrinkDto) {
+    public ResponseEntity<DrinkDto> saveDrink(@RequestBody @Valid NewDrinkDto newDrinkDto, BindingResult result) {
+        if (result.hasErrors()){
+            throw new ValidationException(result);
+        }
         return ResponseEntity.ok(drinkService.saveDrink(newDrinkDto));
     }
 }

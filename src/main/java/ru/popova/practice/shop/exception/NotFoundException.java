@@ -1,6 +1,17 @@
 package ru.popova.practice.shop.exception;
 
+import lombok.Getter;
+
+@Getter
 public class NotFoundException extends RuntimeException {
+
+    private String objectName;
+
+    public NotFoundException(String objectName, String message) {
+        this(message);
+        this.objectName = objectName;
+    }
+
     public NotFoundException() {
         super();
     }

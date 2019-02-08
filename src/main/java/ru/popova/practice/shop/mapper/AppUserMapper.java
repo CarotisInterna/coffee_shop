@@ -1,8 +1,10 @@
 package ru.popova.practice.shop.mapper;
 
+import org.springframework.stereotype.Component;
 import ru.popova.practice.shop.dto.AppUserDto;
 import ru.popova.practice.shop.entity.AppUserEntity;
 
+@Component
 public class AppUserMapper implements AbstractMapper<AppUserEntity, AppUserDto> {
 
     @Override

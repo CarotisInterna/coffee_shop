@@ -38,7 +38,7 @@ public class NewDrinkMapper implements AbstractMapper<DrinkEntity, NewDrinkDto> 
         for (Integer c : categories) {
 
             CategoryEntity category = categoryEntityRepository.findById(c)
-                    .orElseThrow(() -> new NotFoundException("Категория не найдена"));
+                    .orElseThrow(() -> new NotFoundException("category", "Категория не найдена"));
 
             drink.getCategories().add(category);
         }
