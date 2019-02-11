@@ -28,11 +28,16 @@ public class AppUserService {
      * поиск пользователя по имени пользователя
      *
      * @param username имя пользователя
-     * @return сущность пользователя
+     * @return пользователь
      */
     @Transactional
-    public AppUserEntity getAppUserByUsername(String username) {
-        return appUserEntityRepository.findAppUserEntityByUsername(username);
+    public AppUserDto getAppUserByUsername(String username) {
+        return appUserMapper.toDto(appUserEntityRepository.findAppUserEntityByUsername(username));
+    }
+
+    @Transactional
+    public AppUserDto getAppUserByPhoneNumber(String phoneNumber) {
+        return appUserMapper.toDto(appUserEntityRepository.findAppUserEntityByPhoneNumber(phoneNumber));
     }
 
     /**
@@ -45,17 +50,17 @@ public class AppUserService {
      */
     @Transactional
     public AppUserDto saveAppUser(NewAppUserDto newAppUserDto) {
-        AppUserEntity nameExisted = appUserEntityRepository.findAppUserEntityByUsername(newAppUserDto.getUsername());
-        if (nameExisted != null) {
-            throw new AlreadyExistsException("username", "Пользователь с таким именем уже существует");
-        }
-        AppUserEntity phoneExisted = appUserEntityRepository.findAppUserEntityByPhoneNumber(newAppUserDto.getPhoneNumber());
-        if (phoneExisted != null) {
-            throw new AlreadyExistsException("phoneNumber", "Пользователь с таким номером телефона уже существует");
-        }
-        if (!newAppUserDto.getPassword().equals(newAppUserDto.getConfirmPassword())) {
-            throw new PasswordMismatchException("password", "Пароль не подтвержден");
-        }
+//        AppUserEntity nameExisted = appUserEntityRepository.findAppUserEntityByUsername(newAppUserDto.getUsername());
+//        if (nameExisted != null) {
+//            throw new AlreadyExistsException("username", "Пользователь с таким именем уже существует");
+//        }
+//        AppUserEntity phoneExisted = appUserEntityRepository.findAppUserEntityByPhoneNumber(newAppUserDto.getPhoneNumber());
+//        if (phoneExisted != null) {
+//            throw new AlreadyExistsException("phoneNumber", "Пользователь с таким номером телефона уже существует");
+//        }
+//        if (!newAppUserDto.getPassword().equals(newAppUserDto.getConfirmPassword())) {
+//            throw new PasswordMismatchException("password", "Пароль не подтвержден");
+//        }
         AppUserEntity appUserEntity = newAppUserMapper.toEntity(newAppUserDto);
         AppUserEntity saved = appUserEntityRepository.save(appUserEntity);
         log.info("{}", saved.getId());
