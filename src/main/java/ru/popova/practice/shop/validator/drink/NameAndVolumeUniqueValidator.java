@@ -12,6 +12,8 @@ public class NameAndVolumeUniqueValidator implements ConstraintValidator<NameAnd
 
     private DrinkService drinkService;
 
+    private NameAndVolumeUnique nameAndVolumeUnique;
+
     @Autowired
     public NameAndVolumeUniqueValidator(DrinkService drinkService) {
         this.drinkService = drinkService;
@@ -19,7 +21,7 @@ public class NameAndVolumeUniqueValidator implements ConstraintValidator<NameAnd
 
     @Override
     public void initialize(NameAndVolumeUnique constraintAnnotation) {
-
+        this.nameAndVolumeUnique = constraintAnnotation;
     }
 
     @Override
@@ -30,10 +32,10 @@ public class NameAndVolumeUniqueValidator implements ConstraintValidator<NameAnd
         if (drinkDto != null) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate(
-                    "{ru.popova.practice.shop.validation.constraints.NameAndVolumeUnique.message}")
+                    nameAndVolumeUnique.message())
                     .addPropertyNode("name")
                     .addConstraintViolation();
-           return false;
+            return false;
         }
         return true;
     }
