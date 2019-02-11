@@ -132,12 +132,6 @@ public class DrinkService {
      */
     @Transactional
     public DrinkDto saveDrink(NewDrinkDto newDrinkDto) {
-//        String name = newDrinkDto.getName();
-//        Integer volume = newDrinkDto.getVolume();
-//        DrinkEntity existed = drinkEntityRepository.findDrinkEntityByNameAndVolume(name, volume);
-//        if (existed != null) {
-//            throw new AlreadyExistsException("name, volume", "Напиток с таким именем в таком объеме уже существует");
-//        }
         DrinkEntity drinkEntity = newDrinkMapper.toEntity(newDrinkDto);
         DrinkEntity saved = drinkEntityRepository.save(drinkEntity);
         log.info("{}", saved.getId());
