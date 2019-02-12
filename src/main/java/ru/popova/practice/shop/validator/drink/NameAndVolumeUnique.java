@@ -1,8 +1,5 @@
 package ru.popova.practice.shop.validator.drink;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import ru.popova.practice.shop.config.Messages;
-
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
