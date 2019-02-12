@@ -50,17 +50,6 @@ public class AppUserService {
      */
     @Transactional
     public AppUserDto saveAppUser(NewAppUserDto newAppUserDto) {
-//        AppUserEntity nameExisted = appUserEntityRepository.findAppUserEntityByUsername(newAppUserDto.getUsername());
-//        if (nameExisted != null) {
-//            throw new AlreadyExistsException("username", "Пользователь с таким именем уже существует");
-//        }
-//        AppUserEntity phoneExisted = appUserEntityRepository.findAppUserEntityByPhoneNumber(newAppUserDto.getPhoneNumber());
-//        if (phoneExisted != null) {
-//            throw new AlreadyExistsException("phoneNumber", "Пользователь с таким номером телефона уже существует");
-//        }
-//        if (!newAppUserDto.getPassword().equals(newAppUserDto.getConfirmPassword())) {
-//            throw new PasswordMismatchException("password", "Пароль не подтвержден");
-//        }
         AppUserEntity appUserEntity = newAppUserMapper.toEntity(newAppUserDto);
         AppUserEntity saved = appUserEntityRepository.save(appUserEntity);
         log.info("{}", saved.getId());
