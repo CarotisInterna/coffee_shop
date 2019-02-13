@@ -1,6 +1,6 @@
 package ru.popova.practice.shop.service.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private AppUserEntityRepository appUserEntityRepository;
+    private final AppUserEntityRepository appUserEntityRepository;
 
     /**
      * поиск пользователя по имени пользователя
@@ -42,6 +42,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .builder()
                 .username(appUserEntity.getUsername())
                 .password(appUserEntity.getPassword())
+//                .password(passwordEncoder.encode(appUserEntity.getPassword()))
                 .grantedAuthorities(grantedAuthorities)
                 .build();
     }
