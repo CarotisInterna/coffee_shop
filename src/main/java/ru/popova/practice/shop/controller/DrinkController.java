@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.popova.practice.shop.dto.DrinkDto;
 import ru.popova.practice.shop.dto.NewDrinkDto;
 import ru.popova.practice.shop.dto.PageDto;
+import ru.popova.practice.shop.dto.groups.DrinkValidationSequence;
 import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.mapper.PageMapper;
 import ru.popova.practice.shop.service.DrinkService;
@@ -107,7 +108,7 @@ public class DrinkController {
      * @return сохраненный напиок
      */
     @PostMapping
-    public ResponseEntity<DrinkDto> saveDrink(@RequestBody @Validated NewDrinkDto newDrinkDto, BindingResult result) {
+    public ResponseEntity<DrinkDto> saveDrink(@RequestBody @Validated(DrinkValidationSequence.class) NewDrinkDto newDrinkDto, BindingResult result) {
         if (result.hasErrors()){
             throw new ValidationException(result);
         }
