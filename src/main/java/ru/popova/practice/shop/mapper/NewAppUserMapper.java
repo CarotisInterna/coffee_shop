@@ -36,7 +36,7 @@ public class NewAppUserMapper implements AbstractMapper<AppUserEntity, NewAppUse
         appUser.setPassword(bCryptPasswordEncoder.encode(newAppUserDto.getPassword()));
         appUser.setAddress(newAppUserDto.getAddress());
         appUser.setFullName(newAppUserDto.getFullName());
-        appUser.setRole(roleEntityRepository.findRoleEntityByCode(RoleCode.ROLE_USER.name()));
+        appUser.setRole(roleEntityRepository.findRoleEntityByCode(RoleCode.ROLE_USER));
         appUser.setPhoneNumber(newAppUserDto.getPhoneNumber());
 
         return appUser;

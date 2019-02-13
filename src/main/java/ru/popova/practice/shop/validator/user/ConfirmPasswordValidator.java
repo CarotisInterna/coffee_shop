@@ -16,7 +16,7 @@ public class ConfirmPasswordValidator implements ConstraintValidator<ConfirmPass
 
     @Override
     public boolean isValid(NewAppUserDto newAppUserDto, ConstraintValidatorContext constraintValidatorContext) {
-        if (newAppUserDto.getPassword().equals(newAppUserDto.getConfirmPassword())){
+        if (!newAppUserDto.getPassword().equals(newAppUserDto.getConfirmPassword())){
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate(
                     confirmPassword.message())
@@ -24,6 +24,6 @@ public class ConfirmPasswordValidator implements ConstraintValidator<ConfirmPass
                     .addConstraintViolation();
             return false;
         }
-        return false;
+        return true;
     }
 }

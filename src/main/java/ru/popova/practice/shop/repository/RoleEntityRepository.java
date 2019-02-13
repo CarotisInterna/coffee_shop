@@ -5,5 +5,5 @@ import ru.popova.practice.shop.entity.RoleEntity;
 import ru.popova.practice.shop.entity.code.RoleCode;
 
 public interface RoleEntityRepository extends JpaRepository<RoleEntity, RoleCode> {
-    RoleEntity findRoleEntityByCode(String code);
+    RoleEntity findRoleEntityByCode(RoleCode code);
 }
