@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import ru.popova.practice.shop.entity.code.RoleCode;
+import ru.popova.practice.shop.repository.RoleEntityRepository;
 import ru.popova.practice.shop.service.security.CustomUserDetailsService;
 
 @EnableWebSecurity
@@ -19,7 +21,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/", "/v2/api-docs", "/register").permitAll()
-                .antMatchers("/api/categories").hasRole("VENDOR")
+                .antMatchers("/api/categories").hasRole(RoleCode.ROLE_VENDOR.toString())
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

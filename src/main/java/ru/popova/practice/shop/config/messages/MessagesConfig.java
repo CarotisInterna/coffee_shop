@@ -1,4 +1,4 @@
-package ru.popova.practice.shop.config;
+package ru.popova.practice.shop.config.messages;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
