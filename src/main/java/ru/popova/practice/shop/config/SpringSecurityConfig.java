@@ -2,14 +2,14 @@ package ru.popova.practice.shop.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import ru.popova.practice.shop.entity.code.RoleCode;
-import ru.popova.practice.shop.repository.RoleEntityRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.popova.practice.shop.service.security.CustomUserDetailsService;
 
 @EnableWebSecurity
@@ -19,15 +19,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/", "/v2/api-docs", "/register").permitAll()
-                .antMatchers("/api/categories").hasRole(RoleCode.ROLE_VENDOR.toString())
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .failureUrl("/login?error")
+        http
+                .authorizeRequests()
+                .antMatchers("/", "/v2/api-docs", "/register", "/login")
                 .permitAll()
+                .antMatchers("/api/categories").hasRole("VENDOR")
+                .antMatchers(HttpMethod.POST, "/api/drinks").hasRole("VENDOR")
+                .anyRequest().authenticated()
                 .and()
                 .csrf().disable();
     }
@@ -40,7 +38,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    public PasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
