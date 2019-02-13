@@ -1,6 +1,4 @@
-package ru.popova.practice.shop.validator.user;
-
-import ru.popova.practice.shop.validator.drink.NameAndVolumeUniqueValidator;
+package ru.popova.practice.shop.dto.validation.user;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

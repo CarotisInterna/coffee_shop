@@ -1,6 +1,8 @@
-package ru.popova.practice.shop.validator.drink;
+package ru.popova.practice.shop.dto.validation.drink;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import ru.popova.practice.shop.config.messages.Message;
 import ru.popova.practice.shop.dto.DrinkDto;
 import ru.popova.practice.shop.dto.NewDrinkDto;
 import ru.popova.practice.shop.service.DrinkService;
@@ -14,9 +16,12 @@ public class NameAndVolumeUniqueValidator implements ConstraintValidator<NameAnd
 
     private NameAndVolumeUnique nameAndVolumeUnique;
 
+    private Message message;
+
     @Autowired
-    public NameAndVolumeUniqueValidator(DrinkService drinkService) {
+    public NameAndVolumeUniqueValidator(DrinkService drinkService, MessageSource messageSource, Message message) {
         this.drinkService = drinkService;
+        this.message = message;
     }
 
     @Override
@@ -32,7 +37,7 @@ public class NameAndVolumeUniqueValidator implements ConstraintValidator<NameAnd
         if (drinkDto != null) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate(
-                    nameAndVolumeUnique.message())
+                    message.getMessage(nameAndVolumeUnique.message()))
                     .addPropertyNode("name")
                     .addConstraintViolation();
             return false;

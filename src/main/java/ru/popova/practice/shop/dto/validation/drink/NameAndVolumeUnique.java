@@ -1,16 +1,16 @@
-package ru.popova.practice.shop.validator.user;
+package ru.popova.practice.shop.dto.validation.drink;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = UsernameUniqueValidator.class)
+@Constraint(validatedBy = NameAndVolumeUniqueValidator.class)
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UsernameUnique {
+public @interface NameAndVolumeUnique {
 
-    String message() default "UsernameUnique.message";
+    String message() default "NameAndVolumeUnique.message";
 
     Class<?>[] groups() default {};
 

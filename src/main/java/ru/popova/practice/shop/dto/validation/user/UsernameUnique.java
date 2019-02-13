@@ -1,16 +1,16 @@
-package ru.popova.practice.shop.validator.user;
+package ru.popova.practice.shop.dto.validation.user;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = ConfirmPasswordValidator.class)
+@Constraint(validatedBy = UsernameUniqueValidator.class)
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ConfirmPassword {
+public @interface UsernameUnique {
 
-    String message() default "ConfirmPassword.message";
+    String message() default "UsernameUnique.message";
 
     Class<?>[] groups() default {};
 

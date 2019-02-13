@@ -1,6 +1,7 @@
-package ru.popova.practice.shop.validator.user;
+package ru.popova.practice.shop.dto.validation.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.popova.practice.shop.config.messages.Message;
 import ru.popova.practice.shop.dto.AppUserDto;
 import ru.popova.practice.shop.dto.NewAppUserDto;
 import ru.popova.practice.shop.service.AppUserService;
@@ -14,9 +15,12 @@ public class PhoneNumberValidator implements ConstraintValidator<PhoneNumberUniq
 
     private PhoneNumberUnique phoneNumberUnique;
 
+    private Message message;
+
     @Autowired
-    public PhoneNumberValidator(AppUserService appUserService) {
+    public PhoneNumberValidator(AppUserService appUserService, Message message) {
         this.appUserService = appUserService;
+        this.message = message;
     }
 
     @Override
@@ -31,7 +35,7 @@ public class PhoneNumberValidator implements ConstraintValidator<PhoneNumberUniq
         if (appUserDto != null) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate(
-                    phoneNumberUnique.message())
+                    message.getMessage(phoneNumberUnique.message()))
                     .addPropertyNode("phoneNumber")
                     .addConstraintViolation();
             return false;

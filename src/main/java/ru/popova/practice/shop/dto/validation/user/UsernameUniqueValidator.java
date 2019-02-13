@@ -1,6 +1,7 @@
-package ru.popova.practice.shop.validator.user;
+package ru.popova.practice.shop.dto.validation.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.popova.practice.shop.config.messages.Message;
 import ru.popova.practice.shop.dto.AppUserDto;
 import ru.popova.practice.shop.dto.NewAppUserDto;
 import ru.popova.practice.shop.service.AppUserService;
@@ -14,9 +15,12 @@ public class UsernameUniqueValidator implements ConstraintValidator<UsernameUniq
 
     private UsernameUnique usernameUnique;
 
+    private Message message;
+
     @Autowired
-    public UsernameUniqueValidator(AppUserService appUserService) {
+    public UsernameUniqueValidator(AppUserService appUserService, Message message) {
         this.appUserService = appUserService;
+        this.message = message;
     }
 
     @Override
@@ -31,7 +35,7 @@ public class UsernameUniqueValidator implements ConstraintValidator<UsernameUniq
         if (appUserDto != null) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate(
-                    usernameUnique.message())
+                    message.getMessage(usernameUnique.message()))
                     .addPropertyNode("username")
                     .addConstraintViolation();
             return false;

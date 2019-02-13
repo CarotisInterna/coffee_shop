@@ -1,16 +1,16 @@
-package ru.popova.practice.shop.validator.drink;
+package ru.popova.practice.shop.dto.validation.user;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = NameAndVolumeUniqueValidator.class)
+@Constraint(validatedBy = ConfirmPasswordValidator.class)
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NameAndVolumeUnique {
+public @interface ConfirmPassword {
 
-    String message() default "ru.popova.practice.shop.validation.constraints.NameAndVolumeUnique.message";
+    String message() default "ConfirmPassword.message";
 
     Class<?>[] groups() default {};
 
