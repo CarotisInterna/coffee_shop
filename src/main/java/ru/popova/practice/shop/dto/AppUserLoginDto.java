@@ -3,6 +3,11 @@ package ru.popova.practice.shop.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.popova.practice.shop.dto.groups.LoginGroup;
+import ru.popova.practice.shop.dto.groups.NotEmptyGroup;
+import ru.popova.practice.shop.dto.groups.RegisterGroup;
+import ru.popova.practice.shop.dto.validation.login.Password;
+import ru.popova.practice.shop.dto.validation.login.UserExists;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -15,14 +20,16 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @NoArgsConstructor
+@Password
+@UserExists(groups = LoginGroup.class)
 public class AppUserLoginDto {
     Integer id;
 
-    @NotBlank(message = "Имя пользователя не может быть пустым или пробелом")
-    @Size(min = 3, max = 20, message = "Имя пользователя может быть от 3 до 20 символов")
+    @NotBlank(groups = NotEmptyGroup.class)
+    @Size(min = 3, max = 20, groups = RegisterGroup.class)
     String username;
 
-    @NotBlank(message = "Пароль не может быть пустым или пробелом")
-    @Size(min = 3, max = 20, message = "Пароль может быть от 3 до 20 символов")
+    @NotBlank(groups = NotEmptyGroup.class)
+    @Size(min = 3, max = 20, groups = RegisterGroup.class)
     String password;
 }
