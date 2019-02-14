@@ -6,6 +6,10 @@ import ru.popova.practice.shop.dto.NewAppUserDto;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+
+/**
+ * Валидатор подтверждения пароля
+ */
 public class ConfirmPasswordValidator implements ConstraintValidator<ConfirmPassword, NewAppUserDto> {
 
     private ConfirmPassword confirmPassword;
@@ -21,9 +25,16 @@ public class ConfirmPasswordValidator implements ConstraintValidator<ConfirmPass
         this.confirmPassword = constraintAnnotation;
     }
 
+    /**
+     * Процесс валидации подтверждения пароля
+     *
+     * @param newAppUserDto              дто нового пользователя
+     * @param constraintValidatorContext контекст
+     * @return false, если валидация не прошла, true иначе
+     */
     @Override
     public boolean isValid(NewAppUserDto newAppUserDto, ConstraintValidatorContext constraintValidatorContext) {
-        if (!newAppUserDto.getPassword().equals(newAppUserDto.getConfirmPassword())){
+        if (!newAppUserDto.getPassword().equals(newAppUserDto.getConfirmPassword())) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate(
                     message.getMessage(confirmPassword.message()))

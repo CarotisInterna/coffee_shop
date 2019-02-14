@@ -10,6 +10,9 @@ import ru.popova.practice.shop.service.DrinkService;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+/**
+ * Валидатор уникальности сочетания наименования и объема напитка
+ */
 public class NameAndVolumeUniqueValidator implements ConstraintValidator<NameAndVolumeUnique, NewDrinkDto> {
 
     private DrinkService drinkService;
@@ -29,6 +32,13 @@ public class NameAndVolumeUniqueValidator implements ConstraintValidator<NameAnd
         this.nameAndVolumeUnique = constraintAnnotation;
     }
 
+    /**
+     * Процесс валидации уникальности сочетания наименования и объема напитка
+     *
+     * @param newDrinkDto                дто нового напитка
+     * @param constraintValidatorContext контекст
+     * @return false, если валидация не прошла, true иначе
+     */
     @Override
     public boolean isValid(NewDrinkDto newDrinkDto, ConstraintValidatorContext constraintValidatorContext) {
         String name = newDrinkDto.getName();

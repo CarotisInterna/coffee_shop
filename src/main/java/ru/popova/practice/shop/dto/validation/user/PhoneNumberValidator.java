@@ -9,6 +9,9 @@ import ru.popova.practice.shop.service.AppUserService;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+/**
+ * Валидатор уникальности номера телефона пользователя
+ */
 public class PhoneNumberValidator implements ConstraintValidator<PhoneNumberUnique, NewAppUserDto> {
 
     private AppUserService appUserService;
@@ -28,6 +31,13 @@ public class PhoneNumberValidator implements ConstraintValidator<PhoneNumberUniq
         this.phoneNumberUnique = constraintAnnotation;
     }
 
+    /**
+     * Процесс валидации уникальности номера телефона у пользователя
+     *
+     * @param newAppUserDto              дто нового пользователя
+     * @param constraintValidatorContext контекст
+     * @return false, если валидация не прошла, true иначе
+     */
     @Override
     public boolean isValid(NewAppUserDto newAppUserDto, ConstraintValidatorContext constraintValidatorContext) {
         String phoneNumber = newAppUserDto.getPhoneNumber();

@@ -9,6 +9,9 @@ import ru.popova.practice.shop.service.AppUserService;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+/**
+ * Валидатор уникальности имени пользователя
+ */
 public class UsernameUniqueValidator implements ConstraintValidator<UsernameUnique, NewAppUserDto> {
 
     private AppUserService appUserService;
@@ -28,6 +31,13 @@ public class UsernameUniqueValidator implements ConstraintValidator<UsernameUniq
         this.usernameUnique = constraintAnnotation;
     }
 
+    /**
+     * Процесс валидации имени пользователя
+     *
+     * @param newAppUserDto              дто нового пользователя
+     * @param constraintValidatorContext контекст
+     * @return false, если валидация не прошла, true иначе
+     */
     @Override
     public boolean isValid(NewAppUserDto newAppUserDto, ConstraintValidatorContext constraintValidatorContext) {
         String username = newAppUserDto.getUsername();
