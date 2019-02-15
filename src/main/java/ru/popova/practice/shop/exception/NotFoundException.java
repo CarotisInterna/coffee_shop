@@ -1,11 +1,21 @@
 package ru.popova.practice.shop.exception;
 
 import lombok.Getter;
+import ru.popova.practice.shop.dto.ErrorDto;
+import ru.popova.practice.shop.dto.ListErrorDto;
+
+import java.util.ArrayList;
 
 @Getter
 public class NotFoundException extends RuntimeException {
 
     private String objectName;
+
+    private ListErrorDto listErrorDto;
+
+    public NotFoundException(ListErrorDto listErrorDto) {
+        this.listErrorDto = listErrorDto;
+    }
 
     public NotFoundException(String objectName, String message) {
         this(message);

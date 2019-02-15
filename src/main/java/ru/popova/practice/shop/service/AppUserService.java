@@ -2,14 +2,21 @@ package ru.popova.practice.shop.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.context.MessageSource;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import ru.popova.practice.shop.config.messages.Message;
 import ru.popova.practice.shop.dto.AppUserDto;
+import ru.popova.practice.shop.dto.AppUserLoginDto;
+import ru.popova.practice.shop.dto.ListErrorDto;
 import ru.popova.practice.shop.dto.NewAppUserDto;
 import ru.popova.practice.shop.entity.AppUserEntity;
 import ru.popova.practice.shop.exception.AlreadyExistsException;
 import ru.popova.practice.shop.exception.PasswordMismatchException;
+import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.mapper.AppUserMapper;
 import ru.popova.practice.shop.mapper.NewAppUserMapper;
 import ru.popova.practice.shop.repository.AppUserEntityRepository;
@@ -20,9 +27,10 @@ import ru.popova.practice.shop.repository.AppUserEntityRepository;
 public class AppUserService {
 
     private final AppUserEntityRepository appUserEntityRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder PasswordEncoder;
     private final NewAppUserMapper newAppUserMapper;
     private final AppUserMapper appUserMapper;
+    private final Message message;
 
     /**
      * поиск пользователя по имени пользователя
@@ -35,6 +43,13 @@ public class AppUserService {
         return appUserMapper.toDto(appUserEntityRepository.findAppUserEntityByUsername(username));
     }
 
+    /**
+     * поиск пользователя по номеру телефона
+     *
+     * @param phoneNumber номер телефона
+     * @return пользователь
+     */
+
     @Transactional
     public AppUserDto getAppUserByPhoneNumber(String phoneNumber) {
         return appUserMapper.toDto(appUserEntityRepository.findAppUserEntityByPhoneNumber(phoneNumber));
@@ -45,15 +60,52 @@ public class AppUserService {
      *
      * @param newAppUserDto новый пользователь
      * @return пользователь
-     * @throws AlreadyExistsException    если пользователь с таким именем или номером телефона уже существует
-     * @throws PasswordMismatchException если подтверждение пароля не прошло
+     * @throws AlreadyExistsException если пользователь с таким именем или номером телефона уже существует
      */
     @Transactional
-    public AppUserDto saveAppUser(NewAppUserDto newAppUserDto) {
+    public AppUserDto saveAppUser(NewAppUserDto newAppUserDto, BindingResult bindingResult) {
+
+        ListErrorDto listErrorDto = new ListErrorDto();
+
+        if(!newAppUserDto.getPassword().equals(newAppUserDto.getConfirmPassword())) {
+            listErrorDto.addErrorDto("confirmPassword", message.getMessage("ConfirmPassword.message"));
+        }
+
+        if (bindingResult.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
+            throw new ValidationException(bindingResult, listErrorDto);
+        }
+
         AppUserEntity appUserEntity = newAppUserMapper.toEntity(newAppUserDto);
         AppUserEntity saved = appUserEntityRepository.save(appUserEntity);
         log.info("{}", saved.getId());
         return appUserMapper.toDto(saved);
+    }
+
+    /**
+     * "Выбрасывание" ошибок при логине
+     *
+     * @param appUserLoginDto данные пользователя для логина
+     * @param bindingResult
+     */
+    @Transactional
+    public void handleLoginExceptions(AppUserLoginDto appUserLoginDto, BindingResult bindingResult) {
+
+        ListErrorDto listErrorDto = new ListErrorDto();
+
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult, listErrorDto);
+        }
+
+        String name = appUserLoginDto.getUsername();
+        AppUserDto appUserByUsername = getAppUserByUsername(name);
+        if (appUserByUsername == null) {
+            throw new UsernameNotFoundException(message.getMessage("UsernameNotFoundException.message"));
+        }
+
+        String password = appUserLoginDto.getPassword();
+        if (!PasswordEncoder.matches(password, appUserByUsername.getPassword())) {
+            throw new PasswordMismatchException("password", message.getMessage("Password.message"));
+        }
     }
 
 }

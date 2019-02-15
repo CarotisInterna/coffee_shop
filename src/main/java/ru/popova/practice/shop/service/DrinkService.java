@@ -7,7 +7,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import ru.popova.practice.shop.config.messages.Message;
 import ru.popova.practice.shop.dto.DrinkDto;
+import ru.popova.practice.shop.dto.ListErrorDto;
 import ru.popova.practice.shop.dto.NewDrinkDto;
 import ru.popova.practice.shop.dto.PageDto;
 import ru.popova.practice.shop.entity.CategoryEntity;
@@ -15,6 +18,8 @@ import ru.popova.practice.shop.entity.CategoryEntity_;
 import ru.popova.practice.shop.entity.DrinkEntity;
 import ru.popova.practice.shop.entity.DrinkEntity_;
 import ru.popova.practice.shop.exception.AlreadyExistsException;
+import ru.popova.practice.shop.exception.NotFoundException;
+import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.mapper.DrinkMapper;
 import ru.popova.practice.shop.mapper.NewDrinkMapper;
 import ru.popova.practice.shop.mapper.PageMapper;
@@ -27,6 +32,7 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +48,7 @@ public class DrinkService {
     private final NewDrinkMapper newDrinkMapper;
     private final DrinkEntityRepository drinkEntityRepository;
     private final CategoryEntityRepository categoryEntityRepository;
+    private final Message message;
 
     /**
      * получение списка напитков
@@ -75,7 +82,7 @@ public class DrinkService {
      */
     @Transactional
     public List<DrinkDto> getDrinksByCategory(Integer id) {
-        Optional<CategoryEntity> category = categoryEntityRepository.findById(id);
+        Optional<CategoryEntity> category = getCategoryEntity(id);
         if (!category.isPresent()) {
             return Collections.emptyList();
         }
@@ -131,7 +138,26 @@ public class DrinkService {
      * @return напиток
      */
     @Transactional
-    public DrinkDto saveDrink(NewDrinkDto newDrinkDto) {
+    public DrinkDto saveDrink(NewDrinkDto newDrinkDto, BindingResult bindingResult) {
+
+        ListErrorDto listErrorDto = new ListErrorDto();
+
+        //тут можно находить ошибки валидации, которые не обрабатываются аннотациями, и складывать их в listErrorDto
+
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult, listErrorDto);
+        }
+
+        for (Integer categoryId : newDrinkDto.getCategories()) {
+            if (!getCategoryEntity(categoryId).isPresent()) {
+                listErrorDto.addErrorDto("categories", categoryId + message.getMessage("CategoryNotFound.message"));
+            }
+        }
+
+        if (!listErrorDto.getErrorDtos().isEmpty()) {
+            throw new NotFoundException(listErrorDto);
+        }
+
         DrinkEntity drinkEntity = newDrinkMapper.toEntity(newDrinkDto);
         DrinkEntity saved = drinkEntityRepository.save(drinkEntity);
         log.info("{}", saved.getId());
@@ -141,6 +167,10 @@ public class DrinkService {
     @Transactional
     public DrinkDto findDrinkByNameAndVolume(String name, Integer volume) {
         return drinkMapper.toDto(drinkEntityRepository.findDrinkEntityByNameAndVolume(name, volume));
+    }
+
+    private Optional<CategoryEntity> getCategoryEntity(Integer id) {
+        return categoryEntityRepository.findById(id);
     }
 
 }
