@@ -7,5 +7,5 @@ import javax.validation.groups.Default;
  * интерфейс с последовательностью групп валидации напитка
  */
 @GroupSequence({NotEmptyGroup.class, Default.class})
-public interface DrinkValidationSequence {
+public interface NotEmptyValidationSequence {
 }
