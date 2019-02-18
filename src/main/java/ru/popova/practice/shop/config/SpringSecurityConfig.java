@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.popova.practice.shop.entity.code.RoleCode;
 import ru.popova.practice.shop.service.security.CustomUserDetailsService;
 
 @EnableWebSecurity
@@ -22,10 +23,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/v2/api-docs", "/register", "/login", "/api/drinks", "/swagger-ui.html")
+                .antMatchers("/", "/v2/api-docs", "/register", "/login", "/swagger-ui.html")
                 .permitAll()
-                .antMatchers("/api/categories").hasRole("VENDOR")
-                .antMatchers(HttpMethod.POST, "/api/drinks").hasRole("VENDOR")
+                .antMatchers(HttpMethod.GET, "/api/drinks/**", "/api/categories/**", "/api/toppings", "/api/drinks", "/api/categories", "/api/toppings/**")
+                .permitAll()
+                .antMatchers(HttpMethod.POST, "/api/drinks", "/api/categories", "/api/toppings").hasRole(RoleCode.ROLE_VENDOR.toString().replace("ROLE_", ""))
+                .antMatchers(HttpMethod.PUT, "/api/drinks", "/api/categories", "/api/toppings").hasRole(RoleCode.ROLE_VENDOR.toString().replace("ROLE_", ""))
+                .antMatchers(HttpMethod.DELETE, "/api/drinks", "/api/categories", "/api/toppings").hasRole(RoleCode.ROLE_VENDOR.toString().replace("ROLE_", ""))
                 .anyRequest().authenticated()
                 .and()
                 .csrf().disable();
