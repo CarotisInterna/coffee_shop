@@ -42,7 +42,7 @@ public class NameAndVolumeUniqueValidator implements ConstraintValidator<NameAnd
     public boolean isValid(NewDrinkDto newDrinkDto, ConstraintValidatorContext constraintValidatorContext) {
         String name = newDrinkDto.getName();
         Integer volume = newDrinkDto.getVolume();
-        DrinkDto drinkDto = drinkService.findDrinkByNameAndVolume(name, volume);
+        DrinkDto drinkDto = drinkService.getDrinkByNameAndVolume(name, volume);
         if (drinkDto != null) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate(

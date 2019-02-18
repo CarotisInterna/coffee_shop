@@ -90,6 +90,63 @@ public class DrinkService {
     }
 
     /**
+     * сохранение напитка
+     *
+     * @param newDrinkDto новый напиток
+     * @return напиток
+     */
+    @Transactional
+    public DrinkDto saveDrink(NewDrinkDto newDrinkDto, BindingResult bindingResult) {
+
+        ListErrorDto listErrorDto = new ListErrorDto();
+
+        //тут можно находить ошибки валидации, которые не обрабатываются аннотациями, и складывать их в listErrorDto
+
+        if (bindingResult.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
+            throw new ValidationException(bindingResult, listErrorDto);
+        }
+
+        checkIfCategoriesPresent(newDrinkDto, listErrorDto);
+
+        DrinkEntity drinkEntity = newDrinkMapper.toEntity(newDrinkDto);
+        DrinkEntity saved = drinkEntityRepository.save(drinkEntity);
+        log.info("{}", saved.getId());
+        return drinkMapper.toDto(saved);
+    }
+
+    /**
+     * редактирование напитка
+     *
+     * @param newDrinkDto   дто напитка
+     * @param id            идентификатор напитка
+     * @param bindingResult
+     * @return напиток
+     */
+
+    @Transactional
+    public DrinkDto editDrink(NewDrinkDto newDrinkDto, Integer id, BindingResult bindingResult) {
+
+        ListErrorDto listErrorDto = new ListErrorDto();
+
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult, listErrorDto);
+        }
+
+        Optional<DrinkDto> saved = getDrinkById(id);
+
+        if (!saved.isPresent()) {
+            throw new NotFoundException(messageSourceDecorator.getMessage("DrinkNotFound.message"));
+        }
+
+        checkIfCategoriesPresent(newDrinkDto, listErrorDto);
+
+        DrinkEntity drinkEntity = newDrinkMapper.toEntity(newDrinkDto);
+        drinkEntity.setId(id);
+        DrinkEntity edited = drinkEntityRepository.save(drinkEntity);
+        return drinkMapper.toDto(edited);
+    }
+
+    /**
      * поиск напитков по заданным параметрам
      *
      * @param drinkSearchCriteria параметры поиска
@@ -129,22 +186,13 @@ public class DrinkService {
     }
 
     /**
-     * сохранение напитка
+     * проверка наличия указанных категорий
      *
-     * @param newDrinkDto новый напиток
-     * @return напиток
+     * @param newDrinkDto  дто напитка
+     * @param listErrorDto список полей и ошибок, связанных с этим полем
      */
-    @Transactional
-    public DrinkDto saveDrink(NewDrinkDto newDrinkDto, BindingResult bindingResult) {
-
-        ListErrorDto listErrorDto = new ListErrorDto();
-
-        //тут можно находить ошибки валидации, которые не обрабатываются аннотациями, и складывать их в listErrorDto
-
-        if (bindingResult.hasErrors()) {
-            throw new ValidationException(bindingResult, listErrorDto);
-        }
-
+    @Transactional(readOnly = true)
+    public void checkIfCategoriesPresent(NewDrinkDto newDrinkDto, ListErrorDto listErrorDto) {
         for (Integer categoryId : newDrinkDto.getCategories()) {
             if (!getCategoryEntity(categoryId).isPresent()) {
                 listErrorDto.addErrorDto("categories", categoryId + messageSourceDecorator.getMessage("CategoryNotFound.message"));
@@ -154,18 +202,27 @@ public class DrinkService {
         if (!listErrorDto.getErrorDtos().isEmpty()) {
             throw new NotFoundException(listErrorDto);
         }
-
-        DrinkEntity drinkEntity = newDrinkMapper.toEntity(newDrinkDto);
-        DrinkEntity saved = drinkEntityRepository.save(drinkEntity);
-        log.info("{}", saved.getId());
-        return drinkMapper.toDto(saved);
     }
 
+    /**
+     * получение напитка по объему и наименованию
+     *
+     * @param name   н6аименование напитка
+     * @param volume объем напитка
+     * @return дто напитка
+     */
+
     @Transactional(readOnly = true)
-    public DrinkDto findDrinkByNameAndVolume(String name, Integer volume) {
+    public DrinkDto getDrinkByNameAndVolume(String name, Integer volume) {
         return drinkMapper.toDto(drinkEntityRepository.findOneByNameAndVolume(name, volume));
     }
 
+    /**
+     * получение категории напитка по идентификатору
+     *
+     * @param id идентификатор
+     * @return сущность категории
+     */
     private Optional<CategoryEntity> getCategoryEntity(Integer id) {
         return categoryEntityRepository.findById(id);
     }
