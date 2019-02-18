@@ -11,6 +11,7 @@ import ru.popova.practice.shop.dto.CategoryDto;
 import ru.popova.practice.shop.dto.ListErrorDto;
 import ru.popova.practice.shop.dto.PageDto;
 import ru.popova.practice.shop.entity.CategoryEntity;
+import ru.popova.practice.shop.exception.NotAllowedException;
 import ru.popova.practice.shop.exception.NotFoundException;
 import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.mapper.CategoryMapper;
@@ -27,6 +28,7 @@ public class CategoryService {
     private final PageMapper pageMapper;
     private final CategoryEntityRepository categoryEntityRepository;
     private final MessageSourceDecorator messageSourceDecorator;
+    private final DrinkService drinkService;
 
     /**
      * Сохранение категории
@@ -38,15 +40,7 @@ public class CategoryService {
     @Transactional
     public CategoryDto saveCategory(CategoryDto categoryDto, BindingResult bindingResult) {
 
-        ListErrorDto listErrorDto = new ListErrorDto();
-
-        if (getCategoryByName(categoryDto.getName()) != null) {
-            listErrorDto.addErrorDto("name", messageSourceDecorator.getMessage("CategoryUnique.message"));
-        }
-
-        if (bindingResult.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
-            throw new ValidationException(bindingResult, listErrorDto);
-        }
+        checkCategoryValidation(categoryDto, bindingResult);
 
         CategoryEntity categoryEntity = categoryMapper.toEntity(categoryDto);
         CategoryEntity saved = categoryEntityRepository.save(categoryEntity);
@@ -63,15 +57,7 @@ public class CategoryService {
     @Transactional
     public CategoryDto editCategory(CategoryDto categoryDto, Integer id, BindingResult bindingResult) {
 
-        ListErrorDto listErrorDto = new ListErrorDto();
-
-        if (getCategoryByName(categoryDto.getName()) != null) {
-            listErrorDto.addErrorDto("name", messageSourceDecorator.getMessage("CategoryUnique.message"));
-        }
-
-        if (bindingResult.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
-            throw new ValidationException(bindingResult, listErrorDto);
-        }
+        checkCategoryValidation(categoryDto, bindingResult);
 
         Optional<CategoryDto> saved = getCategoryById(id);
 
@@ -83,6 +69,32 @@ public class CategoryService {
         categoryEntity.setId(id);
         CategoryEntity edited = categoryEntityRepository.save(categoryEntity);
         return categoryMapper.toDto(edited);
+    }
+
+    @Transactional(readOnly = true)
+    public void checkCategoryValidation(CategoryDto categoryDto, BindingResult bindingResult) {
+        ListErrorDto listErrorDto = new ListErrorDto();
+
+        if (getCategoryByName(categoryDto.getName()) != null) {
+            listErrorDto.addErrorDto("name", messageSourceDecorator.getMessage("CategoryUnique.message"));
+        }
+
+        if (bindingResult.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
+            throw new ValidationException(bindingResult, listErrorDto);
+        }
+    }
+
+    /**
+     * Удаление категории по id
+     *
+     * @param id идентификать категории
+     */
+    @Transactional
+    public void deleteCategory(Integer id) {
+        if (!drinkService.getDrinksByCategory(id).isEmpty()) {
+            throw new NotAllowedException("category", messageSourceDecorator.getMessage("DrinkWithThisCategoryExists.message"));
+        }
+        categoryEntityRepository.findById(id).ifPresent(categoryEntityRepository::delete);
     }
 
     /**

@@ -110,4 +110,32 @@ public class DrinkController {
         DrinkDto saved = drinkService.saveDrink(newDrinkDto, result);
         return ResponseEntity.ok(saved);
     }
+
+    /**
+     * Редактирование напитка
+     *
+     * @param id          идентификатор напитка
+     * @param newDrinkDto изменения в напитке
+     * @param result
+     * @return статус
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<DrinkDto> editDrink(@PathVariable Integer id,
+                                              @RequestBody @Validated(NotEmptyValidationSequence.class) NewDrinkDto newDrinkDto,
+                                              BindingResult result) {
+        DrinkDto edited = drinkService.editDrink(newDrinkDto, id, result);
+        return ResponseEntity.ok(edited);
+    }
+
+    /**
+     * Удаление напитка
+     *
+     * @param id идентификатор напитка
+     * @return статус
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteDrink(@PathVariable Integer id) {
+        drinkService.deleteDrink(id);
+        return ResponseEntity.ok().build();
+    }
 }

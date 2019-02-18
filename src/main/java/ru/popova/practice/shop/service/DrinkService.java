@@ -17,6 +17,7 @@ import ru.popova.practice.shop.entity.CategoryEntity;
 import ru.popova.practice.shop.entity.CategoryEntity_;
 import ru.popova.practice.shop.entity.DrinkEntity;
 import ru.popova.practice.shop.entity.DrinkEntity_;
+import ru.popova.practice.shop.exception.NotAllowedException;
 import ru.popova.practice.shop.exception.NotFoundException;
 import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.mapper.DrinkMapper;
@@ -147,6 +148,16 @@ public class DrinkService {
     }
 
     /**
+     * удаление напитка
+     *
+     * @param id идентификатор напитка
+     */
+    @Transactional
+    public void deleteDrink(Integer id) {
+        drinkEntityRepository.findById(id).ifPresent(drinkEntityRepository::delete);
+    }
+
+    /**
      * поиск напитков по заданным параметрам
      *
      * @param drinkSearchCriteria параметры поиска
@@ -195,7 +206,7 @@ public class DrinkService {
     public void checkIfCategoriesPresent(NewDrinkDto newDrinkDto, ListErrorDto listErrorDto) {
         for (Integer categoryId : newDrinkDto.getCategories()) {
             if (!getCategoryEntity(categoryId).isPresent()) {
-                listErrorDto.addErrorDto("categories", categoryId + messageSourceDecorator.getMessage("CategoryNotFound.message"));
+                listErrorDto.addErrorDto("categories", categoryId + " " + messageSourceDecorator.getMessage("CategoryNotFound.message"));
             }
         }
 

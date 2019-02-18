@@ -38,15 +38,7 @@ public class ToppingService {
     @Transactional
     public ToppingDto saveTopping(ToppingDto toppingDto, BindingResult bindingResult) {
 
-        ListErrorDto listErrorDto = new ListErrorDto();
-
-        if (getToppingByName(toppingDto.getName()) != null) {
-            listErrorDto.addErrorDto("name", messageSourceDecorator.getMessage("ToppingUnique.message"));
-        }
-
-        if (bindingResult.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
-            throw new ValidationException(bindingResult, listErrorDto);
-        }
+        checkToppingValidation(toppingDto, bindingResult);
 
         ToppingEntity toppingEntity = toppingMapper.toEntity(toppingDto);
         ToppingEntity saved = toppingEntityRepository.save(toppingEntity);
@@ -64,15 +56,7 @@ public class ToppingService {
     @Transactional
     public ToppingDto editTopping(ToppingDto toppingDto, Integer id, BindingResult bindingResult) {
 
-        ListErrorDto listErrorDto = new ListErrorDto();
-
-        if (getToppingByName(toppingDto.getName()) != null) {
-            listErrorDto.addErrorDto("name", messageSourceDecorator.getMessage("ToppingUnique.message"));
-        }
-
-        if (bindingResult.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
-            throw new ValidationException(bindingResult, listErrorDto);
-        }
+        checkToppingValidation(toppingDto, bindingResult);
 
         Optional<ToppingDto> saved = getToppingById(id);
 
@@ -85,6 +69,35 @@ public class ToppingService {
         ToppingEntity edited = toppingEntityRepository.save(toppingEntity);
         return toppingMapper.toDto(edited);
 
+    }
+
+    /**
+     * Валидация топпинга
+     *
+     * @param toppingDto    дто топпинга
+     * @param bindingResult
+     */
+    @Transactional(readOnly = true)
+    public void checkToppingValidation(ToppingDto toppingDto, BindingResult bindingResult) {
+        ListErrorDto listErrorDto = new ListErrorDto();
+
+        if (getToppingByName(toppingDto.getName()) != null) {
+            listErrorDto.addErrorDto("name", messageSourceDecorator.getMessage("ToppingUnique.message"));
+        }
+
+        if (bindingResult.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
+            throw new ValidationException(bindingResult, listErrorDto);
+        }
+    }
+
+    /**
+     * удаление топпинга по id
+     *
+     * @param id идентификатор топпинга
+     */
+    @Transactional
+    public void deleteTopping(Integer id) {
+        toppingEntityRepository.findById(id).ifPresent(toppingEntityRepository::delete);
     }
 
     /**
@@ -112,6 +125,12 @@ public class ToppingService {
                 .map(toppingMapper::toDto);
     }
 
+    /**
+     * Получение топпинга по наименованию
+     *
+     * @param name наименование топпинга
+     * @return топпинг
+     */
     @Transactional(readOnly = true)
     public ToppingDto getToppingByName(String name) {
         return toppingMapper.toDto(toppingEntityRepository.findToppingEntityByName(name));
