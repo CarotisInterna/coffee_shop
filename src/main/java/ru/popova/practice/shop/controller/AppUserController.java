@@ -22,6 +22,12 @@ public class AppUserController {
 
     private final SecurityService securityService;
 
+    /**
+     * Регистрация пользователя
+     * @param newAppUserDto новый пользователь
+     * @param result
+     * @return статус
+     */
     @PostMapping("/register")
     public ResponseEntity<AppUserDto> register(@Validated @RequestBody NewAppUserDto newAppUserDto, BindingResult result) {
 
@@ -32,10 +38,16 @@ public class AppUserController {
         return ResponseEntity.ok(saved);
     }
 
+    /**
+     * Логин
+     * @param appUserLoginDto параметры для логина
+     * @param result
+     * @return статус
+     */
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody @Validated(NotEmptyValidationSequence.class) AppUserLoginDto appUserLoginDto, BindingResult result) {
 
-        appUserService.handleLoginExceptions(appUserLoginDto, result);
+        appUserService.checkLogin(appUserLoginDto, result);
 
         securityService.authenticateUser(appUserLoginDto);
 
