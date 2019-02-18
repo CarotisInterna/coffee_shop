@@ -11,6 +11,7 @@ import ru.popova.practice.shop.dto.ListErrorDto;
 import ru.popova.practice.shop.dto.PageDto;
 import ru.popova.practice.shop.dto.ToppingDto;
 import ru.popova.practice.shop.entity.ToppingEntity;
+import ru.popova.practice.shop.exception.NotFoundException;
 import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.mapper.PageMapper;
 import ru.popova.practice.shop.mapper.ToppingMapper;
@@ -27,6 +28,13 @@ public class ToppingService {
     private final ToppingEntityRepository toppingEntityRepository;
     private final MessageSourceDecorator messageSourceDecorator;
 
+    /**
+     * Сохранение топпинга
+     *
+     * @param toppingDto    дто топпинга
+     * @param bindingResult
+     * @return дто сохраненного топпинга
+     */
     @Transactional
     public ToppingDto saveTopping(ToppingDto toppingDto, BindingResult bindingResult) {
 
@@ -43,6 +51,40 @@ public class ToppingService {
         ToppingEntity toppingEntity = toppingMapper.toEntity(toppingDto);
         ToppingEntity saved = toppingEntityRepository.save(toppingEntity);
         return toppingMapper.toDto(saved);
+    }
+
+    /**
+     * Редактирование топпинга
+     *
+     * @param toppingDto    дто топпинга
+     * @param id            идентификатор топпинга
+     * @param bindingResult
+     * @return дто сохраненного топпинга
+     */
+    @Transactional
+    public ToppingDto editTopping(ToppingDto toppingDto, Integer id, BindingResult bindingResult) {
+
+        ListErrorDto listErrorDto = new ListErrorDto();
+
+        if (getToppingByName(toppingDto.getName()) != null) {
+            listErrorDto.addErrorDto("name", messageSourceDecorator.getMessage("ToppingUnique.message"));
+        }
+
+        if (bindingResult.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
+            throw new ValidationException(bindingResult, listErrorDto);
+        }
+
+        Optional<ToppingDto> saved = getToppingById(id);
+
+        if (!saved.isPresent()) {
+            throw new NotFoundException(messageSourceDecorator.getMessage("ToppingNotFound.message"));
+        }
+
+        ToppingEntity toppingEntity = toppingMapper.toEntity(toppingDto);
+        toppingEntity.setId(id);
+        ToppingEntity edited = toppingEntityRepository.save(toppingEntity);
+        return toppingMapper.toDto(edited);
+
     }
 
     /**
