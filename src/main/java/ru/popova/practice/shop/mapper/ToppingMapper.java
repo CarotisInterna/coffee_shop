@@ -22,6 +22,14 @@ public class ToppingMapper implements AbstractMapper<ToppingEntity, ToppingDto> 
 
     @Override
     public ToppingEntity toEntity(ToppingDto dto) {
-        return null;
+        if (dto == null) {
+            return null;
+        }
+        ToppingEntity topping = new ToppingEntity();
+        topping.setId(dto.getId());
+        topping.setName(dto.getName());
+        topping.setPrice(dto.getPrice());
+
+        return topping;
     }
 }

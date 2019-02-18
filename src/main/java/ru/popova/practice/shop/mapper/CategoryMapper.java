@@ -12,15 +12,22 @@ public class CategoryMapper implements AbstractMapper<CategoryEntity, CategoryDt
         if (entity == null) {
             return null;
         }
-        CategoryDto topping = new CategoryDto();
-        topping.setId(entity.getId());
-        topping.setName(entity.getName());
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setId(entity.getId());
+        categoryDto.setName(entity.getName());
 
-        return topping;
+        return categoryDto;
     }
 
     @Override
     public CategoryEntity toEntity(CategoryDto dto) {
-        return null;
+        if (dto == null) {
+            return null;
+        }
+        CategoryEntity category = new CategoryEntity();
+        category.setId(dto.getId());
+        category.setName(dto.getName());
+
+        return category;
     }
 }
