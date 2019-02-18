@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<?> handleNotFoundException(NotFoundException e) {
         if (e.getListErrorDto().getErrorDtos().isEmpty()){
@@ -46,6 +45,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorDto> handlePasswordMismatchException(PasswordMismatchException e) {
+        return new ResponseEntity<>(errorDto(e.getObjectName(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotAllowedException.class)
+    public ResponseEntity<ErrorDto> handleNotAllowedException(NotAllowedException e) {
         return new ResponseEntity<>(errorDto(e.getObjectName(), e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
