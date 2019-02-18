@@ -12,12 +12,12 @@ import java.util.Locale;
  * класс для получения сообщений
  */
 @Component
-public class Message {
+public class MessageSourceDecorator {
 
     private MessageSource messageSource;
 
     @Autowired
-    public Message(MessageSource messageSource) {
+    public MessageSourceDecorator(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 

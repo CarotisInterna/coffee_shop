@@ -2,7 +2,7 @@ package ru.popova.practice.shop.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.popova.practice.shop.config.messages.Message;
+import ru.popova.practice.shop.config.messages.MessageSourceDecorator;
 import ru.popova.practice.shop.dto.NewDrinkDto;
 import ru.popova.practice.shop.entity.CategoryEntity;
 import ru.popova.practice.shop.entity.DrinkEntity;
@@ -18,7 +18,7 @@ public class NewDrinkMapper implements AbstractMapper<DrinkEntity, NewDrinkDto> 
 
     private CategoryEntityRepository categoryEntityRepository;
 
-    private Message message;
+    private MessageSourceDecorator messageSourceDecorator;
 
     @Override
     public NewDrinkDto toDto(DrinkEntity entity) {
@@ -41,7 +41,7 @@ public class NewDrinkMapper implements AbstractMapper<DrinkEntity, NewDrinkDto> 
         for (Integer c : categories) {
 
             CategoryEntity category = categoryEntityRepository.findById(c)
-                    .orElseThrow(() -> new NotFoundException("categories", message.getMessage("CategoryNotFound.message")));
+                    .orElseThrow(() -> new NotFoundException("categories", messageSourceDecorator.getMessage("CategoryNotFound.message")));
 
             drink.getCategories().add(category);
         }
@@ -64,8 +64,8 @@ public class NewDrinkMapper implements AbstractMapper<DrinkEntity, NewDrinkDto> 
     }
 
     @Autowired
-    public NewDrinkMapper(CategoryEntityRepository categoryEntityRepository, Message message) {
+    public NewDrinkMapper(CategoryEntityRepository categoryEntityRepository, MessageSourceDecorator messageSourceDecorator) {
         this.categoryEntityRepository = categoryEntityRepository;
-        this.message = message;
+        this.messageSourceDecorator = messageSourceDecorator;
     }
 }

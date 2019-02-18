@@ -15,6 +15,8 @@ import java.util.Locale;
 @Configuration
 public class MessagesConfig {
 
+    private static final String LOCALE_RU = "ru";
+
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
@@ -33,12 +35,12 @@ public class MessagesConfig {
     @Bean
     public LocaleResolver localeResolver() {
         SessionLocaleResolver localeResolver = new SessionLocaleResolver();
-        localeResolver.setDefaultLocale(new Locale("ru"));
+        localeResolver.setDefaultLocale(new Locale(LOCALE_RU));
         return localeResolver;
     }
 
     @Bean
     public MessageSourceAccessor getMessageSourceAccessor(final MessageSource messageSource) {
-        return new MessageSourceAccessor(messageSource, new Locale("ru"));
+        return new MessageSourceAccessor(messageSource, new Locale(LOCALE_RU));
     }
 }

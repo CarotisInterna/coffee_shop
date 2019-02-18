@@ -1,14 +1,14 @@
 package ru.popova.practice.shop.service;
 
-import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
-import ru.popova.practice.shop.config.messages.Message;
+import ru.popova.practice.shop.config.messages.MessageSourceDecorator;
 import ru.popova.practice.shop.dto.DrinkDto;
 import ru.popova.practice.shop.dto.ListErrorDto;
 import ru.popova.practice.shop.dto.NewDrinkDto;
@@ -17,7 +17,6 @@ import ru.popova.practice.shop.entity.CategoryEntity;
 import ru.popova.practice.shop.entity.CategoryEntity_;
 import ru.popova.practice.shop.entity.DrinkEntity;
 import ru.popova.practice.shop.entity.DrinkEntity_;
-import ru.popova.practice.shop.exception.AlreadyExistsException;
 import ru.popova.practice.shop.exception.NotFoundException;
 import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.mapper.DrinkMapper;
@@ -30,9 +29,7 @@ import ru.popova.practice.shop.specification.SpecificationBuilder;
 
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +45,7 @@ public class DrinkService {
     private final NewDrinkMapper newDrinkMapper;
     private final DrinkEntityRepository drinkEntityRepository;
     private final CategoryEntityRepository categoryEntityRepository;
-    private final Message message;
+    private final MessageSourceDecorator messageSourceDecorator;
 
     /**
      * получение списка напитков
@@ -56,7 +53,7 @@ public class DrinkService {
      * @param pageable
      * @return список напитков
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<DrinkDto> getDrinks(Pageable pageable) {
         return drinkEntityRepository.findAll(pageable)
                 .map(drinkMapper::toDto);
@@ -68,7 +65,7 @@ public class DrinkService {
      * @param id идентификатор напитка
      * @return дто напитка
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<DrinkDto> getDrinkById(Integer id) {
         return drinkEntityRepository.findById(id)
                 .map(drinkMapper::toDto);
@@ -80,7 +77,7 @@ public class DrinkService {
      * @param id идентификатор напитка
      * @return список напитков
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public List<DrinkDto> getDrinksByCategory(Integer id) {
         Optional<CategoryEntity> category = getCategoryEntity(id);
         if (!category.isPresent()) {
@@ -99,7 +96,7 @@ public class DrinkService {
      * @param pageable
      * @return список напитков
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public PageDto<DrinkDto> search(DrinkSearchCriteria drinkSearchCriteria, Pageable pageable) {
         SpecificationBuilder<DrinkEntity> specificationBuilder = new SpecificationBuilder<>();
 
@@ -150,7 +147,7 @@ public class DrinkService {
 
         for (Integer categoryId : newDrinkDto.getCategories()) {
             if (!getCategoryEntity(categoryId).isPresent()) {
-                listErrorDto.addErrorDto("categories", categoryId + message.getMessage("CategoryNotFound.message"));
+                listErrorDto.addErrorDto("categories", categoryId + messageSourceDecorator.getMessage("CategoryNotFound.message"));
             }
         }
 
@@ -164,9 +161,9 @@ public class DrinkService {
         return drinkMapper.toDto(saved);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public DrinkDto findDrinkByNameAndVolume(String name, Integer volume) {
-        return drinkMapper.toDto(drinkEntityRepository.findDrinkEntityByNameAndVolume(name, volume));
+        return drinkMapper.toDto(drinkEntityRepository.findOneByNameAndVolume(name, volume));
     }
 
     private Optional<CategoryEntity> getCategoryEntity(Integer id) {

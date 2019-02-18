@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
-import ru.popova.practice.shop.config.messages.Message;
+import ru.popova.practice.shop.config.messages.MessageSourceDecorator;
 import ru.popova.practice.shop.dto.CategoryDto;
 import ru.popova.practice.shop.dto.ListErrorDto;
 import ru.popova.practice.shop.dto.PageDto;
@@ -25,7 +25,7 @@ public class CategoryService {
     private final CategoryMapper categoryMapper;
     private final PageMapper pageMapper;
     private final CategoryEntityRepository categoryEntityRepository;
-    private final Message message;
+    private final MessageSourceDecorator messageSourceDecorator;
 
     /**
      * получение категорий
@@ -77,7 +77,7 @@ public class CategoryService {
         ListErrorDto listErrorDto = new ListErrorDto();
 
         if (getCategoryByName(categoryDto.getName()) != null) {
-            listErrorDto.addErrorDto("name", message.getMessage("CategoryUnique.message"));
+            listErrorDto.addErrorDto("name", messageSourceDecorator.getMessage("CategoryUnique.message"));
         }
 
         if (bindingResult.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {

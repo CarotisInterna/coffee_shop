@@ -2,13 +2,12 @@ package ru.popova.practice.shop.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.MessageSource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
-import ru.popova.practice.shop.config.messages.Message;
+import ru.popova.practice.shop.config.messages.MessageSourceDecorator;
 import ru.popova.practice.shop.dto.AppUserDto;
 import ru.popova.practice.shop.dto.AppUserLoginDto;
 import ru.popova.practice.shop.dto.ListErrorDto;
@@ -27,10 +26,10 @@ import ru.popova.practice.shop.repository.AppUserEntityRepository;
 public class AppUserService {
 
     private final AppUserEntityRepository appUserEntityRepository;
-    private final PasswordEncoder PasswordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final NewAppUserMapper newAppUserMapper;
     private final AppUserMapper appUserMapper;
-    private final Message message;
+    private final MessageSourceDecorator messageSourceDecorator;
 
     /**
      * поиск пользователя по имени пользователя
@@ -68,7 +67,7 @@ public class AppUserService {
         ListErrorDto listErrorDto = new ListErrorDto();
 
         if(!newAppUserDto.getPassword().equals(newAppUserDto.getConfirmPassword())) {
-            listErrorDto.addErrorDto("confirmPassword", message.getMessage("ConfirmPassword.message"));
+            listErrorDto.addErrorDto("confirmPassword", messageSourceDecorator.getMessage("ConfirmPassword.message"));
         }
 
         if (bindingResult.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
@@ -88,7 +87,7 @@ public class AppUserService {
      * @param bindingResult
      */
     @Transactional
-    public void handleLoginExceptions(AppUserLoginDto appUserLoginDto, BindingResult bindingResult) {
+    public void  checkLogin(AppUserLoginDto appUserLoginDto, BindingResult bindingResult) {
 
         ListErrorDto listErrorDto = new ListErrorDto();
 
@@ -99,12 +98,12 @@ public class AppUserService {
         String name = appUserLoginDto.getUsername();
         AppUserDto appUserByUsername = getAppUserByUsername(name);
         if (appUserByUsername == null) {
-            throw new UsernameNotFoundException(message.getMessage("UsernameNotFoundException.message"));
+            throw new UsernameNotFoundException(messageSourceDecorator.getMessage("UsernameNotFoundException.message"));
         }
 
         String password = appUserLoginDto.getPassword();
-        if (!PasswordEncoder.matches(password, appUserByUsername.getPassword())) {
-            throw new PasswordMismatchException("password", message.getMessage("Password.message"));
+        if (!passwordEncoder.matches(password, appUserByUsername.getPassword())) {
+            throw new PasswordMismatchException("password", messageSourceDecorator.getMessage("Password.message"));
         }
     }
 
