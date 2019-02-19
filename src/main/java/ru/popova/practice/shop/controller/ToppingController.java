@@ -7,9 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.popova.practice.shop.dto.ListErrorDto;
 import ru.popova.practice.shop.dto.PageDto;
 import ru.popova.practice.shop.dto.ToppingDto;
 import ru.popova.practice.shop.dto.groups.NotEmptyValidationSequence;
+import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.service.ToppingService;
 
 @RestController
@@ -58,7 +60,13 @@ public class ToppingController {
      */
     @PostMapping
     public ResponseEntity<ToppingDto> saveTopping(@RequestBody @Validated(NotEmptyValidationSequence.class) ToppingDto toppingDto, BindingResult result) {
-        ToppingDto saved = toppingService.saveTopping(toppingDto, result);
+
+        ListErrorDto listErrorDto = toppingService.validateTopping(toppingDto);
+
+        if (result.hasErrors() || listErrorDto.getErrorDtos().isEmpty()) {
+            throw new ValidationException(result, listErrorDto);
+        }
+        ToppingDto saved = toppingService.saveTopping(toppingDto);
         return ResponseEntity.ok(saved);
     }
 
@@ -74,7 +82,14 @@ public class ToppingController {
     public ResponseEntity<ToppingDto> editTopping(@PathVariable Integer id,
                                                   @RequestBody @Validated(NotEmptyValidationSequence.class) ToppingDto toppingDto,
                                                   BindingResult result) {
-        ToppingDto edited = toppingService.editTopping(toppingDto, id, result);
+
+        ListErrorDto listErrorDto = toppingService.validateTopping(toppingDto);
+
+        if (result.hasErrors() || listErrorDto.getErrorDtos().isEmpty()) {
+            throw new ValidationException(result, listErrorDto);
+        }
+
+        ToppingDto edited = toppingService.editTopping(toppingDto, id);
         return ResponseEntity.ok(edited);
     }
 

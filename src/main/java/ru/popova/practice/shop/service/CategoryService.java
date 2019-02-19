@@ -33,14 +33,11 @@ public class CategoryService {
     /**
      * Сохранение категории
      *
-     * @param categoryDto   дто категории
-     * @param bindingResult
+     * @param categoryDto дто категории
      * @return дто сохраненной категории
      */
     @Transactional
-    public CategoryDto saveCategory(CategoryDto categoryDto, BindingResult bindingResult) {
-
-        checkCategoryValidation(categoryDto, bindingResult);
+    public CategoryDto saveCategory(CategoryDto categoryDto) {
 
         CategoryEntity categoryEntity = categoryMapper.toEntity(categoryDto);
         CategoryEntity saved = categoryEntityRepository.save(categoryEntity);
@@ -50,14 +47,11 @@ public class CategoryService {
     /**
      * Редактирование категории
      *
-     * @param categoryDto   категория
-     * @param bindingResult
+     * @param categoryDto категория
      * @return измененная категория
      */
     @Transactional
-    public CategoryDto editCategory(CategoryDto categoryDto, Integer id, BindingResult bindingResult) {
-
-        checkCategoryValidation(categoryDto, bindingResult);
+    public CategoryDto editCategory(CategoryDto categoryDto, Integer id) {
 
         Optional<CategoryDto> saved = getCategoryById(id);
 
@@ -71,17 +65,21 @@ public class CategoryService {
         return categoryMapper.toDto(edited);
     }
 
+    /**
+     * Валидация категории, которой не было через аннотации
+     *
+     * @param categoryDto дто категории
+     * @return список ошибок
+     */
     @Transactional(readOnly = true)
-    public void checkCategoryValidation(CategoryDto categoryDto, BindingResult bindingResult) {
+    public ListErrorDto validateCategory(CategoryDto categoryDto) {
         ListErrorDto listErrorDto = new ListErrorDto();
 
         if (getCategoryByName(categoryDto.getName()) != null) {
             listErrorDto.addErrorDto("name", messageSourceDecorator.getMessage("CategoryUnique.message"));
         }
 
-        if (bindingResult.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
-            throw new ValidationException(bindingResult, listErrorDto);
-        }
+        return listErrorDto;
     }
 
     /**

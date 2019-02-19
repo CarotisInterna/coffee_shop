@@ -8,9 +8,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.popova.practice.shop.dto.CategoryDto;
+import ru.popova.practice.shop.dto.ListErrorDto;
 import ru.popova.practice.shop.dto.PageDto;
 import ru.popova.practice.shop.dto.groups.NotEmptyValidationSequence;
 import ru.popova.practice.shop.entity.CategoryEntity;
+import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.service.CategoryService;
 
 @RestController
@@ -56,7 +58,13 @@ public class CategoryController {
      */
     @PostMapping
     public ResponseEntity<CategoryDto> saveCategory(@RequestBody @Validated(NotEmptyValidationSequence.class) CategoryDto categoryDto, BindingResult result) {
-        CategoryDto saved = categoryService.saveCategory(categoryDto, result);
+        ListErrorDto listErrorDto = categoryService.validateCategory(categoryDto);
+
+        if (result.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
+            throw new ValidationException(result, listErrorDto);
+        }
+
+        CategoryDto saved = categoryService.saveCategory(categoryDto);
         return ResponseEntity.ok(saved);
     }
 
@@ -72,11 +80,18 @@ public class CategoryController {
     public ResponseEntity<CategoryDto> editCategory(@PathVariable Integer id,
                                                     @RequestBody @Validated(NotEmptyValidationSequence.class) CategoryDto categoryDto,
                                                     BindingResult result) {
-        CategoryDto edited = categoryService.editCategory(categoryDto, id, result);
+        ListErrorDto listErrorDto = categoryService.validateCategory(categoryDto);
+
+        if (result.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
+            throw new ValidationException(result, listErrorDto);
+        }
+
+        CategoryDto edited = categoryService.editCategory(categoryDto, id);
         return ResponseEntity.ok(edited);
     }
 
-    /** Удаление категории
+    /**
+     * Удаление категории
      *
      * @param id идентификатор категории
      * @return статус

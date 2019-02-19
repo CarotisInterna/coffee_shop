@@ -31,15 +31,11 @@ public class ToppingService {
     /**
      * Сохранение топпинга
      *
-     * @param toppingDto    дто топпинга
-     * @param bindingResult
+     * @param toppingDto дто топпинга
      * @return дто сохраненного топпинга
      */
     @Transactional
-    public ToppingDto saveTopping(ToppingDto toppingDto, BindingResult bindingResult) {
-
-        checkToppingValidation(toppingDto, bindingResult);
-
+    public ToppingDto saveTopping(ToppingDto toppingDto) {
         ToppingEntity toppingEntity = toppingMapper.toEntity(toppingDto);
         ToppingEntity saved = toppingEntityRepository.save(toppingEntity);
         return toppingMapper.toDto(saved);
@@ -48,15 +44,12 @@ public class ToppingService {
     /**
      * Редактирование топпинга
      *
-     * @param toppingDto    дто топпинга
-     * @param id            идентификатор топпинга
-     * @param bindingResult
+     * @param toppingDto дто топпинга
+     * @param id         идентификатор топпинга
      * @return дто сохраненного топпинга
      */
     @Transactional
-    public ToppingDto editTopping(ToppingDto toppingDto, Integer id, BindingResult bindingResult) {
-
-        checkToppingValidation(toppingDto, bindingResult);
+    public ToppingDto editTopping(ToppingDto toppingDto, Integer id) {
 
         Optional<ToppingDto> saved = getToppingById(id);
 
@@ -74,20 +67,17 @@ public class ToppingService {
     /**
      * Валидация топпинга
      *
-     * @param toppingDto    дто топпинга
-     * @param bindingResult
+     * @param toppingDto дто топпинга
      */
     @Transactional(readOnly = true)
-    public void checkToppingValidation(ToppingDto toppingDto, BindingResult bindingResult) {
+    public ListErrorDto validateTopping(ToppingDto toppingDto) {
         ListErrorDto listErrorDto = new ListErrorDto();
 
         if (getToppingByName(toppingDto.getName()) != null) {
             listErrorDto.addErrorDto("name", messageSourceDecorator.getMessage("ToppingUnique.message"));
         }
 
-        if (bindingResult.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
-            throw new ValidationException(bindingResult, listErrorDto);
-        }
+        return listErrorDto;
     }
 
     /**

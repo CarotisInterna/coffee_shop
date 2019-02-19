@@ -12,6 +12,7 @@ import ru.popova.practice.shop.dto.DrinkDto;
 import ru.popova.practice.shop.dto.NewDrinkDto;
 import ru.popova.practice.shop.dto.PageDto;
 import ru.popova.practice.shop.dto.groups.NotEmptyValidationSequence;
+import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.mapper.PageMapper;
 import ru.popova.practice.shop.service.DrinkService;
 import ru.popova.practice.shop.specification.DrinkSearchCriteria;
@@ -107,7 +108,11 @@ public class DrinkController {
      */
     @PostMapping
     public ResponseEntity<DrinkDto> saveDrink(@RequestBody @Validated(NotEmptyValidationSequence.class) NewDrinkDto newDrinkDto, BindingResult result) {
-        DrinkDto saved = drinkService.saveDrink(newDrinkDto, result);
+        if (result.hasErrors()) {
+            throw new ValidationException(result);
+        }
+
+        DrinkDto saved = drinkService.saveDrink(newDrinkDto);
         return ResponseEntity.ok(saved);
     }
 
@@ -123,7 +128,10 @@ public class DrinkController {
     public ResponseEntity<DrinkDto> editDrink(@PathVariable Integer id,
                                               @RequestBody @Validated(NotEmptyValidationSequence.class) NewDrinkDto newDrinkDto,
                                               BindingResult result) {
-        DrinkDto edited = drinkService.editDrink(newDrinkDto, id, result);
+        if (result.hasErrors()) {
+            throw new ValidationException(result);
+        }
+        DrinkDto edited = drinkService.editDrink(newDrinkDto, id);
         return ResponseEntity.ok(edited);
     }
 

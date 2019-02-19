@@ -97,15 +97,9 @@ public class DrinkService {
      * @return напиток
      */
     @Transactional
-    public DrinkDto saveDrink(NewDrinkDto newDrinkDto, BindingResult bindingResult) {
+    public DrinkDto saveDrink(NewDrinkDto newDrinkDto) {
 
         ListErrorDto listErrorDto = new ListErrorDto();
-
-        //тут можно находить ошибки валидации, которые не обрабатываются аннотациями, и складывать их в listErrorDto
-
-        if (bindingResult.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
-            throw new ValidationException(bindingResult, listErrorDto);
-        }
 
         checkIfCategoriesPresent(newDrinkDto, listErrorDto);
 
@@ -118,26 +112,21 @@ public class DrinkService {
     /**
      * редактирование напитка
      *
-     * @param newDrinkDto   дто напитка
-     * @param id            идентификатор напитка
-     * @param bindingResult
+     * @param newDrinkDto дто напитка
+     * @param id          идентификатор напитка
      * @return напиток
      */
 
     @Transactional
-    public DrinkDto editDrink(NewDrinkDto newDrinkDto, Integer id, BindingResult bindingResult) {
-
-        ListErrorDto listErrorDto = new ListErrorDto();
-
-        if (bindingResult.hasErrors()) {
-            throw new ValidationException(bindingResult, listErrorDto);
-        }
+    public DrinkDto editDrink(NewDrinkDto newDrinkDto, Integer id) {
 
         Optional<DrinkDto> saved = getDrinkById(id);
 
         if (!saved.isPresent()) {
             throw new NotFoundException(messageSourceDecorator.getMessage("DrinkNotFound.message"));
         }
+
+        ListErrorDto listErrorDto = new ListErrorDto();
 
         checkIfCategoriesPresent(newDrinkDto, listErrorDto);
 
