@@ -9,10 +9,14 @@ public class ValidationException extends RuntimeException {
 
     private BindingResult bindingResult;
 
-    private ListErrorDto listErrorDto;
+    private ListErrorDto listErrorDto = new ListErrorDto();
 
     public ValidationException(BindingResult bindingResult, ListErrorDto listErrorDto) {
         this.bindingResult = bindingResult;
         this.listErrorDto = listErrorDto;
+    }
+
+    public ValidationException(BindingResult bindingResult) {
+        this.bindingResult = bindingResult;
     }
 }
