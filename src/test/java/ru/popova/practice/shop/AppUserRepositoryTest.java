@@ -30,8 +30,8 @@ public class AppUserRepositoryTest {
     public void test() {
         RoleEntity role = new RoleEntity(
                 1,
-                RoleCode.ROLE_USER,
-                RoleCode.ROLE_USER.name());
+                RoleCode.USER,
+                RoleCode.USER.name());
         AppUserEntity user = new AppUserEntity(
                 1,
                 "alex",

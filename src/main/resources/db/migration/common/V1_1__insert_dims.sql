@@ -1,6 +1,6 @@
 --заполнение справочника с ролями
-INSERT INTO role(code, name) VALUES('ROLE_USER', 'ROLE_USER');
-INSERT INTO role(code, name) VALUES('ROLE_VENDOR', 'ROLE_VENDOR');
+INSERT INTO role(code, name) VALUES('USER', 'USER');
+INSERT INTO role(code, name) VALUES('VENDOR', 'VENDOR');
 
 --заполнение справочника со статусами заказа
 INSERT INTO order_status(code, status_name) VALUES('IN_CART','В корзине');

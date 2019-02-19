@@ -36,7 +36,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority(appUserEntity.getRole().getName()));
+        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + appUserEntity.getRole().getCode().toString()));
 
         return CustomUserDetails
                 .builder()
