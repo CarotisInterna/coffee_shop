@@ -3,6 +3,7 @@ package ru.popova.practice.shop.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,14 +16,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * обработчик ошибок
+ * Обработчик ошибок
  */
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<?> handleNotFoundException(NotFoundException e) {
-        if (e.getListErrorDto().getErrorDtos().isEmpty()){
+        if (e.getListErrorDto().getErrorDtos().isEmpty()) {
             return new ResponseEntity<>(errorDto(e.getObjectName(), e.getMessage()), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(e.getListErrorDto(), HttpStatus.NOT_FOUND);
@@ -39,7 +40,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<ErrorDto> handleUsernameNotFoundException(UsernameNotFoundException e){
+    public ResponseEntity<ErrorDto> handleUsernameNotFoundException(UsernameNotFoundException e) {
         return new ResponseEntity<>(errorDto("username", e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
@@ -51,6 +52,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NotAllowedException.class)
     public ResponseEntity<ErrorDto> handleNotAllowedException(NotAllowedException e) {
         return new ResponseEntity<>(errorDto(e.getObjectName(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AuthenticationFailedException.class)
+    public ResponseEntity<ErrorDto> handleAuthenticationFailedException(AuthenticationFailedException e) {
+        return new ResponseEntity<>(errorDto(e.getObjectName(), e.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
 
