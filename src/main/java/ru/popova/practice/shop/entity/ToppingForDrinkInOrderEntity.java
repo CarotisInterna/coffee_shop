@@ -17,23 +17,28 @@ import java.util.List;
 public class ToppingForDrinkInOrderEntity extends AbstractCoffeeShopEntity<ToppingForDrinkInOrderId> {
 
     /**
-     * id напитка в заказе + id топпинга
+     * ID напитка в заказе + id топпинга
      */
     @EmbeddedId
     private ToppingForDrinkInOrderId id;
 
     /**
-     * напиток в заказе
+     * Напиток в заказе
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("drinkOrderId")
     private DrinkOrderEntity drinkOrder;
 
     /**
-     * топпинг
+     * Топпинг
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("toppingId")
     private ToppingEntity topping;
+
+    /**
+     * Количество топпинга для напитка в заказе
+     */
+    private Integer quantity;
 
 }
