@@ -21,7 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final AppUserEntityRepository appUserEntityRepository;
 
     /**
-     * поиск пользователя по имени пользователя
+     * Поиск пользователя по имени пользователя
      * @param username имя пользователя
      * @return информация о пользователе
      * @throws UsernameNotFoundException если имя пользователя не найдено
@@ -32,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUserEntity appUserEntity = appUserEntityRepository.findAppUserEntityByUsername(username);
         if (appUserEntity == null) {
-            throw new UsernameNotFoundException("имя пользователя не найдено");
+            throw new UsernameNotFoundException("UserExists.message");
         }
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
