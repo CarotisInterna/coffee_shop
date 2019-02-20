@@ -23,7 +23,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/v2/api-docs", "/register", "/login", "/swagger-ui.html")
+                .antMatchers("/", "/v2/api-docs", "/register", "/login", "/swagger-ui.html", "/username")
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/api/drinks/**", "/api/categories/**", "/api/toppings", "/api/drinks", "/api/categories", "/api/toppings/**")
                 .permitAll()
