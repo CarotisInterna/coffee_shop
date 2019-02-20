@@ -19,6 +19,7 @@ import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.mapper.AppUserMapper;
 import ru.popova.practice.shop.mapper.NewAppUserMapper;
 import ru.popova.practice.shop.repository.AppUserEntityRepository;
+import ru.popova.practice.shop.service.security.SecurityService;
 
 @Slf4j
 @Service
@@ -30,9 +31,21 @@ public class AppUserService {
     private final NewAppUserMapper newAppUserMapper;
     private final AppUserMapper appUserMapper;
     private final MessageSourceDecorator messageSourceDecorator;
+    private final SecurityService securityService;
 
     /**
-     * поиск пользователя по имени пользователя
+     * Получение текущего авторизованного пользователя
+     *
+     * @return текущий авторизованный пользователь
+     */
+    @Transactional
+    public AppUserDto getCurrentUser() {
+        String username = securityService.getCurrentUsername();
+        return getAppUserByUsername(username);
+    }
+
+    /**
+     * Поиск пользователя по имени пользователя
      *
      * @param username имя пользователя
      * @return пользователь
@@ -43,7 +56,7 @@ public class AppUserService {
     }
 
     /**
-     * поиск пользователя по номеру телефона
+     * Поиск пользователя по номеру телефона
      *
      * @param phoneNumber номер телефона
      * @return пользователь
@@ -55,7 +68,7 @@ public class AppUserService {
     }
 
     /**
-     * сохранение нового пользователя
+     * Сохранение нового пользователя
      *
      * @param newAppUserDto новый пользователь
      * @return пользователь
@@ -66,7 +79,7 @@ public class AppUserService {
 
         ListErrorDto listErrorDto = new ListErrorDto();
 
-        if(!newAppUserDto.getPassword().equals(newAppUserDto.getConfirmPassword())) {
+        if (!newAppUserDto.getPassword().equals(newAppUserDto.getConfirmPassword())) {
             listErrorDto.addErrorDto("confirmPassword", messageSourceDecorator.getMessage("ConfirmPassword.message"));
         }
 
@@ -87,7 +100,7 @@ public class AppUserService {
      * @param bindingResult
      */
     @Transactional
-    public void  checkLogin(AppUserLoginDto appUserLoginDto, BindingResult bindingResult) {
+    public void checkLogin(AppUserLoginDto appUserLoginDto, BindingResult bindingResult) {
 
         ListErrorDto listErrorDto = new ListErrorDto();
 

@@ -1,5 +1,6 @@
 package ru.popova.practice.shop.service.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,15 +9,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import ru.popova.practice.shop.config.messages.MessageSourceDecorator;
 import ru.popova.practice.shop.dto.AppUserLoginDto;
+import ru.popova.practice.shop.entity.AppUserEntity;
 import ru.popova.practice.shop.exception.AuthenticationFailedException;
+import ru.popova.practice.shop.repository.AppUserEntityRepository;
 
 import java.util.stream.Stream;
 
 @Service
+@RequiredArgsConstructor
 public class SecurityService {
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+    private final MessageSourceDecorator messageSourceDecorator;
 
     /**
      * Логин пользователя
@@ -34,7 +40,7 @@ public class SecurityService {
      */
     public void checkAuthenticateUser() {
         if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
-            throw new AuthenticationFailedException("user", "AuthenticationRequired.message");
+            throw new AuthenticationFailedException("user", messageSourceDecorator.getMessage("AuthenticationRequired.message"));
         }
     }
 
@@ -46,15 +52,9 @@ public class SecurityService {
     public String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken) {
-            throw new AuthenticationFailedException("user", "AuthenticationRequired.message");
+            throw new AuthenticationFailedException("user",  messageSourceDecorator.getMessage("AuthenticationRequired.message"));
         } else {
             return authentication.getName();
         }
     }
-
-    @Autowired
-    public void setAuthManager(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
-
 }
