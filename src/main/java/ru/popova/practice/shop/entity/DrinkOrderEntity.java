@@ -7,37 +7,37 @@ import javax.persistence.*;
 import java.util.List;
 
 /**
- * класс сущности напитка в заказе
+ * Класс сущности напитка в заказе
  */
 @Getter
 @Setter
 @Entity
 @Table(name = "drink_order")
-public class DrinkOrderEntity extends AbstractCoffeeShopEntity<Integer>{
+public class DrinkOrderEntity extends AbstractCoffeeShopEntity<Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     /**
-     *id заказанного напитка
+     * Заказанный напиток
      */
     @ManyToOne(fetch = FetchType.LAZY)
     private DrinkEntity drink;
 
     /**
-     *id заказа
+     * Заказ
      */
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderEntity order;
 
     /**
-     *количество напитка в этом заказе
+     * Количество напитка в этом заказе
      */
     private Integer quantity;
 
     /**
-     *список топпингов для напитка в этом заказе
+     * Список топпингов для напитка в этом заказе
      */
     @OneToMany(mappedBy = "drinkOrder")
     private List<ToppingForDrinkInOrderEntity> toppings;
