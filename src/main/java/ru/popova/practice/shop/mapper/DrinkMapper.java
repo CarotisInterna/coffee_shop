@@ -1,11 +1,15 @@
 package ru.popova.practice.shop.mapper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.popova.practice.shop.config.messages.MessageSourceDecorator;
 import ru.popova.practice.shop.dto.DrinkDto;
 import ru.popova.practice.shop.entity.CategoryEntity;
 import ru.popova.practice.shop.entity.DrinkEntity;
 import ru.popova.practice.shop.entity.DrinkImageEntity;
+import ru.popova.practice.shop.exception.NotFoundException;
+import ru.popova.practice.shop.repository.CategoryEntityRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +21,15 @@ public class DrinkMapper implements AbstractMapper<DrinkEntity, DrinkDto> {
     private String imagesPath;
     @Value("${coffee_shop.images.suffix}")
     private String imagesSuffix;
+
+    private CategoryEntityRepository categoryEntityRepository;
+    private MessageSourceDecorator messageSourceDecorator;
+
+    @Autowired
+    public DrinkMapper(CategoryEntityRepository categoryEntityRepository, MessageSourceDecorator messageSourceDecorator) {
+        this.categoryEntityRepository = categoryEntityRepository;
+        this.messageSourceDecorator = messageSourceDecorator;
+    }
 
     @Override
     public DrinkDto toDto(DrinkEntity drinkEntity) {
@@ -46,6 +59,36 @@ public class DrinkMapper implements AbstractMapper<DrinkEntity, DrinkDto> {
 
     @Override
     public DrinkEntity toEntity(DrinkDto drinkDto) {
-        throw new UnsupportedOperationException();
+        if (drinkDto == null) {
+            return null;
+        } else {
+            DrinkEntity drink = new DrinkEntity();
+            drink.setId(drinkDto.getId());
+            drink.setName(drinkDto.getName());
+            drink.setPrice(drinkDto.getPrice());
+            drink.setVolume(drinkDto.getVolume());
+            drink.setDescription(drinkDto.getDescription());
+            List<String> categories = drinkDto.getCategories();
+
+            for (String c : categories) {
+                CategoryEntity category = categoryEntityRepository.findCategoryEntityByName(c);
+                if (category == null) {
+                    throw new NotFoundException("categories", messageSourceDecorator.getMessage("CategoryNotFound.message"));
+                }
+
+                drink.getCategories().add(category);
+            }
+            drink.setImages(drinkDto.getImages().stream()
+                    .map(this::toDrinkImageEntity)
+                    .peek(image -> image.setDrink(drink))
+                    .collect(Collectors.toList()));
+            return drink;
+        }
+    }
+
+    private DrinkImageEntity toDrinkImageEntity(String image) {
+        DrinkImageEntity drinkImageEntity = new DrinkImageEntity();
+        drinkImageEntity.setImage(image);
+        return drinkImageEntity;
     }
 }

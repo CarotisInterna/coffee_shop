@@ -17,6 +17,13 @@ public class OrderMapper implements AbstractMapper<OrderEntity, OrderDto> {
     private DrinkOrderMapper drinkOrderMapper;
     private AppUserEntityRepository appUserEntityRepository;
 
+    @Autowired
+    public OrderMapper(OrderStatusEntityRepository orderStatusEntityRepository, DrinkOrderMapper drinkOrderMapper, AppUserEntityRepository appUserEntityRepository) {
+        this.orderStatusEntityRepository = orderStatusEntityRepository;
+        this.drinkOrderMapper = drinkOrderMapper;
+        this.appUserEntityRepository = appUserEntityRepository;
+    }
+
     @Override
     public OrderDto toDto(OrderEntity entity) {
         if (entity == null) {
@@ -51,22 +58,11 @@ public class OrderMapper implements AbstractMapper<OrderEntity, OrderDto> {
             orderEntity.setTotal(dto.getTotal());
             orderEntity.setAddress(dto.getAddress());
             orderEntity.setDate(dto.getDate());
-
+            orderEntity.setDrinks(dto.getDrinks()
+                    .stream()
+                    .map(drink -> drinkOrderMapper.toEntity(drink))
+                    .collect(Collectors.toList()));
+            return orderEntity;
         }
-    }
-
-    @Autowired
-    public void setDrinkOrderMapper(DrinkOrderMapper drinkOrderMapper) {
-        this.drinkOrderMapper = drinkOrderMapper;
-    }
-
-    @Autowired
-    public void setOrderStatusEntityRepository(OrderStatusEntityRepository orderStatusEntityRepository) {
-        this.orderStatusEntityRepository = orderStatusEntityRepository;
-    }
-
-    @Autowired
-    public void setAppUserEntityRepository(AppUserEntityRepository appUserEntityRepository) {
-        this.appUserEntityRepository = appUserEntityRepository;
     }
 }
