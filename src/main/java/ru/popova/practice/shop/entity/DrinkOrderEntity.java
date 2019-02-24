@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,7 +40,12 @@ public class DrinkOrderEntity extends AbstractCoffeeShopEntity<Integer> {
     /**
      * Список топпингов для напитка в этом заказе
      */
-    @OneToMany(mappedBy = "drinkOrder")
-    private List<ToppingForDrinkInOrderEntity> toppings;
+    @OneToMany(mappedBy = "drinkOrder", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ToppingForDrinkInOrderEntity> toppings = new ArrayList<>();
+
+    public void addTopping(ToppingForDrinkInOrderEntity topping) {
+        topping.setDrinkOrder(this);
+        toppings.add(topping);
+    }
 
 }

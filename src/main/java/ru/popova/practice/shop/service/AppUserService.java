@@ -55,6 +55,11 @@ public class AppUserService {
         return appUserMapper.toDto(appUserEntityRepository.findAppUserEntityByUsername(username));
     }
 
+    @Transactional
+    public AppUserEntity getCurrentUserEntity() {
+        return appUserEntityRepository.findAppUserEntityByUsername(securityService.getCurrentUsername());
+    }
+
     /**
      * Поиск пользователя по номеру телефона
      *

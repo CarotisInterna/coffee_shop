@@ -10,24 +10,25 @@ import ru.popova.practice.shop.entity.OrderEntity;
 import ru.popova.practice.shop.entity.OrderStatusEntity;
 import ru.popova.practice.shop.entity.code.OrderStatusCode;
 import ru.popova.practice.shop.mapper.AppUserMapper;
+import ru.popova.practice.shop.mapper.DrinkOrderMapper;
 import ru.popova.practice.shop.mapper.OrderMapper;
 import ru.popova.practice.shop.repository.OrderEntityRepository;
 import ru.popova.practice.shop.repository.OrderStatusEntityRepository;
-import ru.popova.practice.shop.service.security.SecurityService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CartService {
 
-    private final SecurityService securityService;
     private final AppUserService appUserService;
     private final AppUserMapper appUserMapper;
     private final OrderMapper orderMapper;
     private final OrderEntityRepository orderEntityRepository;
     private final OrderStatusEntityRepository orderStatusEntityRepository;
+    private final DrinkOrderMapper drinkOrderMapper;
 
     /**
      * Получение корзины текущего пользователя
@@ -36,18 +37,16 @@ public class CartService {
      */
     @Transactional(readOnly = true)
     public OrderDto getCurrentUserCart() {
-        OrderEntity cart = getCurrentUserCartEntity();
+        OrderEntity cart = getCurrentUserCartEntity().orElse(getEmptyCartEntity());
         return orderMapper.toDto(cart);
     }
 
     @Transactional
     public OrderDto addProductToCart(DrinkOrderDto drinkOrderDto) {
-        OrderEntity cart = getCurrentUserCartEntity();
-        if (cart == null) {
-            cart = getEmptyCartEntity();
-        }
-        drinkOrderDto.setOrder();
-
+        OrderEntity cart = getCurrentUserCartEntity().orElse(getEmptyCartEntity());
+        cart.addDrink(drinkOrderMapper.toEntity(drinkOrderDto));
+        OrderEntity saved = orderEntityRepository.save(cart);
+        return orderMapper.toDto(saved);
     }
 
     /**
@@ -58,14 +57,12 @@ public class CartService {
     @Transactional
     public OrderEntity getEmptyCartEntity() {
         OrderEntity orderEntity = new OrderEntity();
-        OrderStatusEntity inCart = orderStatusEntityRepository.findOrderStatusEntityByOrderStatusCode(OrderStatusCode.IN_CART);
-        AppUserEntity currentAppUser = appUserMapper.toEntity(appUserService.getCurrentUser());
+        OrderStatusEntity inCart = orderStatusEntityRepository.findOrderStatusEntityByCode(OrderStatusCode.IN_CART);
+        AppUserEntity currentAppUser = appUserService.getCurrentUserEntity();
         orderEntity.setOrderStatus(inCart);
         orderEntity.setAppUser(currentAppUser);
         orderEntity.setTotal(BigDecimal.ZERO);
-        orderEntity.setAddress("");
         orderEntity.setDate(LocalDateTime.now());
-        orderEntity.setDrinks(null);
         return orderEntity;
     }
 
@@ -74,10 +71,9 @@ public class CartService {
      *
      * @return сущность сыночки-корзиночки текущего пользователя
      */
-    public OrderEntity getCurrentUserCartEntity() {
-        AppUserEntity currentAppUser = appUserMapper.toEntity(appUserService.getCurrentUser());
-        OrderStatusEntity inCart = orderStatusEntityRepository.findOrderStatusEntityByOrderStatusCode(OrderStatusCode.IN_CART);
-        return orderEntityRepository.findOrderEntityByAppUserAndOrderStatus(currentAppUser, inCart);
+    public Optional<OrderEntity> getCurrentUserCartEntity() {
+        Integer userId = appUserService.getCurrentUser().getId();
+        return orderEntityRepository.findOneByAppUserIdAndOrderStatusCode(userId, OrderStatusCode.IN_CART);
     }
 
 }

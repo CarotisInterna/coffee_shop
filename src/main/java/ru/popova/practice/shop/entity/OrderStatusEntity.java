@@ -23,10 +23,11 @@ public class OrderStatusEntity extends AbstractCoffeeShopEntity<Integer> {
      * код статуса заказа
      */
     @Enumerated(EnumType.STRING)
-    private OrderStatusCode orderStatusCode;
+    private OrderStatusCode code;
     /**
      * наименование статуса заказа
      */
+    @Column(name = "status_name")
     private String name;
 
 }

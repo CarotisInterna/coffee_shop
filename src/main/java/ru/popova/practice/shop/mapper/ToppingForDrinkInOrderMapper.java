@@ -1,14 +1,18 @@
 package ru.popova.practice.shop.mapper;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.popova.practice.shop.dto.ToppingForDrinkInOrderDto;
 import ru.popova.practice.shop.entity.ToppingForDrinkInOrderEntity;
+import ru.popova.practice.shop.repository.ToppingEntityRepository;
 
 @Component
+@RequiredArgsConstructor
 public class ToppingForDrinkInOrderMapper implements AbstractMapper<ToppingForDrinkInOrderEntity, ToppingForDrinkInOrderDto> {
 
-    private ToppingMapper toppingMapper;
+    private final ToppingMapper toppingMapper;
+    private final ToppingEntityRepository toppingEntityRepository;
+
 
     @Override
     public ToppingForDrinkInOrderDto toDto(ToppingForDrinkInOrderEntity entity) {
@@ -24,12 +28,14 @@ public class ToppingForDrinkInOrderMapper implements AbstractMapper<ToppingForDr
 
     @Override
     public ToppingForDrinkInOrderEntity toEntity(ToppingForDrinkInOrderDto dto) {
-        return null;
-    }
-
-    @Autowired
-    public void setToppingMapper(ToppingMapper toppingMapper) {
-        this.toppingMapper = toppingMapper;
+        if (dto == null) {
+            return null;
+        } else {
+            ToppingForDrinkInOrderEntity toppingForDrinkInOrderEntity = new ToppingForDrinkInOrderEntity();
+            toppingForDrinkInOrderEntity.setQuantity(dto.getToppingAmount());
+            toppingForDrinkInOrderEntity.setTopping(toppingEntityRepository.getOne(dto.getTopping().getId()));
+            return toppingForDrinkInOrderEntity;
+        }
     }
 
 }

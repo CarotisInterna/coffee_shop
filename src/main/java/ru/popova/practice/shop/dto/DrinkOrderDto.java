@@ -9,7 +9,7 @@ import java.util.List;
 @Setter
 public class DrinkOrderDto {
     private DrinkDto drink;
-    private OrderDto order;
+//    private OrderDto order;
     private Integer quantity;
     private List<ToppingForDrinkInOrderDto> toppings;
 }

@@ -53,15 +53,15 @@ public class OrderMapper implements AbstractMapper<OrderEntity, OrderDto> {
 
             String orderStatus = dto.getOrderStatus();
             String username = dto.getAppUser();
-            orderEntity.setOrderStatus(orderStatusEntityRepository.findOrderStatusEntityByOrderStatusCode(OrderStatusCode.valueOf(orderStatus)));
+            orderEntity.setOrderStatus(orderStatusEntityRepository.findOrderStatusEntityByCode(OrderStatusCode.valueOf(orderStatus)));
             orderEntity.setAppUser(appUserEntityRepository.findAppUserEntityByUsername(username));
             orderEntity.setTotal(dto.getTotal());
             orderEntity.setAddress(dto.getAddress());
             orderEntity.setDate(dto.getDate());
-            orderEntity.setDrinks(dto.getDrinks()
+            dto.getDrinks()
                     .stream()
                     .map(drink -> drinkOrderMapper.toEntity(drink))
-                    .collect(Collectors.toList()));
+                    .forEach(orderEntity::addDrink);
             return orderEntity;
         }
     }

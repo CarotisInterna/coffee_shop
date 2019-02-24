@@ -65,8 +65,8 @@ CREATE TABLE IF NOT EXISTS orders (
   id SERIAL NOT NULL PRIMARY KEY,
   status_id INT NOT NULL REFERENCES order_status (id),
   customer_id INT NOT NULL REFERENCES app_user (id),
-  total DECIMAL NOT NULL CHECK (total > 0),
-  address TEXT NOT NULL,
+  total DECIMAL NOT NULL CHECK (total >= 0),
+  address TEXT,
   date TIMESTAMP NOT NULL
 );
 

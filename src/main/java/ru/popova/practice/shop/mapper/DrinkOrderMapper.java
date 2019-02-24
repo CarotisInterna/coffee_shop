@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.popova.practice.shop.dto.DrinkOrderDto;
 import ru.popova.practice.shop.entity.DrinkOrderEntity;
+import ru.popova.practice.shop.entity.ToppingForDrinkInOrderId;
+import ru.popova.practice.shop.repository.DrinkEntityRepository;
 
 import java.util.stream.Collectors;
 
@@ -12,8 +14,8 @@ import java.util.stream.Collectors;
 public class DrinkOrderMapper implements AbstractMapper<DrinkOrderEntity, DrinkOrderDto> {
 
     private final DrinkMapper drinkMapper;
-    private final OrderMapper orderMapper;
     private final ToppingForDrinkInOrderMapper toppingForDrinkInOrderMapper;
+    private final DrinkEntityRepository drinkEntityRepository;
 
     @Override
     public DrinkOrderDto toDto(DrinkOrderEntity entity) {
@@ -22,7 +24,6 @@ public class DrinkOrderMapper implements AbstractMapper<DrinkOrderEntity, DrinkO
         } else {
             DrinkOrderDto drinkOrderDto = new DrinkOrderDto();
             drinkOrderDto.setDrink(drinkMapper.toDto(entity.getDrink()));
-            drinkOrderDto.setOrder(orderMapper.toDto(entity.getOrder()));
             drinkOrderDto.setQuantity(entity.getQuantity());
             drinkOrderDto.setToppings(entity.getToppings()
                     .stream()
@@ -38,13 +39,19 @@ public class DrinkOrderMapper implements AbstractMapper<DrinkOrderEntity, DrinkO
             return null;
         } else {
             DrinkOrderEntity drinkOrderEntity = new DrinkOrderEntity();
-            drinkOrderEntity.setDrink(drinkMapper.toEntity(dto.getDrink()));
-            drinkOrderEntity.setOrder(orderMapper.toEntity(dto.getOrder()));
+            drinkOrderEntity.setDrink(drinkEntityRepository.getOne(dto.getDrink().getId()));
             drinkOrderEntity.setQuantity(dto.getQuantity());
-            drinkOrderEntity.setToppings(dto.getToppings()
+            dto.getToppings()
                     .stream()
                     .map(toppingForDrinkInOrderMapper::toEntity)
-                    .collect(Collectors.toList()));
+                    .peek(topping -> {
+                        ToppingForDrinkInOrderId id = new ToppingForDrinkInOrderId(
+                                drinkOrderEntity.getId(),
+                                topping.getTopping().getId()
+                        );
+                        topping.setId(id);
+                    })
+                    .forEach(drinkOrderEntity::addTopping);
             return drinkOrderEntity;
         }
     }

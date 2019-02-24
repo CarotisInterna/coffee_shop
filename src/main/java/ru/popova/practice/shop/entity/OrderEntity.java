@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,8 +53,12 @@ public class OrderEntity extends AbstractCoffeeShopEntity<Integer>{
     /**
      *список напитков в заказе
      */
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
-    private List<DrinkOrderEntity> drinks;
+    @OneToMany(mappedBy = "order",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<DrinkOrderEntity> drinks = new ArrayList<>();
 
+    public void addDrink(DrinkOrderEntity drinkOrder) {
+        drinkOrder.setOrder(this);
+        drinks.add(drinkOrder);
+    }
 
 }
