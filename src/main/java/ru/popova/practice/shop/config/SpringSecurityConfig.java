@@ -27,6 +27,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/api/drinks/**", "/api/categories/**", "/api/toppings", "/api/drinks", "/api/categories", "/api/toppings/**")
                 .permitAll()
+                .antMatchers("/api/cart", "/api/cart/**").hasAnyRole(RoleCode.VENDOR.toString(), RoleCode.USER.toString())
                 .antMatchers(HttpMethod.POST, "/api/drinks", "/api/categories", "/api/toppings").hasRole(RoleCode.VENDOR.toString())
                 .antMatchers(HttpMethod.PUT, "/api/drinks", "/api/categories", "/api/toppings").hasRole(RoleCode.VENDOR.toString())
                 .antMatchers(HttpMethod.DELETE, "/api/drinks", "/api/categories", "/api/toppings").hasRole(RoleCode.VENDOR.toString())
