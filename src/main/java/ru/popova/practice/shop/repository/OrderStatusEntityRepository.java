@@ -5,5 +5,5 @@ import ru.popova.practice.shop.entity.OrderStatusEntity;
 import ru.popova.practice.shop.entity.code.OrderStatusCode;
 
 public interface OrderStatusEntityRepository extends JpaRepository<OrderStatusEntity, OrderStatusCode> {
-    OrderStatusEntity findOrderStatusEntityByOrderStatusCode(OrderStatusCode orderStatusCode);
+    OrderStatusEntity findOrderStatusEntityByCode(OrderStatusCode code);
 }
