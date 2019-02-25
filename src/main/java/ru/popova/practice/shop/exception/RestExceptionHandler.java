@@ -59,6 +59,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDto(e.getObjectName(), e.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(InvalidOperationException.class)
+    public ResponseEntity<ErrorDto> handleInvalidOperationException(InvalidOperationException e) {
+        return new ResponseEntity<>(errorDto(e.getObjectName(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
 
     private ErrorDto errorDto(String objectName, String message) {
         return new ErrorDto(objectName, message);
