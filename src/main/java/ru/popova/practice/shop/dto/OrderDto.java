@@ -20,5 +20,4 @@ public class OrderDto {
     private String address;
     private LocalDateTime date;
     private List<DrinkOrderDto> drinks;
-
 }

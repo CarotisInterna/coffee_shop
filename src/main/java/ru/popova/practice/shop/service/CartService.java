@@ -9,12 +9,13 @@ import ru.popova.practice.shop.dto.OrderDto;
 import ru.popova.practice.shop.entity.*;
 import ru.popova.practice.shop.entity.code.OrderStatusCode;
 import ru.popova.practice.shop.exception.InvalidOperationException;
-import ru.popova.practice.shop.mapper.AppUserMapper;
+import ru.popova.practice.shop.exception.NotFoundException;
 import ru.popova.practice.shop.mapper.DrinkOrderMapper;
 import ru.popova.practice.shop.mapper.OrderMapper;
 import ru.popova.practice.shop.repository.DrinkOrderEntityRepository;
 import ru.popova.practice.shop.repository.OrderEntityRepository;
 import ru.popova.practice.shop.repository.OrderStatusEntityRepository;
+import ru.popova.practice.shop.repository.ToppingForDrinkInOrderEntityRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -31,6 +32,7 @@ public class CartService {
     private final OrderEntityRepository orderEntityRepository;
     private final OrderStatusEntityRepository orderStatusEntityRepository;
     private final DrinkOrderEntityRepository drinkOrderEntityRepository;
+    private final ToppingForDrinkInOrderEntityRepository toppingForDrinkInOrderEntityRepository;
     private final MessageSourceDecorator message;
 
     /**
@@ -68,6 +70,40 @@ public class CartService {
     public void deleteProductFromCart(Integer drinkOrderId) {
         OrderEntity cart = getCurrentUserCartEntity().orElseThrow(() -> new InvalidOperationException("cart", message.getMessage("CartIsEmpty.message")));
         drinkOrderEntityRepository.findById(drinkOrderId).ifPresent(drinkOrderEntityRepository::delete);
+    }
+
+    /**
+     * Редакетирование напитка в корзине
+     *
+     * @param drinkOrderDto дто напитка в корзине
+     * @param drinkOrderId  идентификатор напитка в корзине
+     * @return отредактированный напиток в корзине
+     */
+    @Transactional
+    public OrderDto editCart(DrinkOrderDto drinkOrderDto, Integer drinkOrderId) {
+
+        Optional<DrinkOrderEntity> found = drinkOrderEntityRepository.findById(drinkOrderId);
+
+        if (!found.isPresent()) {
+            throw new NotFoundException(message.getMessage("DrinkOrderNotFound.message"));
+        }
+
+        DrinkOrderEntity newInfo = drinkOrderMapper.toEntity(drinkOrderDto);
+        DrinkOrderEntity old = found.get();
+
+        old.setQuantity(newInfo.getQuantity());
+        for (ToppingForDrinkInOrderEntity topping : newInfo.getToppings()) {
+            ToppingForDrinkInOrderEntity savedTopping = toppingForDrinkInOrderEntityRepository.getOne(new ToppingForDrinkInOrderId(drinkOrderId, topping.getId().getToppingId()));
+            savedTopping.setQuantity(topping.getQuantity());
+            toppingForDrinkInOrderEntityRepository.save(savedTopping);
+        }
+
+        drinkOrderEntityRepository.save(old);
+
+        OrderEntity cart = getCurrentUserCartEntity().get();
+        setTotalInOrder(cart);
+        OrderEntity edited = orderEntityRepository.save(cart);
+        return orderMapper.toDto(edited);
     }
 
     /**
@@ -126,6 +162,18 @@ public class CartService {
         }
 
         order.setTotal(total);
+    }
+
+    /**
+     * Получение напитка в корзине по идентификатору
+     *
+     * @param id идентификатор напитка в корзине
+     * @return дто напитка в корзине
+     */
+    @Transactional
+    public Optional<DrinkOrderDto> getDrinkOrderById(Integer id) {
+        return drinkOrderEntityRepository.findById(id)
+                .map(drinkOrderMapper::toDto);
     }
 
 }

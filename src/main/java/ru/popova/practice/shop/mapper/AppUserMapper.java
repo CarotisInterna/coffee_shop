@@ -9,11 +9,13 @@ public class AppUserMapper implements AbstractMapper<AppUserEntity, AppUserDto> 
 
     @Override
     public AppUserDto toDto(AppUserEntity appUserEntity) {
+
         if (appUserEntity == null) {
             return null;
         }
 
         AppUserDto appUser = new AppUserDto();
+        appUser.setId(appUserEntity.getId());
         appUser.setUsername(appUserEntity.getUsername());
         appUser.setPassword(appUserEntity.getPassword());
         appUser.setAddress(appUserEntity.getAddress());
