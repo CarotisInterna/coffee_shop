@@ -16,6 +16,7 @@ import ru.popova.practice.shop.repository.DrinkOrderEntityRepository;
 import ru.popova.practice.shop.repository.OrderEntityRepository;
 import ru.popova.practice.shop.repository.OrderStatusEntityRepository;
 import ru.popova.practice.shop.repository.ToppingForDrinkInOrderEntityRepository;
+import ru.popova.practice.shop.util.ActionStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -70,6 +71,7 @@ public class CartService {
     public void deleteProductFromCart(Integer drinkOrderId) {
         OrderEntity cart = getCurrentUserCartEntity().orElseThrow(() -> new InvalidOperationException("cart", message.getMessage("CartIsEmpty.message")));
         drinkOrderEntityRepository.findById(drinkOrderId).ifPresent(drinkOrderEntityRepository::delete);
+        setTotalInOrder(cart);
     }
 
     /**
@@ -104,6 +106,62 @@ public class CartService {
         setTotalInOrder(cart);
         OrderEntity edited = orderEntityRepository.save(cart);
         return orderMapper.toDto(edited);
+    }
+
+    /**
+     * Размещение заказа
+     *
+     * @param orderDto дто заказа
+     * @return дто размещенного заказа
+     */
+    public OrderDto placeOrder(OrderDto orderDto) {
+        return changeOrderStatus(orderDto, ActionStatus.PLACE);
+    }
+
+    /**
+     * Отмена заказа
+     *
+     * @param orderDto дто заказа
+     * @return дто отмененного заказа
+     */
+    public OrderDto rejectOrder(OrderDto orderDto) {
+        return changeOrderStatus(orderDto, ActionStatus.REJECT);
+    }
+
+    /**
+     * Доставка заказа
+     *
+     * @param orderDto дто заказа
+     * @return дто доставленного заказа
+     */
+    public OrderDto deliverOrder(OrderDto orderDto) {
+        return changeOrderStatus(orderDto, ActionStatus.DELIVER);
+    }
+
+    /**
+     * Изменение статуса заказа
+     *
+     * @param orderDto дто заказа
+     * @return дто заказа с измененным статусом
+     */
+    @Transactional
+    public OrderDto changeOrderStatus(OrderDto orderDto, ActionStatus action) {
+
+        OrderStatusCode currentCode = OrderStatusCode.valueOf(orderDto.getOrderStatus());
+        OrderStatusCode newCode = getNewOrderStatus(action, currentCode);
+
+        Optional<DrinkOrderEntity> found = drinkOrderEntityRepository.findById(orderDto.getId());
+
+        if (!found.isPresent()) {
+            throw new NotFoundException(message.getMessage("DrinkOrderNotFound.message"));
+        }
+
+        orderDto.setOrderStatus(newCode.name());
+        OrderEntity order = orderMapper.toEntity(orderDto);
+        setTotalInOrder(order);
+        OrderEntity changed = orderEntityRepository.save(order);
+        return orderMapper.toDto(changed);
+
     }
 
     /**
@@ -174,6 +232,48 @@ public class CartService {
     public Optional<DrinkOrderDto> getDrinkOrderById(Integer id) {
         return drinkOrderEntityRepository.findById(id)
                 .map(drinkOrderMapper::toDto);
+    }
+
+    /**
+     * Изменение статуса заказа
+     *
+     * @param action          действие, в результате которого статус заказа планируется быть измененным
+     * @param orderStatusCode код текущего статуса заказа
+     * @return код нового статуса заказа
+     */
+    private OrderStatusCode getNewOrderStatus(ActionStatus action, OrderStatusCode orderStatusCode) {
+        OrderStatusCode newOrderStatusCode;
+        switch (orderStatusCode) {
+            case IN_CART:
+                if (action == ActionStatus.PLACE) {
+                    newOrderStatusCode = OrderStatusCode.PLACED;
+                } else if (action == ActionStatus.DELIVER) {
+                    throw new InvalidOperationException("order", message.getMessage("InvalidDeliverAction.message"));
+                } else if (action == ActionStatus.REJECT) {
+                    throw new InvalidOperationException("order", message.getMessage("InvalidRejectAction.message"));
+                } else {
+                    throw new InvalidOperationException("order", message.getMessage("UnknownAction.message"));
+                }
+                break;
+            case PLACED:
+                if (action == ActionStatus.REJECT) {
+                    newOrderStatusCode = OrderStatusCode.REJECTED;
+                } else if (action == ActionStatus.DELIVER) {
+                    newOrderStatusCode = OrderStatusCode.DELIVERED;
+                } else if (action == ActionStatus.PLACE) {
+                    throw new InvalidOperationException("order", message.getMessage("InvalidPlaceAction.message"));
+                } else {
+                    throw new InvalidOperationException("order", message.getMessage("UnknownAction.message"));
+                }
+                break;
+            case REJECTED:
+                throw new InvalidOperationException("order", message.getMessage("RejectedOrder.message"));
+            case DELIVERED:
+                throw new InvalidOperationException("order", message.getMessage("DeliveredOrder.message"));
+            default:
+                throw new InvalidOperationException("order", message.getMessage("UnknownStatus.message"));
+        }
+        return newOrderStatusCode;
     }
 
 }
