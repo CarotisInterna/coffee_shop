@@ -23,7 +23,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<?> handleNotFoundException(NotFoundException e) {
-        if (e.getListErrorDto().getErrorDtos().isEmpty()) {
+        if (e.getListErrorDto() == null || e.getListErrorDto().getErrorDtos().isEmpty()) {
+            if (e.getObjectName() == null) {
+                return new ResponseEntity<>((e.getMessage()), HttpStatus.NOT_FOUND);
+            }
             return new ResponseEntity<>(errorDto(e.getObjectName(), e.getMessage()), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(e.getListErrorDto(), HttpStatus.NOT_FOUND);

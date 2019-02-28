@@ -36,6 +36,9 @@ public class CartService {
     private final ToppingForDrinkInOrderEntityRepository toppingForDrinkInOrderEntityRepository;
     private final MessageSourceDecorator message;
 
+    private final String UNKNOWN_ACTION = "UnknownAction.message";
+    private final String ORDER_OBJECT = "order";
+
     /**
      * Получение корзины текущего пользователя
      *
@@ -115,49 +118,61 @@ public class CartService {
      * @return дто размещенного заказа
      */
     public OrderDto placeOrder(OrderDto orderDto) {
-        return changeOrderStatus(orderDto, ActionStatus.PLACE);
+
+        Integer orderId = orderDto.getId();
+        String address = orderDto.getAddress();
+        return changeOrderStatus(orderId, ActionStatus.PLACE, address);
+
     }
 
     /**
      * Отмена заказа
      *
-     * @param orderDto дто заказа
+     * @param orderId идентификатор заказа
      * @return дто отмененного заказа
      */
-    public OrderDto rejectOrder(OrderDto orderDto) {
-        return changeOrderStatus(orderDto, ActionStatus.REJECT);
+    public OrderDto rejectOrder(Integer orderId) {
+        return changeOrderStatus(orderId, ActionStatus.REJECT, null);
     }
 
     /**
      * Доставка заказа
      *
-     * @param orderDto дто заказа
+     * @param orderId идентификатор заказа
      * @return дто доставленного заказа
      */
-    public OrderDto deliverOrder(OrderDto orderDto) {
-        return changeOrderStatus(orderDto, ActionStatus.DELIVER);
+    public OrderDto deliverOrder(Integer orderId) {
+        return changeOrderStatus(orderId, ActionStatus.DELIVER, null);
     }
 
     /**
      * Изменение статуса заказа
      *
-     * @param orderDto дто заказа
+     * @param id      идентификатор заказа
+     * @param action  действие, которое необходимо сделать с заказом
+     * @param address адрес доставки
      * @return дто заказа с измененным статусом
      */
     @Transactional
-    public OrderDto changeOrderStatus(OrderDto orderDto, ActionStatus action) {
+    public OrderDto changeOrderStatus(Integer id, ActionStatus action, String address) {
 
-        OrderStatusCode currentCode = OrderStatusCode.valueOf(orderDto.getOrderStatus());
-        OrderStatusCode newCode = getNewOrderStatus(action, currentCode);
-
-        Optional<DrinkOrderEntity> found = drinkOrderEntityRepository.findById(orderDto.getId());
+        Optional<OrderEntity> found = orderEntityRepository.findById(id);
 
         if (!found.isPresent()) {
-            throw new NotFoundException(message.getMessage("DrinkOrderNotFound.message"));
+            throw new NotFoundException(message.getMessage("OrderNotFound.message"));
         }
 
-        orderDto.setOrderStatus(newCode.name());
-        OrderEntity order = orderMapper.toEntity(orderDto);
+        OrderEntity order = found.get();
+
+        OrderStatusCode currentCode = order.getOrderStatus().getCode();
+
+        OrderStatusCode newCode = getNewOrderStatus(action, currentCode);
+
+        order.setOrderStatus(orderStatusEntityRepository.findOrderStatusEntityByCode(newCode));
+        if (action == ActionStatus.PLACE) {
+            order.setDate(LocalDateTime.now());
+            order.setAddress(address);
+        }
         setTotalInOrder(order);
         OrderEntity changed = orderEntityRepository.save(order);
         return orderMapper.toDto(changed);
@@ -223,18 +238,6 @@ public class CartService {
     }
 
     /**
-     * Получение напитка в корзине по идентификатору
-     *
-     * @param id идентификатор напитка в корзине
-     * @return дто напитка в корзине
-     */
-    @Transactional
-    public Optional<DrinkOrderDto> getDrinkOrderById(Integer id) {
-        return drinkOrderEntityRepository.findById(id)
-                .map(drinkOrderMapper::toDto);
-    }
-
-    /**
      * Изменение статуса заказа
      *
      * @param action          действие, в результате которого статус заказа планируется быть измененным
@@ -248,11 +251,11 @@ public class CartService {
                 if (action == ActionStatus.PLACE) {
                     newOrderStatusCode = OrderStatusCode.PLACED;
                 } else if (action == ActionStatus.DELIVER) {
-                    throw new InvalidOperationException("order", message.getMessage("InvalidDeliverAction.message"));
+                    throw new InvalidOperationException(ORDER_OBJECT, message.getMessage("InvalidDeliverAction.message"));
                 } else if (action == ActionStatus.REJECT) {
-                    throw new InvalidOperationException("order", message.getMessage("InvalidRejectAction.message"));
+                    throw new InvalidOperationException(ORDER_OBJECT, message.getMessage("InvalidRejectAction.message"));
                 } else {
-                    throw new InvalidOperationException("order", message.getMessage("UnknownAction.message"));
+                    throw new InvalidOperationException(ORDER_OBJECT, message.getMessage(UNKNOWN_ACTION));
                 }
                 break;
             case PLACED:
@@ -261,17 +264,17 @@ public class CartService {
                 } else if (action == ActionStatus.DELIVER) {
                     newOrderStatusCode = OrderStatusCode.DELIVERED;
                 } else if (action == ActionStatus.PLACE) {
-                    throw new InvalidOperationException("order", message.getMessage("InvalidPlaceAction.message"));
+                    throw new InvalidOperationException(ORDER_OBJECT, message.getMessage("InvalidPlaceAction.message"));
                 } else {
-                    throw new InvalidOperationException("order", message.getMessage("UnknownAction.message"));
+                    throw new InvalidOperationException(ORDER_OBJECT, message.getMessage(UNKNOWN_ACTION));
                 }
                 break;
             case REJECTED:
-                throw new InvalidOperationException("order", message.getMessage("RejectedOrder.message"));
+                throw new InvalidOperationException(ORDER_OBJECT, message.getMessage("RejectedOrder.message"));
             case DELIVERED:
-                throw new InvalidOperationException("order", message.getMessage("DeliveredOrder.message"));
+                throw new InvalidOperationException(ORDER_OBJECT, message.getMessage("DeliveredOrder.message"));
             default:
-                throw new InvalidOperationException("order", message.getMessage("UnknownStatus.message"));
+                throw new InvalidOperationException(ORDER_OBJECT, message.getMessage(UNKNOWN_ACTION));
         }
         return newOrderStatusCode;
     }
