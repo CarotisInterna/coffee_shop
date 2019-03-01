@@ -132,7 +132,7 @@ public class CartService {
      * @return дто отмененного заказа
      */
     public OrderDto rejectOrder(Integer orderId) {
-        return changeOrderStatus(orderId, ActionStatus.REJECT, null);
+        return changeOrderStatus(orderId, ActionStatus.REJECT);
     }
 
     /**
@@ -142,7 +142,7 @@ public class CartService {
      * @return дто доставленного заказа
      */
     public OrderDto deliverOrder(Integer orderId) {
-        return changeOrderStatus(orderId, ActionStatus.DELIVER, null);
+        return changeOrderStatus(orderId, ActionStatus.DELIVER);
     }
 
     /**
@@ -172,11 +172,22 @@ public class CartService {
         if (action == ActionStatus.PLACE) {
             order.setDate(LocalDateTime.now());
             order.setAddress(address);
+            setTotalInOrder(order);
         }
-        setTotalInOrder(order);
         OrderEntity changed = orderEntityRepository.save(order);
         return orderMapper.toDto(changed);
+    }
 
+    /**
+     * Изменение статуса заказа
+     *
+     * @param id     идентификатор заказа
+     * @param action действие, которое необходимо сделать с заказом
+     * @return дто заказа с измененным статусом
+     */
+    @Transactional
+    public OrderDto changeOrderStatus(Integer id, ActionStatus action) {
+        return changeOrderStatus(id, action, null);
     }
 
     /**
