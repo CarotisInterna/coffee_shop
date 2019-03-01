@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
 import ru.popova.practice.shop.config.messages.MessageSourceDecorator;
 import ru.popova.practice.shop.dto.DrinkDto;
 import ru.popova.practice.shop.dto.ListErrorDto;
@@ -17,9 +16,7 @@ import ru.popova.practice.shop.entity.CategoryEntity;
 import ru.popova.practice.shop.entity.CategoryEntity_;
 import ru.popova.practice.shop.entity.DrinkEntity;
 import ru.popova.practice.shop.entity.DrinkEntity_;
-import ru.popova.practice.shop.exception.NotAllowedException;
 import ru.popova.practice.shop.exception.NotFoundException;
-import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.mapper.DrinkMapper;
 import ru.popova.practice.shop.mapper.NewDrinkMapper;
 import ru.popova.practice.shop.mapper.PageMapper;
@@ -35,6 +32,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static ru.popova.practice.shop.util.MessageConstants.CATEGORY_NOT_FOUND;
+import static ru.popova.practice.shop.util.MessageConstants.DRINK_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -123,7 +123,7 @@ public class DrinkService {
         Optional<DrinkDto> saved = getDrinkById(id);
 
         if (!saved.isPresent()) {
-            throw new NotFoundException(messageSourceDecorator.getMessage("DrinkNotFound.message"));
+            throw new NotFoundException(messageSourceDecorator.getMessage(DRINK_NOT_FOUND));
         }
 
         ListErrorDto listErrorDto = new ListErrorDto();
@@ -195,7 +195,7 @@ public class DrinkService {
     public void checkIfCategoriesPresent(NewDrinkDto newDrinkDto, ListErrorDto listErrorDto) {
         for (Integer categoryId : newDrinkDto.getCategories()) {
             if (!getCategoryEntity(categoryId).isPresent()) {
-                listErrorDto.addErrorDto("categories", categoryId + " " + messageSourceDecorator.getMessage("CategoryNotFound.message"));
+                listErrorDto.addErrorDto("categories", categoryId + " " + messageSourceDecorator.getMessage(CATEGORY_NOT_FOUND));
             }
         }
 

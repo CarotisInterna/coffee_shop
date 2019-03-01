@@ -23,6 +23,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static ru.popova.practice.shop.util.MessageConstants.*;
+import static ru.popova.practice.shop.util.ObjectConstants.ORDER_OBJECT;
+
 @Service
 @RequiredArgsConstructor
 public class CartService {
@@ -35,9 +38,6 @@ public class CartService {
     private final DrinkOrderEntityRepository drinkOrderEntityRepository;
     private final ToppingForDrinkInOrderEntityRepository toppingForDrinkInOrderEntityRepository;
     private final MessageSourceDecorator message;
-
-    private final String UNKNOWN_ACTION = "UnknownAction.message";
-    private final String ORDER_OBJECT = "order";
 
     /**
      * Получение корзины текущего пользователя
@@ -72,7 +72,7 @@ public class CartService {
      */
     @Transactional
     public void deleteProductFromCart(Integer drinkOrderId) {
-        OrderEntity cart = getCurrentUserCartEntity().orElseThrow(() -> new InvalidOperationException("cart", message.getMessage("CartIsEmpty.message")));
+        OrderEntity cart = getCurrentUserCartEntity().orElseThrow(() -> new InvalidOperationException("cart", message.getMessage(CART_IS_EMPTY)));
         drinkOrderEntityRepository.findById(drinkOrderId).ifPresent(drinkOrderEntityRepository::delete);
         setTotalInOrder(cart);
     }
@@ -90,7 +90,7 @@ public class CartService {
         Optional<DrinkOrderEntity> found = drinkOrderEntityRepository.findById(drinkOrderId);
 
         if (!found.isPresent()) {
-            throw new NotFoundException(message.getMessage("DrinkOrderNotFound.message"));
+            throw new NotFoundException(message.getMessage(DRINK_ORDER_NOT_FOUND));
         }
 
         DrinkOrderEntity newInfo = drinkOrderMapper.toEntity(drinkOrderDto);
@@ -159,7 +159,7 @@ public class CartService {
         Optional<OrderEntity> found = orderEntityRepository.findById(id);
 
         if (!found.isPresent()) {
-            throw new NotFoundException(message.getMessage("OrderNotFound.message"));
+            throw new NotFoundException(message.getMessage(ORDER_NOT_FOUND));
         }
 
         OrderEntity order = found.get();
@@ -262,9 +262,9 @@ public class CartService {
                 if (action == ActionStatus.PLACE) {
                     newOrderStatusCode = OrderStatusCode.PLACED;
                 } else if (action == ActionStatus.DELIVER) {
-                    throw new InvalidOperationException(ORDER_OBJECT, message.getMessage("InvalidDeliverAction.message"));
+                    throw new InvalidOperationException(ORDER_OBJECT, message.getMessage(INVALID_DELIVER_ACTION));
                 } else if (action == ActionStatus.REJECT) {
-                    throw new InvalidOperationException(ORDER_OBJECT, message.getMessage("InvalidRejectAction.message"));
+                    throw new InvalidOperationException(ORDER_OBJECT, message.getMessage(INVALID_REJECT_ACTION));
                 } else {
                     throw new InvalidOperationException(ORDER_OBJECT, message.getMessage(UNKNOWN_ACTION));
                 }
@@ -275,15 +275,15 @@ public class CartService {
                 } else if (action == ActionStatus.DELIVER) {
                     newOrderStatusCode = OrderStatusCode.DELIVERED;
                 } else if (action == ActionStatus.PLACE) {
-                    throw new InvalidOperationException(ORDER_OBJECT, message.getMessage("InvalidPlaceAction.message"));
+                    throw new InvalidOperationException(ORDER_OBJECT, message.getMessage(INVALID_PLACE_ACTION));
                 } else {
                     throw new InvalidOperationException(ORDER_OBJECT, message.getMessage(UNKNOWN_ACTION));
                 }
                 break;
             case REJECTED:
-                throw new InvalidOperationException(ORDER_OBJECT, message.getMessage("RejectedOrder.message"));
+                throw new InvalidOperationException(ORDER_OBJECT, message.getMessage(REJECT_ORDER));
             case DELIVERED:
-                throw new InvalidOperationException(ORDER_OBJECT, message.getMessage("DeliveredOrder.message"));
+                throw new InvalidOperationException(ORDER_OBJECT, message.getMessage(DELIVER_ORDER));
             default:
                 throw new InvalidOperationException(ORDER_OBJECT, message.getMessage(UNKNOWN_ACTION));
         }

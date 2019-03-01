@@ -14,6 +14,8 @@ import ru.popova.practice.shop.repository.CategoryEntityRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.popova.practice.shop.util.MessageConstants.CATEGORY_NOT_FOUND;
+
 @Component
 public class DrinkMapper implements AbstractMapper<DrinkEntity, DrinkDto> {
 
@@ -73,7 +75,7 @@ public class DrinkMapper implements AbstractMapper<DrinkEntity, DrinkDto> {
             for (String c : categories) {
                 CategoryEntity category = categoryEntityRepository.findCategoryEntityByName(c);
                 if (category == null) {
-                    throw new NotFoundException("categories", messageSourceDecorator.getMessage("CategoryNotFound.message"));
+                    throw new NotFoundException("categories", messageSourceDecorator.getMessage(CATEGORY_NOT_FOUND));
                 }
 
                 drink.getCategories().add(category);

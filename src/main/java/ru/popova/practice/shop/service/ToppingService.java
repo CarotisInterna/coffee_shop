@@ -19,6 +19,9 @@ import ru.popova.practice.shop.repository.ToppingEntityRepository;
 
 import java.util.Optional;
 
+import static ru.popova.practice.shop.util.MessageConstants.TOPPING_NOT_FOUND;
+import static ru.popova.practice.shop.util.MessageConstants.TOPPING_UNIQUE;
+
 @Service
 @RequiredArgsConstructor
 public class ToppingService {
@@ -54,7 +57,7 @@ public class ToppingService {
         Optional<ToppingDto> saved = getToppingById(id);
 
         if (!saved.isPresent()) {
-            throw new NotFoundException(messageSourceDecorator.getMessage("ToppingNotFound.message"));
+            throw new NotFoundException(messageSourceDecorator.getMessage(TOPPING_NOT_FOUND));
         }
 
         ToppingEntity toppingEntity = toppingMapper.toEntity(toppingDto);
@@ -74,7 +77,7 @@ public class ToppingService {
         ListErrorDto listErrorDto = new ListErrorDto();
 
         if (getToppingByName(toppingDto.getName()) != null) {
-            listErrorDto.addErrorDto("name", messageSourceDecorator.getMessage("ToppingUnique.message"));
+            listErrorDto.addErrorDto("name", messageSourceDecorator.getMessage(TOPPING_UNIQUE));
         }
 
         return listErrorDto;

@@ -17,6 +17,8 @@ import ru.popova.practice.shop.repository.AppUserEntityRepository;
 
 import java.util.stream.Stream;
 
+import static ru.popova.practice.shop.util.MessageConstants.AUTHENTICATION_REQUIRED;
+
 @Service
 @RequiredArgsConstructor
 public class SecurityService {
@@ -40,7 +42,7 @@ public class SecurityService {
      */
     public void checkAuthenticateUser() {
         if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
-            throw new AuthenticationFailedException("user", messageSourceDecorator.getMessage("AuthenticationRequired.message"));
+            throw new AuthenticationFailedException("user", messageSourceDecorator.getMessage(AUTHENTICATION_REQUIRED));
         }
     }
 
@@ -52,7 +54,7 @@ public class SecurityService {
     public String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken) {
-            throw new AuthenticationFailedException("user",  messageSourceDecorator.getMessage("AuthenticationRequired.message"));
+            throw new AuthenticationFailedException("user",  messageSourceDecorator.getMessage(AUTHENTICATION_REQUIRED));
         } else {
             return authentication.getName();
         }

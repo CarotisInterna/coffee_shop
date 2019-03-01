@@ -21,6 +21,8 @@ import ru.popova.practice.shop.mapper.NewAppUserMapper;
 import ru.popova.practice.shop.repository.AppUserEntityRepository;
 import ru.popova.practice.shop.service.security.SecurityService;
 
+import static ru.popova.practice.shop.util.MessageConstants.*;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -85,7 +87,7 @@ public class AppUserService {
         ListErrorDto listErrorDto = new ListErrorDto();
 
         if (!newAppUserDto.getPassword().equals(newAppUserDto.getConfirmPassword())) {
-            listErrorDto.addErrorDto("confirmPassword", messageSourceDecorator.getMessage("ConfirmPassword.message"));
+            listErrorDto.addErrorDto("confirmPassword", messageSourceDecorator.getMessage(CONFIRM_PASSWORD));
         }
 
         if (bindingResult.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
@@ -116,12 +118,12 @@ public class AppUserService {
         String name = appUserLoginDto.getUsername();
         AppUserDto appUserByUsername = getAppUserByUsername(name);
         if (appUserByUsername == null) {
-            throw new UsernameNotFoundException(messageSourceDecorator.getMessage("UsernameNotFoundException.message"));
+            throw new UsernameNotFoundException(messageSourceDecorator.getMessage(USERNAME_NOT_FOUND));
         }
 
         String password = appUserLoginDto.getPassword();
         if (!passwordEncoder.matches(password, appUserByUsername.getPassword())) {
-            throw new PasswordMismatchException("password", messageSourceDecorator.getMessage("Password.message"));
+            throw new PasswordMismatchException("password", messageSourceDecorator.getMessage(PASSWORD));
         }
     }
 

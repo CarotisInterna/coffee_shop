@@ -20,6 +20,8 @@ import ru.popova.practice.shop.repository.CategoryEntityRepository;
 
 import java.util.Optional;
 
+import static ru.popova.practice.shop.util.MessageConstants.*;
+
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
@@ -56,7 +58,7 @@ public class CategoryService {
         Optional<CategoryDto> saved = getCategoryById(id);
 
         if (!saved.isPresent()) {
-            throw new NotFoundException(messageSourceDecorator.getMessage("CategoryNotFound.message"));
+            throw new NotFoundException(messageSourceDecorator.getMessage(CATEGORY_NOT_FOUND));
         }
 
         CategoryEntity categoryEntity = categoryMapper.toEntity(categoryDto);
@@ -76,7 +78,7 @@ public class CategoryService {
         ListErrorDto listErrorDto = new ListErrorDto();
 
         if (getCategoryByName(categoryDto.getName()) != null) {
-            listErrorDto.addErrorDto("name", messageSourceDecorator.getMessage("CategoryUnique.message"));
+            listErrorDto.addErrorDto("name", messageSourceDecorator.getMessage(CATEGORY_UNIQUE));
         }
 
         return listErrorDto;
@@ -90,7 +92,7 @@ public class CategoryService {
     @Transactional
     public void deleteCategory(Integer id) {
         if (!drinkService.getDrinksByCategory(id).isEmpty()) {
-            throw new NotAllowedException("category", messageSourceDecorator.getMessage("DrinkWithThisCategoryExists.message"));
+            throw new NotAllowedException("category", messageSourceDecorator.getMessage(DRINK_WITH_THIS_CATEGORY_EXISTS));
         }
         categoryEntityRepository.findById(id).ifPresent(categoryEntityRepository::delete);
     }
