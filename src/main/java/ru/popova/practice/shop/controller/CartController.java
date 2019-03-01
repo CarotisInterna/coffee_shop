@@ -49,12 +49,12 @@ public class CartController {
     /**
      * Удаление напитка из корзины
      *
-     * @param id идентификатор напитка в заказе
+     * @param drinkOrderId идентификатор напитка в заказе
      * @return статус
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteDrinkFromCart(@PathVariable Integer id) {
-        cartService.deleteProductFromCart(id);
+    @DeleteMapping("/{drinkOrderId}")
+    public ResponseEntity deleteDrinkFromCart(@PathVariable Integer drinkOrderId) {
+        cartService.deleteProductFromCart(drinkOrderId);
         return ResponseEntity.ok().build();
     }
 

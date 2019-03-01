@@ -56,7 +56,7 @@ public class AppUserController {
     }
 
     @GetMapping("/account")
-    public ResponseEntity<AppUserDto> getUsername() {
+    public ResponseEntity<AppUserDto> getUser() {
         return ResponseEntity.ok(appUserService.getCurrentUser());
     }
 }
