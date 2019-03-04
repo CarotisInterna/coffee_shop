@@ -16,7 +16,7 @@ import ru.popova.practice.shop.repository.DrinkOrderEntityRepository;
 import ru.popova.practice.shop.repository.OrderEntityRepository;
 import ru.popova.practice.shop.repository.OrderStatusEntityRepository;
 import ru.popova.practice.shop.repository.ToppingForDrinkInOrderEntityRepository;
-import ru.popova.practice.shop.util.ActionStatus;
+import ru.popova.practice.shop.util.OrderAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -60,7 +60,7 @@ public class CartService {
     public OrderDto addProductToCart(DrinkOrderDto drinkOrderDto) {
         OrderEntity cart = getCurrentUserCartEntity().orElse(getEmptyCartEntity());
         cart.addDrink(drinkOrderMapper.toEntity(drinkOrderDto));
-        setTotalInOrder(cart);
+        cart.setTotal(calculateTotal(cart));
         OrderEntity saved = orderEntityRepository.save(cart);
         return orderMapper.toDto(saved);
     }
@@ -74,7 +74,7 @@ public class CartService {
     public void deleteProductFromCart(Integer drinkOrderId) {
         OrderEntity cart = getCurrentUserCartEntity().orElseThrow(() -> new InvalidOperationException("cart", message.getMessage(CART_IS_EMPTY)));
         drinkOrderEntityRepository.findById(drinkOrderId).ifPresent(drinkOrderEntityRepository::delete);
-        setTotalInOrder(cart);
+        cart.setTotal(calculateTotal(cart));
     }
 
     /**
@@ -106,7 +106,7 @@ public class CartService {
         drinkOrderEntityRepository.save(old);
 
         OrderEntity cart = getCurrentUserCartEntity().get();
-        setTotalInOrder(cart);
+        cart.setTotal(calculateTotal(cart));
         OrderEntity edited = orderEntityRepository.save(cart);
         return orderMapper.toDto(edited);
     }
@@ -121,7 +121,7 @@ public class CartService {
 
         Integer orderId = orderDto.getId();
         String address = orderDto.getAddress();
-        return changeOrderStatus(orderId, ActionStatus.PLACE, address);
+        return changeOrderStatus(orderId, OrderAction.PLACE, address);
 
     }
 
@@ -132,7 +132,7 @@ public class CartService {
      * @return дто отмененного заказа
      */
     public OrderDto rejectOrder(Integer orderId) {
-        return changeOrderStatus(orderId, ActionStatus.REJECT);
+        return changeOrderStatus(orderId, OrderAction.REJECT);
     }
 
     /**
@@ -142,7 +142,7 @@ public class CartService {
      * @return дто доставленного заказа
      */
     public OrderDto deliverOrder(Integer orderId) {
-        return changeOrderStatus(orderId, ActionStatus.DELIVER);
+        return changeOrderStatus(orderId, OrderAction.DELIVER);
     }
 
     /**
@@ -154,7 +154,7 @@ public class CartService {
      * @return дто заказа с измененным статусом
      */
     @Transactional
-    public OrderDto changeOrderStatus(Integer id, ActionStatus action, String address) {
+    public OrderDto changeOrderStatus(Integer id, OrderAction action, String address) {
 
         Optional<OrderEntity> found = orderEntityRepository.findById(id);
 
@@ -169,10 +169,10 @@ public class CartService {
         OrderStatusCode newCode = getNewOrderStatus(action, currentCode);
 
         order.setOrderStatus(orderStatusEntityRepository.findOrderStatusEntityByCode(newCode));
-        if (action == ActionStatus.PLACE) {
+        if (action == OrderAction.PLACE) {
             order.setDate(LocalDateTime.now());
             order.setAddress(address);
-            setTotalInOrder(order);
+            order.setTotal(calculateTotal(order));
         }
         OrderEntity changed = orderEntityRepository.save(order);
         return orderMapper.toDto(changed);
@@ -186,7 +186,7 @@ public class CartService {
      * @return дто заказа с измененным статусом
      */
     @Transactional
-    public OrderDto changeOrderStatus(Integer id, ActionStatus action) {
+    public OrderDto changeOrderStatus(Integer id, OrderAction action) {
         return changeOrderStatus(id, action, null);
     }
 
@@ -223,7 +223,7 @@ public class CartService {
      * @param order сущность заказа
      */
     @Transactional
-    public void setTotalInOrder(OrderEntity order) {
+    public BigDecimal calculateTotal(OrderEntity order) {
         List<DrinkOrderEntity> drinks = order.getDrinks();
         BigDecimal total = BigDecimal.ZERO;
 
@@ -245,7 +245,7 @@ public class CartService {
             }
         }
 
-        order.setTotal(total);
+        return total;
     }
 
     /**
@@ -255,26 +255,26 @@ public class CartService {
      * @param orderStatusCode код текущего статуса заказа
      * @return код нового статуса заказа
      */
-    private OrderStatusCode getNewOrderStatus(ActionStatus action, OrderStatusCode orderStatusCode) {
+    private OrderStatusCode getNewOrderStatus(OrderAction action, OrderStatusCode orderStatusCode) {
         OrderStatusCode newOrderStatusCode;
         switch (orderStatusCode) {
             case IN_CART:
-                if (action == ActionStatus.PLACE) {
+                if (action == OrderAction.PLACE) {
                     newOrderStatusCode = OrderStatusCode.PLACED;
-                } else if (action == ActionStatus.DELIVER) {
+                } else if (action == OrderAction.DELIVER) {
                     throw new InvalidOperationException(ORDER_OBJECT, message.getMessage(INVALID_DELIVER_ACTION));
-                } else if (action == ActionStatus.REJECT) {
+                } else if (action == OrderAction.REJECT) {
                     throw new InvalidOperationException(ORDER_OBJECT, message.getMessage(INVALID_REJECT_ACTION));
                 } else {
                     throw new InvalidOperationException(ORDER_OBJECT, message.getMessage(UNKNOWN_ACTION));
                 }
                 break;
             case PLACED:
-                if (action == ActionStatus.REJECT) {
+                if (action == OrderAction.REJECT) {
                     newOrderStatusCode = OrderStatusCode.REJECTED;
-                } else if (action == ActionStatus.DELIVER) {
+                } else if (action == OrderAction.DELIVER) {
                     newOrderStatusCode = OrderStatusCode.DELIVERED;
-                } else if (action == ActionStatus.PLACE) {
+                } else if (action == OrderAction.PLACE) {
                     throw new InvalidOperationException(ORDER_OBJECT, message.getMessage(INVALID_PLACE_ACTION));
                 } else {
                     throw new InvalidOperationException(ORDER_OBJECT, message.getMessage(UNKNOWN_ACTION));
