@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.popova.practice.shop.dto.AppUserDto;
 import ru.popova.practice.shop.dto.AppUserLoginDto;
 import ru.popova.practice.shop.dto.NewAppUserDto;
@@ -17,6 +14,7 @@ import ru.popova.practice.shop.service.security.SecurityService;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class AppUserController {
 
     private final AppUserService appUserService;

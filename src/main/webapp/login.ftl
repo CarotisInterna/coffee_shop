@@ -2,26 +2,27 @@
 <html lang="en">
 <head>
     <title>Логин</title>
+    <script src="./js/login.js"></script>
 </head>
 <body class="masthead">
 <div class="container">
-    <form name="f" action="login" method="post">
+    <form id="login-form" name="f">
         <fieldset>
             <legend>Войти</legend>
-            <div class="form-group">
+            <div id="username-div" class="form-group">
                 <label for="username">Имя пользователя</label>
                 <input type="text" id="username" name="username" value="${(user.username)!''}" required/>
             </div>
-            <div class="form-group">
+            <div id="password-div" class="form-group">
                 <label for="password">Пароль</label>
                 <input type="password" id="password" name="password" value="${(user.password)!''}" required/>
             </div>
             <div class="form-actions">
-                <button type="submit" class="btn">Войти</button>
+                <button type="button" onclick="login()" class="btn">Войти</button>
             </div>
-            <#if RequestParameters["error"]??>
-                <p>Имя пользователя или пароль неверны, попробуйте еще раз.</p>
-            </#if>
+        <#if RequestParameters["error"]??>
+            <p>Имя пользователя или пароль неверны, попробуйте еще раз.</p>
+        </#if>
         </fieldset>
     </form>
 </div>

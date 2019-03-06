@@ -75,6 +75,7 @@ public class CartService {
         OrderEntity cart = getCurrentUserCartEntity().orElseThrow(() -> new InvalidOperationException("cart", message.getMessage(CART_IS_EMPTY)));
         drinkOrderEntityRepository.findById(drinkOrderId).ifPresent(drinkOrderEntityRepository::delete);
         cart.setTotal(calculateTotal(cart));
+        //TODO: save cart
     }
 
     /**
