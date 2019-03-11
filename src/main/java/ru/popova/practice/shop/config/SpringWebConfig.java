@@ -23,6 +23,6 @@ public class SpringWebConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/login").setViewName("login");
-        registry.addRedirectViewController("/","/api/drinks");
+        registry.addRedirectViewController("/","/drinks");
     }
 }

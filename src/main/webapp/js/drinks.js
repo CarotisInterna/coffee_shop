@@ -1,16 +1,75 @@
-document.addEventListener("DOMContentLoaded", function () {
-    fetch("/api/drinks")
+var currentPage = {"number": 0, "size": 9};
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById('next-page').onclick = nextDrinkPage;
+    document.getElementById('prev-page').onclick = prevDrinkPage;
+    getDrinks();
+});
+
+function getDrinks() {
+    fetchProducts(currentPage)
         .then(function (response) {
             if (response.ok) {
                 return response.json();
             } else {
                 //TODO: сказать об ошибке
             }
-        }).then(function (drinks) {
-        //TODO : пройти по списку, создать элементы, отображающие напитки, добавить к странице
-
+        }).then(function (page) {
+        let row = document.getElementById("drinks");
+        row.innerHTML = "";
+        currentPage = page;
+        setPagination(page);
+        page.content.forEach(drink => row.appendChild(getDrinkView(drink)))
     }).catch(function (error) {
         console.log(error);
         //TODO: показать алерт с сообщением
     })
-});
+}
+
+
+function nextDrinkPage() {
+    currentPage.number += 1;
+    getDrinks();
+}
+
+function prevDrinkPage() {
+    currentPage.number -= 1;
+    getDrinks();
+}
+
+function fetchProducts(page) {
+    let s = "/api/drinks/search";
+    if (page === null || page.number === null) page = 0;
+    if (page === null || page.size === null) size = 9;
+    let params = new URLSearchParams();
+    params.append('page', page.number);
+    params.append('size', page.size);
+    s += "?" + params.toString();
+    return fetch(s);
+}
+
+function getTextDiv(text) {
+    let div = document.createElement("div");
+    let p = document.createElement("p");
+    p.innerHTML = text;
+    div.appendChild(p);
+    return div;
+}
+
+/**
+ * Создает элемент с информацией о напитке
+ * @param drink напиток
+ */
+function getDrinkView(drink) {
+    let div = document.createElement("div");
+    let item = document.createElement("div");
+
+    item.appendChild(getTextDiv(drink.name));
+    item.appendChild(getTextDiv(drink.price));
+
+    div.appendChild(item);
+    div.classList.add("col-4");
+    div.classList.add("border");
+    div.classList.add("border-primary");
+    return div;
+}
