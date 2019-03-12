@@ -25,8 +25,9 @@ function login() {
             window.location = window.location.origin + "/drinks";
         } else if (response.status === 404 || response.status === 400) {
             return response.json();
+        } else if (response.status === 500) {
+            alert("Ошибка сервера, повторите запрос позже")
         }
-        //TODO: обработка других потенциальных кодов
     }).then(function (json) {
         if (json !== null) {
             let el = buildFieldErrorLabel(json.message);
@@ -38,7 +39,6 @@ function login() {
             }
             div.appendChild(el)
         }
-        //TODO обработка ответа
     })
         .catch(function (error) {
             console.log(error)

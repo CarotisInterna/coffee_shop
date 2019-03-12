@@ -4,7 +4,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
-import static ru.popova.practice.shop.util.MessageConstants.PHONE_NUMBER_UNIQUE;
+import static ru.popova.practice.shop.util.constants.MessageConstants.PHONE_NUMBER_UNIQUE;
 
 @Documented
 @Constraint(validatedBy = PhoneNumberValidator.class)

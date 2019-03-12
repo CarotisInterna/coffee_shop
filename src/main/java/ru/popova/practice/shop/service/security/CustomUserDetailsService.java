@@ -15,7 +15,7 @@ import ru.popova.practice.shop.repository.AppUserEntityRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.popova.practice.shop.util.MessageConstants.USER_EXISTS;
+import static ru.popova.practice.shop.util.constants.MessageConstants.USER_EXISTS;
 
 @Service
 @RequiredArgsConstructor

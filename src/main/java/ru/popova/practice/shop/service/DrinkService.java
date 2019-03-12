@@ -33,8 +33,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static ru.popova.practice.shop.util.MessageConstants.CATEGORY_NOT_FOUND;
-import static ru.popova.practice.shop.util.MessageConstants.DRINK_NOT_FOUND;
+import static ru.popova.practice.shop.util.constants.MessageConstants.CATEGORY_NOT_FOUND;
+import static ru.popova.practice.shop.util.constants.MessageConstants.DRINK_NOT_FOUND;
 
 @Slf4j
 @Service

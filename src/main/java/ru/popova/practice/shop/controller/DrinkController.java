@@ -31,7 +31,7 @@ public class DrinkController {
 
 
     /**
-     * получение списка напитков
+     * Получение списка напитков
      *
      * @param pageable
      * @return список напитков
@@ -43,7 +43,7 @@ public class DrinkController {
     }
 
     /**
-     * метод для поиска напитков по параметрам
+     * Метод для поиска напитков по параметрам
      *
      * @param name        имя
      * @param lowerPrice  нижняя граница цены
@@ -62,31 +62,28 @@ public class DrinkController {
                                                        @RequestParam(value = "upper_volume", required = false) Integer upperVolume,
                                                        @RequestParam(value = "category_id", required = false) Integer categoryId,
                                                        @PageableDefault Pageable pageable) {
-        DrinkSearchCriteria drinkSearchCriteria = DrinkSearchCriteria.builder()
-                .name(name)
-                .lowerPrice(lowerPrice)
-                .upperPrice(upperPrice)
-                .lowerVolume(lowerVolume)
-                .upperVolume(upperVolume)
-                .categoryId(categoryId)
-                .build();
-        return ResponseEntity.ok(drinkService.search(drinkSearchCriteria, pageable));
+        return getPageDtoResponseEntity(name, lowerPrice, upperPrice, lowerVolume, upperVolume, categoryId, pageable);
     }
 
     /**
-     * получение списка напитков конкретной категории
+     * Получение списка напитков конкретной категории
      *
      * @param categoryId идентификатор категории
      * @return список напитков заданной категории
      */
     @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<List<DrinkDto>> getDrinksByCategory(@PathVariable("categoryId") Integer categoryId) {
-        List<DrinkDto> drinks = drinkService.getDrinksByCategory(categoryId);
-        return ResponseEntity.ok(drinks);
+    public ResponseEntity<PageDto<DrinkDto>> getDrinksByCategory(@PathVariable("categoryId") Integer categoryId,
+                                                                 @RequestParam(value = "name", required = false) String name,
+                                                                 @RequestParam(value = "lower_price", required = false) BigDecimal lowerPrice,
+                                                                 @RequestParam(value = "upper_price", required = false) BigDecimal upperPrice,
+                                                                 @RequestParam(value = "lower_volume", required = false) Integer lowerVolume,
+                                                                 @RequestParam(value = "upper_volume", required = false) Integer upperVolume,
+                                                                 @PageableDefault Pageable pageable) {
+        return getPageDtoResponseEntity(name, lowerPrice, upperPrice, lowerVolume, upperVolume, categoryId, pageable);
     }
 
     /**
-     * получение напитка по id
+     * Получение напитка по id
      *
      * @param id идентификатор напитка
      * @return напиток или 404
@@ -101,7 +98,7 @@ public class DrinkController {
     }
 
     /**
-     * сохранение напитка
+     * Сохранение напитка
      *
      * @param newDrinkDto новый напиток
      * @return статус
@@ -145,5 +142,29 @@ public class DrinkController {
     public ResponseEntity deleteDrink(@PathVariable Integer id) {
         drinkService.deleteDrink(id);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Поиск напитков по параметров для конкретных категорий
+     *
+     * @param name        имя
+     * @param lowerPrice  нижняя граница цены
+     * @param upperPrice  верхняя граница цены
+     * @param lowerVolume нижняя граница объема
+     * @param upperVolume верхняя граница объема
+     * @param categoryId  идентификатор категории напитка
+     * @param pageable
+     * @return страница со списком напитков
+     */
+    private ResponseEntity<PageDto<DrinkDto>> getPageDtoResponseEntity(String name, BigDecimal lowerPrice, BigDecimal upperPrice, Integer lowerVolume, Integer upperVolume, Integer categoryId, Pageable pageable) {
+        DrinkSearchCriteria drinkSearchCriteria = DrinkSearchCriteria.builder()
+                .name(name)
+                .lowerPrice(lowerPrice)
+                .upperPrice(upperPrice)
+                .lowerVolume(lowerVolume)
+                .upperVolume(upperVolume)
+                .categoryId(categoryId)
+                .build();
+        return ResponseEntity.ok(drinkService.search(drinkSearchCriteria, pageable));
     }
 }

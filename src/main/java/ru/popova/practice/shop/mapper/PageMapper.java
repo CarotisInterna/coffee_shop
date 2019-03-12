@@ -4,6 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import ru.popova.practice.shop.dto.PageDto;
 
+import static ru.popova.practice.shop.util.constants.NumConstants.NUMBER_OF_ELEMENTS_ON_PAGE;
+
 @Component
 public class PageMapper implements AbstractMapper<Page, PageDto> {
 
@@ -19,7 +21,7 @@ public class PageMapper implements AbstractMapper<Page, PageDto> {
         pageDto.setNumberOfElements(entity.getNumberOfElements());
         pageDto.setTotalElements(entity.getTotalElements());
         pageDto.setTotalPages(entity.getTotalPages());
-        pageDto.setSize(entity.getSize());
+        pageDto.setSize(NUMBER_OF_ELEMENTS_ON_PAGE);
         return pageDto;
     }
 

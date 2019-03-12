@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
 import ru.popova.practice.shop.config.messages.MessageSourceDecorator;
 import ru.popova.practice.shop.dto.AppUserDto;
 import ru.popova.practice.shop.dto.AppUserLoginDto;
@@ -15,13 +14,12 @@ import ru.popova.practice.shop.dto.NewAppUserDto;
 import ru.popova.practice.shop.entity.AppUserEntity;
 import ru.popova.practice.shop.exception.AlreadyExistsException;
 import ru.popova.practice.shop.exception.PasswordMismatchException;
-import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.mapper.AppUserMapper;
 import ru.popova.practice.shop.mapper.NewAppUserMapper;
 import ru.popova.practice.shop.repository.AppUserEntityRepository;
 import ru.popova.practice.shop.service.security.SecurityService;
 
-import static ru.popova.practice.shop.util.MessageConstants.*;
+import static ru.popova.practice.shop.util.constants.MessageConstants.*;
 
 @Slf4j
 @Service
@@ -82,16 +80,12 @@ public class AppUserService {
      * @throws AlreadyExistsException если пользователь с таким именем или номером телефона уже существует
      */
     @Transactional
-    public AppUserDto saveAppUser(NewAppUserDto newAppUserDto, BindingResult bindingResult) {
+    public AppUserDto saveAppUser(NewAppUserDto newAppUserDto) {
 
         ListErrorDto listErrorDto = new ListErrorDto();
 
         if (!newAppUserDto.getPassword().equals(newAppUserDto.getConfirmPassword())) {
             listErrorDto.addErrorDto("confirmPassword", messageSourceDecorator.getMessage(CONFIRM_PASSWORD));
-        }
-
-        if (bindingResult.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
-            throw new ValidationException(bindingResult, listErrorDto);
         }
 
         AppUserEntity appUserEntity = newAppUserMapper.toEntity(newAppUserDto);
@@ -104,16 +98,9 @@ public class AppUserService {
      * "Выбрасывание" ошибок при логине
      *
      * @param appUserLoginDto данные пользователя для логина
-     * @param bindingResult
      */
     @Transactional
-    public void checkLogin(AppUserLoginDto appUserLoginDto, BindingResult bindingResult) {
-
-        ListErrorDto listErrorDto = new ListErrorDto();
-
-        if (bindingResult.hasErrors()) {
-            throw new ValidationException(bindingResult, listErrorDto);
-        }
+    public void checkLogin(AppUserLoginDto appUserLoginDto) {
 
         String name = appUserLoginDto.getUsername();
         AppUserDto appUserByUsername = getAppUserByUsername(name);

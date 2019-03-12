@@ -9,6 +9,8 @@ import ru.popova.practice.shop.dto.AppUserDto;
 import ru.popova.practice.shop.dto.AppUserLoginDto;
 import ru.popova.practice.shop.dto.NewAppUserDto;
 import ru.popova.practice.shop.dto.groups.NotEmptyValidationSequence;
+import ru.popova.practice.shop.dto.groups.RegistrationSequence;
+import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.service.AppUserService;
 import ru.popova.practice.shop.service.security.SecurityService;
 
@@ -23,14 +25,19 @@ public class AppUserController {
 
     /**
      * Регистрация пользователя
+     *
      * @param newAppUserDto новый пользователь
      * @param result
      * @return статус
      */
     @PostMapping("/register")
-    public ResponseEntity<AppUserDto> register(@Validated @RequestBody NewAppUserDto newAppUserDto, BindingResult result) {
+    public ResponseEntity<AppUserDto> register(@Validated(RegistrationSequence.class) @RequestBody NewAppUserDto newAppUserDto, BindingResult result) {
 
-        AppUserDto saved = appUserService.saveAppUser(newAppUserDto, result);
+        if (result.hasErrors()) {
+            throw new ValidationException(result);
+        }
+
+        AppUserDto saved = appUserService.saveAppUser(newAppUserDto);
 
         securityService.authenticateUser(newAppUserDto);
 
@@ -39,6 +46,7 @@ public class AppUserController {
 
     /**
      * Логин
+     *
      * @param appUserLoginDto параметры для логина
      * @param result
      * @return статус
@@ -46,7 +54,11 @@ public class AppUserController {
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody @Validated(NotEmptyValidationSequence.class) AppUserLoginDto appUserLoginDto, BindingResult result) {
 
-        appUserService.checkLogin(appUserLoginDto, result);
+        if (result.hasErrors()) {
+            throw new ValidationException(result);
+        }
+
+        appUserService.checkLogin(appUserLoginDto);
 
         securityService.authenticateUser(appUserLoginDto);
 

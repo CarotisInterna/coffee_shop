@@ -20,9 +20,6 @@
             <div class="form-actions">
                 <button type="button" onclick="login()" class="btn">Войти</button>
             </div>
-        <#if RequestParameters["error"]??>
-            <p>Имя пользователя или пароль неверны, попробуйте еще раз.</p>
-        </#if>
         </fieldset>
     </form>
 </div>

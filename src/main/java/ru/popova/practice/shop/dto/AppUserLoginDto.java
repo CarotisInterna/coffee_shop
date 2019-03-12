@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.popova.practice.shop.dto.groups.NotEmptyGroup;
+import ru.popova.practice.shop.dto.groups.RegistrationGroup;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -24,7 +25,7 @@ public class AppUserLoginDto {
     String username;
 
     @NotBlank(groups = NotEmptyGroup.class)
-    @Size(min = 3, max = 20)
+    @Size(min = 3, max = 20, groups = RegistrationGroup.class)
     @ApiModelProperty(name = "password", example = "0000")
     String password;
 }

@@ -1,23 +1,17 @@
 package ru.popova.practice.shop.service.security;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.popova.practice.shop.config.messages.MessageSourceDecorator;
 import ru.popova.practice.shop.dto.AppUserLoginDto;
-import ru.popova.practice.shop.entity.AppUserEntity;
 import ru.popova.practice.shop.exception.AuthenticationFailedException;
-import ru.popova.practice.shop.repository.AppUserEntityRepository;
 
-import java.util.stream.Stream;
-
-import static ru.popova.practice.shop.util.MessageConstants.AUTHENTICATION_REQUIRED;
+import static ru.popova.practice.shop.util.constants.MessageConstants.AUTHENTICATION_REQUIRED;
 
 @Service
 @RequiredArgsConstructor

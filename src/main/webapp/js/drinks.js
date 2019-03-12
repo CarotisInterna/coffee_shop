@@ -53,6 +53,7 @@ function getTextDiv(text) {
     let p = document.createElement("p");
     p.innerHTML = text;
     div.appendChild(p);
+    div.style.cssText = 'text-align:center;font-family:courier;'
     return div;
 }
 
@@ -64,12 +65,19 @@ function getDrinkView(drink) {
     let div = document.createElement("div");
     let item = document.createElement("div");
 
-    item.appendChild(getTextDiv(drink.name));
-    item.appendChild(getTextDiv(drink.price));
+    let name = getTextDiv(drink.name)
+    name.style.cssText = 'font-size:160%;text-align:center;font-family:verdana;'
+    item.appendChild(name);
+    item.appendChild(getTextDiv(drink.volume + " мл"));
+    item.appendChild(getTextDiv(drink.price + " руб"));
 
     div.appendChild(item);
     div.classList.add("col-4");
     div.classList.add("border");
     div.classList.add("border-primary");
     return div;
+}
+
+function getToppingRadios(topp) {
+
 }

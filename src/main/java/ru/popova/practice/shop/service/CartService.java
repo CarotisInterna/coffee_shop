@@ -23,8 +23,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.popova.practice.shop.util.MessageConstants.*;
-import static ru.popova.practice.shop.util.ObjectConstants.ORDER_OBJECT;
+import static ru.popova.practice.shop.util.constants.MessageConstants.*;
+import static ru.popova.practice.shop.util.constants.ObjectConstants.ORDER_OBJECT;
 
 @Service
 @RequiredArgsConstructor

@@ -13,7 +13,7 @@ import ru.popova.practice.shop.repository.CategoryEntityRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.popova.practice.shop.util.MessageConstants.CATEGORY_NOT_FOUND;
+import static ru.popova.practice.shop.util.constants.MessageConstants.CATEGORY_NOT_FOUND;
 
 @Component
 public class NewDrinkMapper implements AbstractMapper<DrinkEntity, NewDrinkDto> {

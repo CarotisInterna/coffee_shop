@@ -4,7 +4,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
-import static ru.popova.practice.shop.util.MessageConstants.USERNAME_UNIQUE;
+import static ru.popova.practice.shop.util.constants.MessageConstants.USERNAME_UNIQUE;
 
 @Documented
 @Constraint(validatedBy = UsernameUniqueValidator.class)

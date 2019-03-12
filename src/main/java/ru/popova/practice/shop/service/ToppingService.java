@@ -5,22 +5,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
 import ru.popova.practice.shop.config.messages.MessageSourceDecorator;
 import ru.popova.practice.shop.dto.ListErrorDto;
 import ru.popova.practice.shop.dto.PageDto;
 import ru.popova.practice.shop.dto.ToppingDto;
 import ru.popova.practice.shop.entity.ToppingEntity;
 import ru.popova.practice.shop.exception.NotFoundException;
-import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.mapper.PageMapper;
 import ru.popova.practice.shop.mapper.ToppingMapper;
 import ru.popova.practice.shop.repository.ToppingEntityRepository;
 
 import java.util.Optional;
 
-import static ru.popova.practice.shop.util.MessageConstants.TOPPING_NOT_FOUND;
-import static ru.popova.practice.shop.util.MessageConstants.TOPPING_UNIQUE;
+import static ru.popova.practice.shop.util.constants.MessageConstants.TOPPING_NOT_FOUND;
+import static ru.popova.practice.shop.util.constants.MessageConstants.TOPPING_UNIQUE;
 
 @Service
 @RequiredArgsConstructor

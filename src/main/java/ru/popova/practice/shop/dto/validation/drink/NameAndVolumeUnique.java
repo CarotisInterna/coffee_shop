@@ -4,7 +4,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
-import static ru.popova.practice.shop.util.MessageConstants.NAME_AND_VOLUME_UNIQUE;
+import static ru.popova.practice.shop.util.constants.MessageConstants.NAME_AND_VOLUME_UNIQUE;
 
 @Documented
 @Constraint(validatedBy = NameAndVolumeUniqueValidator.class)

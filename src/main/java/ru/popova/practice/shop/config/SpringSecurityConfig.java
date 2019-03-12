@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.popova.practice.shop.entity.code.RoleCode;
 import ru.popova.practice.shop.service.security.CustomUserDetailsService;
 
+import static ru.popova.practice.shop.util.constants.PathConstants.PATTERNS_FOR_GET;
+
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -25,7 +27,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/", "/v2/api-docs", "/register", "/login", "/swagger-ui.html", "/account", "/js/**", "/api/login")
                 .permitAll()
-                .antMatchers(HttpMethod.GET, "/api/drinks/**", "/api/categories/**", "/api/toppings", "/api/drinks", "/api/categories", "/api/toppings/**")
+                .antMatchers(HttpMethod.GET, PATTERNS_FOR_GET)
                 .permitAll()
                 .antMatchers("/api/cart", "/api/cart/**").hasAnyRole(RoleCode.VENDOR.toString(), RoleCode.USER.toString())
                 .antMatchers(HttpMethod.POST, "/api/drinks", "/api/categories", "/api/toppings").hasRole(RoleCode.VENDOR.toString())

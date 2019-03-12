@@ -1,4 +1,4 @@
-package ru.popova.practice.shop.util;
+package ru.popova.practice.shop.util.constants;
 
 public interface ObjectConstants {
 
