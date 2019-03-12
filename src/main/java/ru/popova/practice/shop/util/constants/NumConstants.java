@@ -1,6 +1,6 @@
 package ru.popova.practice.shop.util.constants;
 
-public interface NumConstants {
+public class NumConstants {
 
-    Integer NUMBER_OF_ELEMENTS_ON_PAGE = 9;
+    public static final int NUMBER_OF_ELEMENTS_ON_PAGE = 3;
 }

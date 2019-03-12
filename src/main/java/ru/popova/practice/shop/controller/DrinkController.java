@@ -13,12 +13,13 @@ import ru.popova.practice.shop.dto.NewDrinkDto;
 import ru.popova.practice.shop.dto.PageDto;
 import ru.popova.practice.shop.dto.groups.NotEmptyValidationSequence;
 import ru.popova.practice.shop.exception.ValidationException;
-import ru.popova.practice.shop.mapper.PageMapper;
 import ru.popova.practice.shop.service.DrinkService;
 import ru.popova.practice.shop.specification.DrinkSearchCriteria;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+import static ru.popova.practice.shop.util.constants.NumConstants.NUMBER_OF_ELEMENTS_ON_PAGE;
 
 
 @RestController
@@ -27,7 +28,6 @@ import java.util.List;
 public class DrinkController {
 
     private final DrinkService drinkService;
-    private final PageMapper pageMapper;
 
 
     /**
@@ -61,10 +61,11 @@ public class DrinkController {
                                                        @RequestParam(value = "lower_volume", required = false) Integer lowerVolume,
                                                        @RequestParam(value = "upper_volume", required = false) Integer upperVolume,
                                                        @RequestParam(value = "category_id", required = false) Integer categoryId,
-                                                       @PageableDefault Pageable pageable) {
+                                                       @PageableDefault(size = NUMBER_OF_ELEMENTS_ON_PAGE) Pageable pageable) {
         return getPageDtoResponseEntity(name, lowerPrice, upperPrice, lowerVolume, upperVolume, categoryId, pageable);
     }
 
+    //TODO: нужен ли этот метод? getDrinks выполняет ту же функцию
     /**
      * Получение списка напитков конкретной категории
      *
@@ -78,7 +79,7 @@ public class DrinkController {
                                                                  @RequestParam(value = "upper_price", required = false) BigDecimal upperPrice,
                                                                  @RequestParam(value = "lower_volume", required = false) Integer lowerVolume,
                                                                  @RequestParam(value = "upper_volume", required = false) Integer upperVolume,
-                                                                 @PageableDefault Pageable pageable) {
+                                                                 @PageableDefault(size = NUMBER_OF_ELEMENTS_ON_PAGE) Pageable pageable) {
         return getPageDtoResponseEntity(name, lowerPrice, upperPrice, lowerVolume, upperVolume, categoryId, pageable);
     }
 
