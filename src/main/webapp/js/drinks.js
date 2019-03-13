@@ -111,10 +111,17 @@ function renderDrinks(page) {
 
 
 function getCategoryButton(category) {
-    let button = document.createElement("button");
-    button.innerHTML = category.name;
+    let button = document.createElement("label");
+    button.innerHTML=category.name;
     button.classList.add("btn");
     button.classList.add("btn-outline-primary");
+    let input = document.createElement("input");
+    input.type = "radio";
+    input.id = category.id;
+    input.value = category.name;
+    button.appendChild(input);
+    // button.classList.add("btn");
+    // button.classList.add("btn-outline-primary");
     button.onclick = () => getDrinksByCategory(category.id);
     return button;
 }

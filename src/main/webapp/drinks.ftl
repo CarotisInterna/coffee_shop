@@ -11,7 +11,7 @@
         <h2>Покупай</h2>
     </div>
     <div class="container" style="margin-top: 5%; margin-bottom: 5%;">
-        <div id="categories_buttons" class="btn-group" role="group">
+        <div id="categories_buttons" class="btn-group btn-group-toggle" data-toggle="buttons">
         <#--<a class="btn btn-outline-primary" href="#">-->
                 <#--ffffffff-->
             <#--</a>-->
