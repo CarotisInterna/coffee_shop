@@ -14,6 +14,8 @@ import ru.popova.practice.shop.dto.groups.NotEmptyValidationSequence;
 import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.service.ToppingService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/toppings")
 public class ToppingController {
@@ -28,12 +30,11 @@ public class ToppingController {
     /**
      * Получение списка топпингов
      *
-     * @param pageable
      * @return список топпингов
      */
     @GetMapping
-    public ResponseEntity<PageDto<ToppingDto>> getToppings(@PageableDefault Pageable pageable) {
-        return ResponseEntity.ok(toppingService.getToppings(pageable));
+    public ResponseEntity<List<ToppingDto>> getToppings() {
+        return ResponseEntity.ok(toppingService.getToppings());
     }
 
     /**

@@ -15,7 +15,9 @@ import ru.popova.practice.shop.mapper.PageMapper;
 import ru.popova.practice.shop.mapper.ToppingMapper;
 import ru.popova.practice.shop.repository.ToppingEntityRepository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static ru.popova.practice.shop.util.constants.MessageConstants.TOPPING_NOT_FOUND;
 import static ru.popova.practice.shop.util.constants.MessageConstants.TOPPING_UNIQUE;
@@ -94,14 +96,14 @@ public class ToppingService {
     /**
      * Получение топпингов
      *
-     * @param pageable
      * @return список топпингов
      */
     @Transactional(readOnly = true)
-    public PageDto<ToppingDto> getToppings(Pageable pageable) {
-        Page<ToppingDto> toppings = toppingEntityRepository.findAll(pageable)
-                .map(toppingMapper::toDto);
-        return pageMapper.toDto(toppings);
+    public List<ToppingDto> getToppings() {
+        return toppingEntityRepository.findAll()
+                .stream()
+                .map(toppingMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     /**

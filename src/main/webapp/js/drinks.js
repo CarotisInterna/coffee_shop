@@ -68,6 +68,7 @@ function getDrinkView(drink) {
     item.appendChild(name);
     item.appendChild(getTextDiv(drink.volume + " мл"));
     item.appendChild(getTextDiv(drink.price + " руб"));
+    getToppingSelect(item);
 
     div.appendChild(item);
     div.classList.add("col-4");
@@ -78,6 +79,11 @@ function getDrinkView(drink) {
 
 function fetchCategories() {
     let s = "/api/categories";
+    return fetch(s);
+}
+
+function fetchToppings() {
+    let s = "/api/toppings";
     return fetch(s);
 }
 
@@ -126,6 +132,13 @@ function getCategoryButton(category) {
     return button;
 }
 
+function getToppingOption(topping) {
+    let option = document.createElement("option");
+    option.value = topping.name;
+    option.innerHTML = topping.name + " " + topping.price + " руб.";
+    return option;
+}
+
 function getCategories() {
     fetchCategories()
         .then(response => {
@@ -142,6 +155,31 @@ function getCategories() {
         .catch(error => console.log(error));
 }
 
-function getToppingRadios(topp) {
-
+function getToppingSelect(item) {
+    fetchToppings()
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+            //TODO: сказать об ошибке
+                }
+            })
+            .then(list => {
+                let div = document.createElement("div");
+                div.style.cssText='text-align:center';
+                let select = document.createElement("select");
+                select.classList.add("options");
+                select.style.cssText='border-radius:10px;text-align:center;font-family:courier;margin-bottom:10%;font-size:80%;';
+                select.required = true;
+                div.appendChild(select);
+                let option = document.createElement("option");
+                option.value = "";
+                option.disabled = true;
+                option.selected = true;
+                option.innerHTML = "Добавить топпинг";
+                select.appendChild(option);
+                list.forEach(el => select.appendChild(getToppingOption(el)));
+                item.appendChild(div)
+            })
+            .catch(error => console.log(error));
 }
