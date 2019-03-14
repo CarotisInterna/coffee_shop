@@ -68,13 +68,24 @@ function getDrinkView(drink) {
     item.appendChild(name);
     item.appendChild(getTextDiv(drink.volume + " мл"));
     item.appendChild(getTextDiv(drink.price + " руб"));
-    getToppingSelect(item);
+
+    let ul = document.createElement("ul");
+    ul.classList.add("options");
+    item.appendChild(ul);
+
+    getToppingSelect(item, ul);
 
     div.appendChild(item);
     div.classList.add("col-4");
     div.classList.add("border");
     div.classList.add("border-primary");
     return div;
+}
+
+function getOptionsUl() {
+    let ul = document.createElement("ul");
+    ul.classList.add("options");
+    return ul;
 }
 
 function fetchCategories() {
@@ -94,6 +105,31 @@ function onDrinksLoad(response) {
         //TODO: сказать об ошибке
     }
 }
+
+function selectTopping(select, ul){
+
+    var option = select.options[select.selectedIndex];
+
+    var choices = ul.getElementsByTagName('input');
+    for (var i = 0; i < choices.length; i++)
+        if (choices[i].value === option.value)
+            return;
+
+    var li = document.createElement('li');
+    var input = document.createElement('input');
+    var text = document.createTextNode(option.firstChild.data);
+
+    input.type = 'hidden';
+    input.name = 'toppings[]';
+    input.value = option.value;
+
+    li.appendChild(input);
+    li.appendChild(text);
+    li.setAttribute('onclick', 'this.parentNode.removeChild(this);');
+
+    ul.appendChild(li);
+}
+
 
 function getDrinksByCategory(id, page) {
     fetchProducts(page, {"category_id": id})
@@ -155,7 +191,7 @@ function getCategories() {
         .catch(error => console.log(error));
 }
 
-function getToppingSelect(item) {
+function getToppingSelect(item, ul) {
     fetchToppings()
             .then(response => {
                 if (response.ok) {
@@ -166,6 +202,7 @@ function getToppingSelect(item) {
             })
             .then(list => {
                 let div = document.createElement("div");
+                div.id = "topping-select"
                 div.style.cssText='text-align:center';
                 let select = document.createElement("select");
                 select.classList.add("options");
@@ -177,8 +214,8 @@ function getToppingSelect(item) {
                 option.disabled = true;
                 option.selected = true;
                 option.innerHTML = "Добавить топпинг";
-                select.appendChild(option);
                 list.forEach(el => select.appendChild(getToppingOption(el)));
+                select.onchange = selectTopping(select, ul);
                 item.appendChild(div)
             })
             .catch(error => console.log(error));
