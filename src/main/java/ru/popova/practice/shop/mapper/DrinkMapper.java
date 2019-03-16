@@ -1,7 +1,6 @@
 package ru.popova.practice.shop.mapper;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.popova.practice.shop.config.messages.MessageSourceDecorator;
 import ru.popova.practice.shop.dto.DrinkDto;
@@ -17,21 +16,13 @@ import java.util.stream.Collectors;
 import static ru.popova.practice.shop.util.constants.MessageConstants.CATEGORY_NOT_FOUND;
 
 @Component
+@RequiredArgsConstructor
 public class DrinkMapper implements AbstractMapper<DrinkEntity, DrinkDto> {
 
-    @Value("${coffee_shop.images.path}")
-    private String imagesPath;
-    @Value("${coffee_shop.images.suffix}")
-    private String imagesSuffix;
 
-    private CategoryEntityRepository categoryEntityRepository;
-    private MessageSourceDecorator messageSourceDecorator;
+    private final CategoryEntityRepository categoryEntityRepository;
+    private final MessageSourceDecorator messageSourceDecorator;
 
-    @Autowired
-    public DrinkMapper(CategoryEntityRepository categoryEntityRepository, MessageSourceDecorator messageSourceDecorator) {
-        this.categoryEntityRepository = categoryEntityRepository;
-        this.messageSourceDecorator = messageSourceDecorator;
-    }
 
     @Override
     public DrinkDto toDto(DrinkEntity drinkEntity) {
@@ -47,7 +38,6 @@ public class DrinkMapper implements AbstractMapper<DrinkEntity, DrinkDto> {
         List<String> images = drinkEntity.getImages()
                 .stream()
                 .map(DrinkImageEntity::getImage)
-                .map(imageName -> imagesPath + imageName + imagesSuffix)
                 .collect(Collectors.toList());
         drink.setImages(images);
         List<String> categories = drinkEntity.getCategories()
