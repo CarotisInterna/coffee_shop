@@ -2,6 +2,7 @@
 <head>
     <title>Напитки</title>
     <#include 'head.ftl'/>
+    <#include 'navbar.ftl'/>
     <script src="./js/drinks.js"></script>
     <script src="./js/pagination.js"></script>
 </head>

@@ -62,7 +62,7 @@ function getDrinkImg(image) {
     img.setAttribute("src", "../api/images/" + image);
     let div = document.createElement("div");
     div.appendChild(img);
-    div.style.cssText = 'text-align:center';
+    div.style.cssText = 'text-align:center;margin-top:10%;';
     return div;
 }
 
