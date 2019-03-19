@@ -157,6 +157,18 @@ function getDrinksByCategory(id, page) {
     functionForGet = () => getDrinksByCategory(id, currentPage);
 }
 
+function getDrinksByName(name, page) {
+    fetchProducts(page, {"name": name})
+        .then(onDrinksLoad)
+        .then(renderDrinks)
+        .catch(function (error) {
+            console.log(error);
+            //TODO: показать алерт с сообщением
+        });
+    //TODO: может быть баг
+    functionForGet = () => getDrinksByName(name, currentPage);
+}
+
 function renderDrinks(page) {
     let row = document.getElementById("drinks");
     row.innerHTML = "";
@@ -165,6 +177,10 @@ function renderDrinks(page) {
     page.content.forEach(drink => row.appendChild(getDrinkView(drink)))
 }
 
+function search() {
+    let input = document.getElementById('search')
+    getDrinksByName(input.value)
+}
 
 function getCategoryButton(category) {
     let button = document.createElement("label");
