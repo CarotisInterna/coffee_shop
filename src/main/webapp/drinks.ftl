@@ -2,12 +2,12 @@
 <head>
     <title>Напитки</title>
     <#include 'head.ftl'/>
-    <#include 'navbar.ftl'/>
     <script src="./js/drinks.js"></script>
     <script src="./js/pagination.js"></script>
 </head>
 <body>
 <div class="container">
+<#include 'navbar.ftl'/>
     <div class="container" style="text-align:center;">
         <h2>Покупай</h2>
     </div>

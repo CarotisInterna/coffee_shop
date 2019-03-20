@@ -12,10 +12,10 @@
     <div class="collapse navbar-collapse" id="navbar">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <form class="form-inline my-1 my-lg-0">
+                <div class="form-inline my-1 my-lg-0">
                     <input class="form-control mr-sm-2" type="search" placeholder="Найти" aria-label="Search" id="search">
-                    <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" onclick="search()">Найти</button>
-                </form>
+                    <button class="btn btn-outline-primary my-2 my-sm-0" onclick="search()" id="search-button">Найти</button>
+                </div>
             </li>
             <li class="nav-item active">
                 <a class="nav-link" href="../drinks">Меню <span class="sr-only">(current)</span></a>
@@ -28,14 +28,10 @@
                         Редактировать
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Напиток</a>
-                        <a class="dropdown-item" href="#">Топпинг</a>
-                        <#--<div class="dropdown-divider"></div>-->
-                        <#--<a class="dropdown-item" href="#">Something else here</a>-->
+                        <a class="dropdown-item" href="/edit/drinks">Напиток</a>
+                        <a class="dropdown-item" href="/edit/toppings">Топпинг</a>
                     </div>
                 </li>
-            </@security.authorize>
-            <@security.authorize  access="hasRole('ROLE_VENDOR')">
                 <li class="nav-item dropdown" id="create">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-toggle="dropdown"
@@ -43,8 +39,8 @@
                         Создать
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Напиток</a>
-                        <a class="dropdown-item" href="#">Топпинг</a>
+                        <a class="dropdown-item" href="/create/drinks">Напиток</a>
+                        <a class="dropdown-item" href="/create/toppings">Топпинг</a>
                         <#--<div class="dropdown-divider"></div>-->
                         <#--<a class="dropdown-item" href="#">Something else here</a>-->
                     </div>
@@ -70,9 +66,5 @@
                 </li>
             </@security.authorize>
         </ul>
-        <#--<form class="form-inline my-1 my-lg-0">-->
-        <#--<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
-        <#--<button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>-->
-        <#--</form>-->
     </div>
 </nav>

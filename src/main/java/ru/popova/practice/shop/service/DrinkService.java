@@ -161,7 +161,10 @@ public class DrinkService {
                 .filter(name -> !name.isEmpty())
                 .ifPresent(name ->
                         specificationBuilder.with(((root, query, builder) ->
-                                builder.like(root.get(DrinkEntity_.name), name)
+                                builder.like(
+                                        builder.upper(root.get(DrinkEntity_.name)),
+                                        "%" + name.toUpperCase() + "%"
+                                )
                         )));
 
         BigDecimal lowerPrice = drinkSearchCriteria.getLowerPrice();
