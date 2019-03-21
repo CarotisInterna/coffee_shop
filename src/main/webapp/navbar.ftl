@@ -1,7 +1,8 @@
+<#import "spring.ftl" as spring />
 <#assign security=JspTaglibs["http://www.springframework.org/security/tags"]/>
 <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
     <a class="navbar-brand" href="#">
-        <img src="../api/images/icon" width="30" height="30" class="d-inline-block align-top" alt="">
+        <img src="<@spring.url '/api/images/icon'/>" width="30" height="30" class="d-inline-block align-top" alt="">
         Coffee Shop
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -18,7 +19,7 @@
                 </div>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="../drinks">Меню <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="<@spring.url '/drinks'/>">Меню <span class="sr-only">(current)</span></a>
             </li>
             <@security.authorize  access="hasRole('ROLE_VENDOR')">
                 <li class="nav-item dropdown" id="edit">
@@ -51,7 +52,7 @@
             <@security.authorize  access="isAuthenticated()">
                 <span class="navbar-text"> Привет, <@security.authentication property='principal.username'/> !</span>
                 <li class="nav-item" type="none">
-                    <a class="nav-link btn btn-ghost-secondary my-2 my-sm-0" href="../logout">
+                    <a class="nav-link btn btn-ghost-secondary my-2 my-sm-0" href="<@spring.url '/logout'/>">
                         <span class="cui-account-logout"></span>
                         Выход
                     </a>
@@ -59,7 +60,7 @@
             </@security.authorize>
             <@security.authorize  access="isAnonymous()">
                 <li class="nav-item" type="none">
-                    <a class="nav-link btn btn-ghost-secondary my-2 my-sm-0" href="../login">
+                    <a class="nav-link btn btn-ghost-secondary my-2 my-sm-0" href="<@spring.url '/login'/>"">
                         <span class="cui-user"></span>
                         Войти
                     </a>

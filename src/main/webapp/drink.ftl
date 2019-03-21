@@ -8,7 +8,7 @@
 <div class="container" style="text-align:center;">
     <h2>${message}</h2>
 </div>
-<div>
+<div class="container">
     <#if !drink??>
         Не найден напиток
     <#else>
