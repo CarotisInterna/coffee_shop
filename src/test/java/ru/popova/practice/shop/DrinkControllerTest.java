@@ -15,6 +15,7 @@ import ru.popova.practice.shop.dto.NewDrinkDto;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -134,7 +135,7 @@ public class DrinkControllerTest {
                 "Банановый коктейль",
                 new BigDecimal(150),
                 300,
-                images,
+                Collections.emptyList(),
                 "Десертный напиток на основе молока и мороженого.",
                 categories
         );
