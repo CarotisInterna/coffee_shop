@@ -2,26 +2,21 @@ package ru.popova.practice.shop.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.popova.practice.shop.config.ImagesConfig;
 import ru.popova.practice.shop.config.messages.MessageSourceDecorator;
 import ru.popova.practice.shop.dto.NewDrinkDto;
 import ru.popova.practice.shop.entity.CategoryEntity;
 import ru.popova.practice.shop.entity.DrinkEntity;
-import ru.popova.practice.shop.entity.DrinkImageEntity;
 import ru.popova.practice.shop.exception.NotFoundException;
 import ru.popova.practice.shop.repository.CategoryEntityRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static ru.popova.practice.shop.util.FileUtil.saveFile;
 import static ru.popova.practice.shop.util.constants.MessageConstants.CATEGORY_NOT_FOUND;
 
 @Component
 public class NewDrinkMapper implements AbstractMapper<DrinkEntity, NewDrinkDto> {
 
     private CategoryEntityRepository categoryEntityRepository;
-    private ImagesConfig imagesConfig;
     private MessageSourceDecorator messageSourceDecorator;
 
     @Override
@@ -51,21 +46,7 @@ public class NewDrinkMapper implements AbstractMapper<DrinkEntity, NewDrinkDto> 
         }
 
 
-        List<DrinkImageEntity> images = newDrinkDto.getImages().stream()
-                .map(multipartFile -> saveFile(multipartFile, multipartFile.getOriginalFilename(), imagesConfig.getPath()))
-                .map(this::toDrinkImageEntity)
-                .peek(image -> image.setDrink(drink))
-                .collect(Collectors.toList());
-
-        drink.setImages(images);
-
         return drink;
-    }
-
-    private DrinkImageEntity toDrinkImageEntity(String image) {
-        DrinkImageEntity drinkImageEntity = new DrinkImageEntity();
-        drinkImageEntity.setImage(image);
-        return drinkImageEntity;
     }
 
     @Autowired

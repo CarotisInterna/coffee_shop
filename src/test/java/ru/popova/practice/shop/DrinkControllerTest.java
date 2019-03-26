@@ -257,12 +257,13 @@ public class DrinkControllerTest {
 
         List<Integer> categoriesList = new ArrayList<>(Arrays.asList(categories));
 
-        return new NewDrinkDto(
-                name,
-                new BigDecimal(price),
-                volume, Collections.emptyList(),
-                description,
-                categoriesList
-        );
+        return NewDrinkDto.builder()
+                .name(name)
+                .price(new BigDecimal(price))
+                .volume(volume)
+                .images(Collections.emptyList())
+                .description(description)
+                .categories(categoriesList)
+                .build();
     }
 }

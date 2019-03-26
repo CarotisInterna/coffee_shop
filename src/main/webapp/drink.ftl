@@ -15,7 +15,7 @@
     Не найден напиток
 <#else>
     <form id="create-drink" enctype="multipart/form-data" name="drink" class="form-horizontal"
-          onsubmit="onCreate(this)">
+        <#if drink.id??>data-id="${drink.id}"</#if>>
         <div class="form-group">
             <label for="name" class="control-label col-sm-2">Название</label>
             <div class="col-sm-10">
@@ -49,23 +49,40 @@
             <div class="col-sm-10">
                 <select id="categories" name="categories" multiple>
                     <#list categories as category>
+                        <#--TODO: если категория есть в drink - выделить-->
                         <option value="${category.id}">${category.name}</option>
                     </#list>
                 </select>
             </div>
         </div>
         <div class="form-group">
-            <label for="file" class="control-label col-sm-2"> Изображение </label>
+            Изображение
+            <br>
+            <#if drink.images?has_content>
+                <#list drink.images as image>
+                    <div class="form-check form-check-inline">
+                        <img src="<@spring.url '/api/images/' + image/>"/>
+                        <label class="form-check-label" for="replace-image">Удалить</label>
+                        <input class="form-check-input" type="checkbox" id="replace-image" value="" name="replaceImage">
+                    </div>
+                </#list>
+            </#if>
             <div class="col-sm-10">
                 <div id="photos" class="row">
                     <div class="col-sm-6 btn-group">
-                        <input class="btn" type="file" name="images" required data-file-id="1"/>
+                        <input class="btn" type="file" name="images" <#if !drink.id??>required</#if>/>
                     </div>
                 </div>
             </div>
         </div>
         <div>
-            <button type="submit">Сохранить</button>
+            <button type="submit" onclick="
+                <#if drink.id??>
+                        onEdit(event);
+                <#else>
+                        onCreate(event);
+                </#if>">Сохранить
+            </button>
         </div>
     </form>
 </#if>

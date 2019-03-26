@@ -8,14 +8,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.popova.practice.shop.config.messages.MessageSourceDecorator;
-import ru.popova.practice.shop.dto.DrinkDto;
-import ru.popova.practice.shop.dto.ListErrorDto;
-import ru.popova.practice.shop.dto.NewDrinkDto;
-import ru.popova.practice.shop.dto.PageDto;
-import ru.popova.practice.shop.entity.CategoryEntity;
-import ru.popova.practice.shop.entity.CategoryEntity_;
-import ru.popova.practice.shop.entity.DrinkEntity;
-import ru.popova.practice.shop.entity.DrinkEntity_;
+import ru.popova.practice.shop.dto.*;
+import ru.popova.practice.shop.entity.*;
 import ru.popova.practice.shop.exception.NotFoundException;
 import ru.popova.practice.shop.mapper.DrinkMapper;
 import ru.popova.practice.shop.mapper.NewDrinkMapper;
@@ -47,6 +41,7 @@ public class DrinkService {
     private final DrinkEntityRepository drinkEntityRepository;
     private final CategoryEntityRepository categoryEntityRepository;
     private final MessageSourceDecorator messageSourceDecorator;
+    private final ImageService imageService;
 
     /**
      * получение списка напитков
@@ -97,7 +92,7 @@ public class DrinkService {
      * @return напиток
      */
     @Transactional
-    public DrinkDto saveDrink(NewDrinkDto newDrinkDto) {
+    public DrinkDto editDrink(NewDrinkDto newDrinkDto) {
 
         ListErrorDto listErrorDto = new ListErrorDto();
 
@@ -105,7 +100,11 @@ public class DrinkService {
 
         DrinkEntity drinkEntity = newDrinkMapper.toEntity(newDrinkDto);
         DrinkEntity saved = drinkEntityRepository.save(drinkEntity);
-        log.info("{}", saved.getId());
+//TODO: сохраняется неправильное название файла, надо создавать название самому, а не использовать имеющееся
+        List<DrinkImageEntity> imageEntities = imageService.saveImages(newDrinkDto.getImages(), drinkEntity);
+
+        saved.setImages(imageEntities);
+
         return drinkMapper.toDto(saved);
     }
 
@@ -119,10 +118,9 @@ public class DrinkService {
 
     @Transactional
     public DrinkDto editDrink(NewDrinkDto newDrinkDto, Integer id) {
+        Optional<DrinkDto> found = getDrinkById(id);
 
-        Optional<DrinkDto> saved = getDrinkById(id);
-
-        if (!saved.isPresent()) {
+        if (!found.isPresent()) {
             throw new NotFoundException(messageSourceDecorator.getMessage(DRINK_NOT_FOUND));
         }
 
@@ -132,7 +130,14 @@ public class DrinkService {
 
         DrinkEntity drinkEntity = newDrinkMapper.toEntity(newDrinkDto);
         drinkEntity.setId(id);
+
         DrinkEntity edited = drinkEntityRepository.save(drinkEntity);
+        if (newDrinkDto.isReplaceImage()) {
+            List<DrinkImageEntity> oldImages = imageService.getImagesByDrinkId(id);
+            imageService.removeImages(oldImages);
+            List<DrinkImageEntity> imageEntities = imageService.saveImages(newDrinkDto.getImages(), drinkEntity);
+            drinkEntity.setImages(imageEntities);
+        }
         return drinkMapper.toDto(edited);
     }
 

@@ -1,6 +1,7 @@
 package ru.popova.practice.shop.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name = "drink_img")
+@NoArgsConstructor
 public class DrinkImageEntity extends AbstractCoffeeShopEntity<Integer>{
 
     @Id
@@ -24,4 +26,9 @@ public class DrinkImageEntity extends AbstractCoffeeShopEntity<Integer>{
 
     @ManyToOne
     private DrinkEntity drink;
+
+    public DrinkImageEntity(String image, DrinkEntity drink) {
+        this.image = image;
+        this.drink = drink;
+    }
 }
