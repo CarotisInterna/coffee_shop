@@ -3,7 +3,6 @@ package ru.popova.practice.shop.dto;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.popova.practice.shop.dto.groups.NotEmptyGroup;
-import ru.popova.practice.shop.dto.validation.drink.NameAndVolumeUnique;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
@@ -12,7 +11,6 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
-@NameAndVolumeUnique
 @Builder
 @AllArgsConstructor
 public class NewDrinkDto {
@@ -37,8 +35,6 @@ public class NewDrinkDto {
     @NotBlank(groups = NotEmptyGroup.class)
     @Size(min = 10, max = 300)
     private String description;
-
-    private boolean replaceImage;
 
     @NotEmpty(groups = NotEmptyGroup.class)
     @Size(min = 1, max = 5)

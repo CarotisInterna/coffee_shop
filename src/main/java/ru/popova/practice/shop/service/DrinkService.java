@@ -129,14 +129,10 @@ public class DrinkService {
 
         DrinkEntity drinkEntity = newDrinkMapper.toEntity(newDrinkDto);
         drinkEntity.setId(id);
+        drinkEntity.setImages(imageService.getImagesByDrinkId(id)); //dirty hack
 
         DrinkEntity edited = drinkEntityRepository.save(drinkEntity);
-        if (newDrinkDto.isReplaceImage()) {
-            List<DrinkImageEntity> oldImages = imageService.getImagesByDrinkId(id);
-            imageService.removeImages(oldImages);
-            List<DrinkImageEntity> imageEntities = imageService.saveImages(newDrinkDto.getImages(), drinkEntity);
-            drinkEntity.setImages(imageEntities);
-        }
+
         return drinkMapper.toDto(edited);
     }
 

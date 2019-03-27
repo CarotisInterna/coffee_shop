@@ -11,62 +11,60 @@
     <h2>${message}</h2>
 </div>
 <div class="container">
-    <#if !drink??>
-        Не найден напиток
-    <#else>
-        <form id="create-drink" enctype="multipart/form-data" name="drink" class="form-horizontal"
-              <#if drink.id??>data-id="${drink.id}"</#if>>
-            <div class="form-group">
-                <label for="name" class="control-label col-sm-2">Название</label>
-                <div class="col-sm-10">
-                    <input id="name" name="name" value="${(drink.name)!''}" required
-                        <#if drink.id??>
-                           readonly
-                    </#if>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="price" class="control-label col-sm-2">Цена</label>
-                <div class="col-sm-10">
-                    <input id="price" name="price" value="${(drink.price)!''}" required/>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="volume" class="control-label col-sm-2">Объем</label>
-                <div class="col-sm-10">
-                    <input id="volume" name="volume" value="${(drink.volume)!''}" required/>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="description" class="control-label col-sm-2">Описание</label>
-                <div class="col-sm-10">
-                    <textarea id="description" name="description">${(drink.description)!''}</textarea>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="categories">Категории</label>
-                <div class="col-sm-10">
-                    <select id="categories" name="categories" multiple>
-                        <#list categories as category>
-                            <option value="${category.id}" ${drink.categories?seq_contains(category.id)?string(selected, "")} >${category.name}</option>
-                        </#list>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                Изображение
-                <br>
-                <#if drink.images?has_content>
-                    <#list drink.images as image>
-                        <div class="form-check form-check-inline">
-                            <img src="<@spring.url '/api/images/' + image/>"/>
-                            <label class="form-check-label" for="replace-image">Удалить</label>
-                            <input class="form-check-input" type="checkbox" id="replace-image" value=""
-                                   name="replaceImage">
-                        </div>
-                    </#list>
+<#if !drink??>
+    Не найден напиток
+<#else>
+    <form id="create-drink" enctype="multipart/form-data" name="drink" class="form-horizontal"
+          <#if drink.id??>data-id="${drink.id}"</#if>>
+        <div class="form-group">
+            <label for="name" class="control-label col-sm-2">Название</label>
+            <div class="col-sm-10">
+            <input id="name" name="name" value="${(drink.name)!''}" required
+                <#if drink.id??>
+                   readonly
                 </#if>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="price" class="control-label col-sm-2">Цена</label>
+            <div class="col-sm-10">
+                <input id="price" name="price" value="${(drink.price)!''}" required/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="volume" class="control-label col-sm-2">Объем</label>
+            <div class="col-sm-10">
+                <input id="volume" name="volume" value="${(drink.volume)!''}" required/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="description" class="control-label col-sm-2">Описание</label>
+            <div class="col-sm-10">
+                <textarea id="description" name="description">${(drink.description)!''}</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="categories">Категории</label>
+            <div class="col-sm-10">
+                <select id="categories" name="categories" multiple>
+                    <#list categories as category>
+                        <option value="${category.id}" ${drink.categories?seq_contains(category.name)?string("selected", "")}>${category.name}</option>
+                    </#list>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            Изображение
+            <br>
+            <#if drink.images?has_content>
+                <#list drink.images as image>
+                    <div class="form-check form-check-inline">
+                        <img src="<@spring.url '/api/images/' + image/>"/>
+                    </div>
+                </#list>
+            </#if>
+            <#if !drink.id??>
                 <div class="col-sm-10">
                     <div id="photos" class="row">
                         <div class="col-sm-6 btn-group">
@@ -74,18 +72,19 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div>
-                <button type="submit" onclick="
+            </#if>
+        </div>
+        <div>
+            <button type="submit" onclick="
                 <#if drink.id??>
                         onEdit(event);
                 <#else>
                         onCreate(event);
                 </#if>">Сохранить
-                </button>
-            </div>
-        </form>
-    </#if>
+            </button>
+        </div>
+    </form>
+</#if>
 </div>
 </body>
 </html>
