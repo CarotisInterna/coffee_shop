@@ -16,9 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static ru.popova.practice.shop.util.FileUtil.saveFile;
+import static ru.popova.practice.shop.util.constants.PathConstants.IMAGE_NAME;
+import static ru.popova.practice.shop.util.constants.PathConstants.PLACEHOLDER;
 
 @Slf4j
 @Service
@@ -29,8 +32,12 @@ public class ImageService {
     private final DrinkImageRepository imageRepository;
 
     public List<DrinkImageEntity> saveImages(List<MultipartFile> images, DrinkEntity drink) {
+
+        AtomicInteger i = new AtomicInteger(0);
+
         return images.stream()
-                .map(multipartFile -> saveFile(multipartFile, multipartFile.getOriginalFilename(), imagesConfig.getPath()))
+                .filter(multipartFile -> !multipartFile.isEmpty())
+                .map(multipartFile -> saveFile(multipartFile, IMAGE_NAME + PLACEHOLDER + drink.getId() + PLACEHOLDER + i.incrementAndGet() +  imagesConfig.getSuffix(), imagesConfig.getPath()))
                 .map(path -> new DrinkImageEntity(path, drink))
                 .map(imageRepository::save)
                 .collect(Collectors.toList());

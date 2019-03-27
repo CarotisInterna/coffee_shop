@@ -110,7 +110,7 @@ public class DrinkController {
             throw new ValidationException(result);
         }
 
-        DrinkDto saved = drinkService.editDrink(newDrinkDto);
+        DrinkDto saved = drinkService.saveDrink(newDrinkDto);
         return ResponseEntity.ok(saved);
     }
 
@@ -126,7 +126,6 @@ public class DrinkController {
     public ResponseEntity<DrinkDto> editDrink(@PathVariable Integer id,
                                               @ModelAttribute @Validated(NotEmptyValidationSequence.class) NewDrinkDto editDrinkDto,
                                               BindingResult result) {
-        //TODO: name приходит null, не заполняется с задисейбленным инпутом
         if (result.hasErrors()) {
             throw new ValidationException(result);
         }

@@ -92,7 +92,7 @@ public class DrinkService {
      * @return напиток
      */
     @Transactional
-    public DrinkDto editDrink(NewDrinkDto newDrinkDto) {
+    public DrinkDto saveDrink(NewDrinkDto newDrinkDto) {
 
         ListErrorDto listErrorDto = new ListErrorDto();
 
@@ -100,8 +100,7 @@ public class DrinkService {
 
         DrinkEntity drinkEntity = newDrinkMapper.toEntity(newDrinkDto);
         DrinkEntity saved = drinkEntityRepository.save(drinkEntity);
-//TODO: сохраняется неправильное название файла, надо создавать название самому, а не использовать имеющееся
-        List<DrinkImageEntity> imageEntities = imageService.saveImages(newDrinkDto.getImages(), drinkEntity);
+        List<DrinkImageEntity> imageEntities = imageService.saveImages(newDrinkDto.getImages(), saved);
 
         saved.setImages(imageEntities);
 
