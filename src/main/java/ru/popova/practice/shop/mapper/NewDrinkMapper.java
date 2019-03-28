@@ -19,6 +19,12 @@ public class NewDrinkMapper implements AbstractMapper<DrinkEntity, NewDrinkDto> 
     private CategoryEntityRepository categoryEntityRepository;
     private MessageSourceDecorator messageSourceDecorator;
 
+    @Autowired
+    public NewDrinkMapper(CategoryEntityRepository categoryEntityRepository, MessageSourceDecorator messageSourceDecorator) {
+        this.categoryEntityRepository = categoryEntityRepository;
+        this.messageSourceDecorator = messageSourceDecorator;
+    }
+
     @Override
     public NewDrinkDto toDto(DrinkEntity entity) {
         return null;
@@ -47,11 +53,5 @@ public class NewDrinkMapper implements AbstractMapper<DrinkEntity, NewDrinkDto> 
 
 
         return drink;
-    }
-
-    @Autowired
-    public NewDrinkMapper(CategoryEntityRepository categoryEntityRepository, MessageSourceDecorator messageSourceDecorator) {
-        this.categoryEntityRepository = categoryEntityRepository;
-        this.messageSourceDecorator = messageSourceDecorator;
     }
 }

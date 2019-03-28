@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc
-public class DrinkControllerTest {
+public class DrinkControllerTest extends AbstractTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -226,44 +226,5 @@ public class DrinkControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(drink)))
                 .andExpect(status().isNotFound());
-    }
-
-    /**
-     * Создание корректного дто напитка для добавления
-     *
-     * @return дто нового напитка
-     */
-    public NewDrinkDto createBananaCocktail() {
-
-        return createNewDrink("Банановый коктейль",
-                150,
-                300,
-                "Десертный напиток на основе молока и мороженого.",
-                2, 5
-        );
-    }
-
-    /**
-     * Создание напитка
-     *
-     * @param name        наименование
-     * @param price       цена
-     * @param volume      объем
-     * @param description описание
-     * @param categories  категории напитка
-     * @return дто нового напитка
-     */
-    public NewDrinkDto createNewDrink(String name, Integer price, Integer volume, String description, Integer... categories) {
-
-        List<Integer> categoriesList = new ArrayList<>(Arrays.asList(categories));
-
-        return NewDrinkDto.builder()
-                .name(name)
-                .price(new BigDecimal(price))
-                .volume(volume)
-                .images(Collections.emptyList())
-                .description(description)
-                .categories(categoriesList)
-                .build();
     }
 }
