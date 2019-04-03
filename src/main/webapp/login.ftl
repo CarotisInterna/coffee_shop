@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <title>Логин</title>
+    <#include 'head.ftl'/>
+    <#include 'navbar.ftl'/>
     <script src="./js/login.js"></script>
 </head>
 <body class="masthead">

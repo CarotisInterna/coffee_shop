@@ -35,6 +35,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "/api/drinks", "/api/categories", "/api/toppings").hasRole(RoleCode.VENDOR.toString())
                 .anyRequest().authenticated()
                 .and()
+                .logout()
+                .permitAll()
+                .and()
                 .csrf().disable();
     }
 

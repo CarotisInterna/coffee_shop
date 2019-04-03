@@ -6,12 +6,10 @@ import ru.popova.practice.shop.config.messages.MessageSourceDecorator;
 import ru.popova.practice.shop.dto.NewDrinkDto;
 import ru.popova.practice.shop.entity.CategoryEntity;
 import ru.popova.practice.shop.entity.DrinkEntity;
-import ru.popova.practice.shop.entity.DrinkImageEntity;
 import ru.popova.practice.shop.exception.NotFoundException;
 import ru.popova.practice.shop.repository.CategoryEntityRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.popova.practice.shop.util.constants.MessageConstants.CATEGORY_NOT_FOUND;
 
@@ -19,8 +17,13 @@ import static ru.popova.practice.shop.util.constants.MessageConstants.CATEGORY_N
 public class NewDrinkMapper implements AbstractMapper<DrinkEntity, NewDrinkDto> {
 
     private CategoryEntityRepository categoryEntityRepository;
-
     private MessageSourceDecorator messageSourceDecorator;
+
+    @Autowired
+    public NewDrinkMapper(CategoryEntityRepository categoryEntityRepository, MessageSourceDecorator messageSourceDecorator) {
+        this.categoryEntityRepository = categoryEntityRepository;
+        this.messageSourceDecorator = messageSourceDecorator;
+    }
 
     @Override
     public NewDrinkDto toDto(DrinkEntity entity) {
@@ -49,25 +52,6 @@ public class NewDrinkMapper implements AbstractMapper<DrinkEntity, NewDrinkDto> 
         }
 
 
-        List<DrinkImageEntity> images = newDrinkDto.getImages().stream()
-                .map(this::toDrinkImageEntity)
-                .peek(image -> image.setDrink(drink))
-                .collect(Collectors.toList());
-
-        drink.setImages(images);
-
         return drink;
-    }
-
-    private DrinkImageEntity toDrinkImageEntity(String image) {
-        DrinkImageEntity drinkImageEntity = new DrinkImageEntity();
-        drinkImageEntity.setImage(image);
-        return drinkImageEntity;
-    }
-
-    @Autowired
-    public NewDrinkMapper(CategoryEntityRepository categoryEntityRepository, MessageSourceDecorator messageSourceDecorator) {
-        this.categoryEntityRepository = categoryEntityRepository;
-        this.messageSourceDecorator = messageSourceDecorator;
     }
 }

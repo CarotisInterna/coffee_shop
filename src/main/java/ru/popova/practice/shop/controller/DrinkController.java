@@ -105,7 +105,7 @@ public class DrinkController {
      * @return статус
      */
     @PostMapping
-    public ResponseEntity<DrinkDto> saveDrink(@RequestBody @Validated(NotEmptyValidationSequence.class) NewDrinkDto newDrinkDto, BindingResult result) {
+    public ResponseEntity<DrinkDto> saveDrink(@ModelAttribute("drink") @Validated(NotEmptyValidationSequence.class) NewDrinkDto newDrinkDto, BindingResult result) {
         if (result.hasErrors()) {
             throw new ValidationException(result);
         }
@@ -118,18 +118,18 @@ public class DrinkController {
      * Редактирование напитка
      *
      * @param id          идентификатор напитка
-     * @param newDrinkDto изменения в напитке
+     * @param editDrinkDto изменения в напитке
      * @param result
      * @return статус
      */
     @PutMapping("/{id}")
     public ResponseEntity<DrinkDto> editDrink(@PathVariable Integer id,
-                                              @RequestBody @Validated(NotEmptyValidationSequence.class) NewDrinkDto newDrinkDto,
+                                              @ModelAttribute @Validated(NotEmptyValidationSequence.class) NewDrinkDto editDrinkDto,
                                               BindingResult result) {
         if (result.hasErrors()) {
             throw new ValidationException(result);
         }
-        DrinkDto edited = drinkService.editDrink(newDrinkDto, id);
+        DrinkDto edited = drinkService.editDrink(editDrinkDto, id);
         return ResponseEntity.ok(edited);
     }
 

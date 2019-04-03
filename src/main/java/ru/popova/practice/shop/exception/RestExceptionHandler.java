@@ -59,7 +59,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AuthenticationFailedException.class)
     public ResponseEntity<ErrorDto> handleAuthenticationFailedException(AuthenticationFailedException e) {
-        return new ResponseEntity<>(errorDto(e.getObjectName(), e.getMessage()), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(errorDto(e.getObjectName(), e.getMessage()), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(InvalidOperationException.class)

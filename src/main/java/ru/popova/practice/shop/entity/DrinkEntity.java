@@ -58,6 +58,6 @@ public class DrinkEntity extends AbstractCoffeeShopEntity<Integer> {
      *список изображений
      */
     @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
-    private List<DrinkImageEntity> images;
+    private List<DrinkImageEntity> images = new ArrayList<>();
 
 }

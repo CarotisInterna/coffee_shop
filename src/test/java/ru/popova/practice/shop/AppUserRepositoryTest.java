@@ -27,7 +27,7 @@ public class AppUserRepositoryTest {
     private RoleEntityRepository roleEntityRepository;
 
     @Test
-    public void test() {
+    public void testSaveAppUsers() {
         RoleEntity role = new RoleEntity(
                 1,
                 RoleCode.USER,

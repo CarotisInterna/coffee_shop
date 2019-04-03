@@ -1,12 +1,28 @@
 var currentPage = null;
 var functionForGet = getDrinks;
+var toppings = [];
 
 document.addEventListener("DOMContentLoaded", () => {
     getCategories();
+    getToppings();
     document.getElementById('next-page').onclick = nextDrinkPage;
     document.getElementById('prev-page').onclick = prevDrinkPage;
     getDrinks();
 });
+
+function getToppings() {
+    fetchToppings()
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                //TODO: сказать об ошибке
+            }
+        }).then(list => {
+        toppings = list;
+    })
+        .catch(error => console.log(error));
+}
 
 function getDrinks() {
     fetchProducts(currentPage)
@@ -39,8 +55,8 @@ function fetchProducts(page, search) {
 
     }
     if (search) {
-        //TODO: more search params to use
-        if (search.category_id !== null) params.append("category_id", search.category_id)
+        if (search.name) params.append("name", search.name);
+        if (search.category_id) params.append("category_id", search.category_id);
     }
     s += "?" + params.toString();
     return fetch(s);
@@ -55,6 +71,17 @@ function getTextDiv(text) {
     return div;
 }
 
+function getDrinkImg(image) {
+    let img = document.createElement("img");
+    img.setAttribute("width", "200");
+    img.setAttribute("height", "200");
+    img.setAttribute("src", "../api/images/" + image);
+    let div = document.createElement("div");
+    div.appendChild(img);
+    div.style.cssText = 'text-align:center;margin-top:10%;';
+    return div;
+}
+
 /**
  * Создает элемент с информацией о напитке
  * @param drink напиток
@@ -63,12 +90,21 @@ function getDrinkView(drink) {
     let div = document.createElement("div");
     let item = document.createElement("div");
 
+    let image = getDrinkImg(drink.images[0]);
+
     let name = getTextDiv(drink.name);
-    name.style.cssText = 'font-size:160%;text-align:center;font-family:verdana;'
+    name.style.cssText = 'font-size:160%;text-align:center;font-family:verdana;';
+
+    item.appendChild(image);
     item.appendChild(name);
     item.appendChild(getTextDiv(drink.volume + " мл"));
     item.appendChild(getTextDiv(drink.price + " руб"));
-    getToppingSelect(item);
+
+    let ul = document.createElement("ul");
+    ul.classList.add("options");
+    item.appendChild(ul);
+
+    getToppingSelect(item, ul);
 
     div.appendChild(item);
     div.classList.add("col-4");
@@ -95,6 +131,36 @@ function onDrinksLoad(response) {
     }
 }
 
+function selectTopping(select, ul) {
+
+    let option = select.options[select.selectedIndex];
+
+    let choices = ul.getElementsByTagName('li');
+    for (var i = 0; i < choices.length; i++)
+        if (choices[i].id === option.value)
+            return;
+
+    let li = document.createElement('li');
+
+    li.style.cssText = 'list-style-type:none;font-size:80%;font-family:courier';
+    li.id = option.value;
+
+    var span = document.createElement("span");
+
+    span.classList.add("cui-circle-x");
+    span.style.cssText = 'text-align:right;font-size:160%';
+    li.innerHTML = option.firstChild.data;
+    li.appendChild(span);
+
+    li.name = 'toppings[]';
+    li.value = option.value;
+
+    li.setAttribute('onclick', 'this.parentNode.removeChild(this);');
+
+    ul.appendChild(li);
+}
+
+
 function getDrinksByCategory(id, page) {
     fetchProducts(page, {"category_id": id})
         .then(onDrinksLoad)
@@ -107,6 +173,18 @@ function getDrinksByCategory(id, page) {
     functionForGet = () => getDrinksByCategory(id, currentPage);
 }
 
+function getDrinksByName(name, page) {
+    fetchProducts(page, {"name": name})
+        .then(onDrinksLoad)
+        .then(renderDrinks)
+        .catch(function (error) {
+            console.log(error);
+            //TODO: показать алерт с сообщением
+        });
+    //TODO: может быть баг
+    functionForGet = () => getDrinksByName(name, currentPage);
+}
+
 function renderDrinks(page) {
     let row = document.getElementById("drinks");
     row.innerHTML = "";
@@ -115,10 +193,14 @@ function renderDrinks(page) {
     page.content.forEach(drink => row.appendChild(getDrinkView(drink)))
 }
 
+function search() {
+    let input = document.getElementById('search');
+    getDrinksByName(input.value);
+}
 
 function getCategoryButton(category) {
     let button = document.createElement("label");
-    button.innerHTML=category.name;
+    button.innerHTML = category.name;
     button.classList.add("btn");
     button.classList.add("btn-outline-primary");
     let input = document.createElement("input");
@@ -126,8 +208,6 @@ function getCategoryButton(category) {
     input.id = category.id;
     input.value = category.name;
     button.appendChild(input);
-    // button.classList.add("btn");
-    // button.classList.add("btn-outline-primary");
     button.onclick = () => getDrinksByCategory(category.id);
     return button;
 }
@@ -155,31 +235,23 @@ function getCategories() {
         .catch(error => console.log(error));
 }
 
-function getToppingSelect(item) {
-    fetchToppings()
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-            //TODO: сказать об ошибке
-                }
-            })
-            .then(list => {
-                let div = document.createElement("div");
-                div.style.cssText='text-align:center';
-                let select = document.createElement("select");
-                select.classList.add("options");
-                select.style.cssText='border-radius:10px;text-align:center;font-family:courier;margin-bottom:10%;font-size:80%;';
-                select.required = true;
-                div.appendChild(select);
-                let option = document.createElement("option");
-                option.value = "";
-                option.disabled = true;
-                option.selected = true;
-                option.innerHTML = "Добавить топпинг";
-                select.appendChild(option);
-                list.forEach(el => select.appendChild(getToppingOption(el)));
-                item.appendChild(div)
-            })
-            .catch(error => console.log(error));
+function getToppingSelect(item, ul) {
+    let list = toppings;
+    let div = document.createElement("div");
+    div.id = "topping-select"
+    div.style.cssText = 'text-align:center';
+    let select = document.createElement("select");
+    select.classList.add("options");
+    select.style.cssText = 'border-radius:10px;text-align:center;font-family:courier;margin-bottom:10%;font-size:80%;';
+    select.required = true;
+    div.appendChild(select);
+    let option = document.createElement("option");
+    option.value = "";
+    option.disabled = true;
+    option.selected = true;
+    option.innerHTML = "Добавить топпинг";
+    select.appendChild(option);
+    list.forEach(el => select.appendChild(getToppingOption(el)));
+    select.onchange = () => selectTopping(select, ul);
+    item.appendChild(div)
 }

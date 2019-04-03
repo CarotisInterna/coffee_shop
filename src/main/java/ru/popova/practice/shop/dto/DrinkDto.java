@@ -1,16 +1,15 @@
 package ru.popova.practice.shop.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import ru.popova.practice.shop.entity.DrinkEntity;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class DrinkDto {
     private Integer id;
     private String name;

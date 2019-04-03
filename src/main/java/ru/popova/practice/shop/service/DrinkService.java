@@ -1,5 +1,6 @@
 package ru.popova.practice.shop.service;
 
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -8,14 +9,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.popova.practice.shop.config.messages.MessageSourceDecorator;
-import ru.popova.practice.shop.dto.DrinkDto;
-import ru.popova.practice.shop.dto.ListErrorDto;
-import ru.popova.practice.shop.dto.NewDrinkDto;
-import ru.popova.practice.shop.dto.PageDto;
-import ru.popova.practice.shop.entity.CategoryEntity;
-import ru.popova.practice.shop.entity.CategoryEntity_;
-import ru.popova.practice.shop.entity.DrinkEntity;
-import ru.popova.practice.shop.entity.DrinkEntity_;
+import ru.popova.practice.shop.dto.*;
+import ru.popova.practice.shop.entity.*;
 import ru.popova.practice.shop.exception.NotFoundException;
 import ru.popova.practice.shop.mapper.DrinkMapper;
 import ru.popova.practice.shop.mapper.NewDrinkMapper;
@@ -36,6 +31,7 @@ import java.util.stream.Collectors;
 import static ru.popova.practice.shop.util.constants.MessageConstants.CATEGORY_NOT_FOUND;
 import static ru.popova.practice.shop.util.constants.MessageConstants.DRINK_NOT_FOUND;
 
+@Builder
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -47,6 +43,7 @@ public class DrinkService {
     private final DrinkEntityRepository drinkEntityRepository;
     private final CategoryEntityRepository categoryEntityRepository;
     private final MessageSourceDecorator messageSourceDecorator;
+    private final ImageService imageService;
 
     /**
      * получение списка напитков
@@ -105,7 +102,10 @@ public class DrinkService {
 
         DrinkEntity drinkEntity = newDrinkMapper.toEntity(newDrinkDto);
         DrinkEntity saved = drinkEntityRepository.save(drinkEntity);
-        log.info("{}", saved.getId());
+        List<DrinkImageEntity> imageEntities = imageService.saveImages(newDrinkDto.getImages(), saved);
+
+        saved.setImages(imageEntities);
+
         return drinkMapper.toDto(saved);
     }
 
@@ -119,10 +119,9 @@ public class DrinkService {
 
     @Transactional
     public DrinkDto editDrink(NewDrinkDto newDrinkDto, Integer id) {
+        Optional<DrinkDto> found = getDrinkById(id);
 
-        Optional<DrinkDto> saved = getDrinkById(id);
-
-        if (!saved.isPresent()) {
+        if (!found.isPresent()) {
             throw new NotFoundException(messageSourceDecorator.getMessage(DRINK_NOT_FOUND));
         }
 
@@ -132,7 +131,10 @@ public class DrinkService {
 
         DrinkEntity drinkEntity = newDrinkMapper.toEntity(newDrinkDto);
         drinkEntity.setId(id);
+        drinkEntity.setImages(imageService.getImagesByDrinkId(id)); //dirty hack
+
         DrinkEntity edited = drinkEntityRepository.save(drinkEntity);
+
         return drinkMapper.toDto(edited);
     }
 
@@ -161,7 +163,10 @@ public class DrinkService {
                 .filter(name -> !name.isEmpty())
                 .ifPresent(name ->
                         specificationBuilder.with(((root, query, builder) ->
-                                builder.like(root.get(DrinkEntity_.name), name)
+                                builder.like(
+                                        builder.upper(root.get(DrinkEntity_.name)),
+                                        "%" + name.toUpperCase() + "%"
+                                )
                         )));
 
         BigDecimal lowerPrice = drinkSearchCriteria.getLowerPrice();
@@ -223,7 +228,7 @@ public class DrinkService {
      * @param id идентификатор
      * @return сущность категории
      */
-    private Optional<CategoryEntity> getCategoryEntity(Integer id) {
+    public Optional<CategoryEntity> getCategoryEntity(Integer id) {
         return categoryEntityRepository.findById(id);
     }
 

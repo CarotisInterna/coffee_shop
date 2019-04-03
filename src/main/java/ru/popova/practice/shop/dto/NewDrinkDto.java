@@ -1,10 +1,8 @@
 package ru.popova.practice.shop.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.popova.practice.shop.dto.groups.NotEmptyGroup;
-import ru.popova.practice.shop.dto.validation.drink.NameAndVolumeUnique;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
@@ -13,7 +11,8 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
-@NameAndVolumeUnique
+@Builder
+@AllArgsConstructor
 public class NewDrinkDto {
 
     @NotBlank(groups = NotEmptyGroup.class)
@@ -30,9 +29,8 @@ public class NewDrinkDto {
     @Max(value = 1000)
     private Integer volume;
 
-    @NotEmpty(groups = NotEmptyGroup.class)
-    @Size(min = 1, max = 3)
-    private List<@NotBlank(groups = NotEmptyGroup.class) String> images;
+    @Size(max = 3)
+    private List<MultipartFile> images;
 
     @NotBlank(groups = NotEmptyGroup.class)
     @Size(min = 10, max = 300)
