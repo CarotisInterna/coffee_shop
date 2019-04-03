@@ -1,5 +1,6 @@
 package ru.popova.practice.shop.service;
 
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 import static ru.popova.practice.shop.util.constants.MessageConstants.CATEGORY_NOT_FOUND;
 import static ru.popova.practice.shop.util.constants.MessageConstants.DRINK_NOT_FOUND;
 
+@Builder
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -226,7 +228,7 @@ public class DrinkService {
      * @param id идентификатор
      * @return сущность категории
      */
-    private Optional<CategoryEntity> getCategoryEntity(Integer id) {
+    public Optional<CategoryEntity> getCategoryEntity(Integer id) {
         return categoryEntityRepository.findById(id);
     }
 

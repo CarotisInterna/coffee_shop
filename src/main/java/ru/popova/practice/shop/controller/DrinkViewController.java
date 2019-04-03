@@ -33,7 +33,7 @@ public class DrinkViewController {
     public String createDrink(Model model) {
         model.addAttribute("message", "Создание напитка");
         model.addAttribute("categories", categoryService.getCategories());
-        model.addAttribute("drink", new DrinkDto());
+        model.addAttribute("drink", DrinkDto.builder().build());
         return "drink";
     }
 

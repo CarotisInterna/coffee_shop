@@ -11,26 +11,23 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.multipart.MultipartFile;
 import ru.popova.practice.shop.dto.NewDrinkDto;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.popova.practice.shop.TestUtils.createBananaCocktail;
+import static ru.popova.practice.shop.TestUtils.createNewDrink;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc
-public class DrinkControllerTest extends AbstractTest {
+public class DrinkControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
