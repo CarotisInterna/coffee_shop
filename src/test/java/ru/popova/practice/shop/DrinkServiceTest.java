@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.test.context.support.WithMockUser;
 import ru.popova.practice.shop.dto.DrinkDto;
 import ru.popova.practice.shop.dto.NewDrinkDto;
@@ -16,13 +18,15 @@ import ru.popova.practice.shop.repository.DrinkEntityRepository;
 import ru.popova.practice.shop.service.DrinkService;
 import ru.popova.practice.shop.service.ImageService;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static ru.popova.practice.shop.TestUtils.*;
 
 public class DrinkServiceTest {
@@ -51,6 +55,9 @@ public class DrinkServiceTest {
         MockitoAnnotations.initMocks(this);
     }
 
+    /**
+     * Тест сохранения напитка
+     */
     @Test
     @WithMockUser(roles = "VENDOR")
     public void testSaveDrink() {
@@ -86,5 +93,24 @@ public class DrinkServiceTest {
         assertEquals(actual.getPrice(), expected.getPrice());
         assertEquals(actual.getDescription(), expected.getDescription());
         assertEquals(actual.getVolume(), expected.getVolume());
+    }
+
+    /**
+     * Тест удаления напитка
+     */
+    @Test
+    @WithMockUser(roles = "VENDOR")
+    public void testDeleteDrink() {
+
+        when(drinkEntityRepository.findById(any())).thenAnswer(invocation -> {
+            Integer drink = (Integer) invocation.getArguments()[0];
+            return Optional.of(getDrinkEntity(drink));
+        });
+
+        doNothing().when(drinkEntityRepository).delete(any());
+
+        drinkService.deleteDrink(anyInt());
+
+        verify(drinkEntityRepository, times(1)).delete(any());
     }
 }
