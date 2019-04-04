@@ -1,4 +1,4 @@
-package ru.popova.practice.shop;
+package ru.popova.practice.shop.service;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -88,6 +88,8 @@ public class DrinkServiceTest {
 
         DrinkDto actual = drinkService.saveDrink(expected);
 
+        verify(drinkEntityRepository, times(1)).save(any());
+
         assertNotNull(actual);
         assertEquals(actual.getName(), expected.getName());
         assertEquals(actual.getPrice(), expected.getPrice());
@@ -112,5 +114,38 @@ public class DrinkServiceTest {
         drinkService.deleteDrink(anyInt());
 
         verify(drinkEntityRepository, times(1)).delete(any());
+    }
+
+    @Test
+    @WithMockUser(roles = "VENDOR")
+    public void testEditDrink() {
+        NewDrinkDto editedDto = createEditedBananaCocktail();
+        DrinkDto expected = createEditedBananaCocktailDto();
+        DrinkEntity editedEntity = createEditedBananaCocktailEntity();
+        DrinkEntity entity = createBananaCocktailEntity();
+        DrinkDto dto = createBananaCocktailDto();
+
+        when(categoryRepository.findById(any())).thenAnswer(invocation -> {
+            Integer category = (Integer) invocation.getArguments()[0];
+            return Optional.of(getCategoryEntity(category));
+        });
+
+        when(drinkEntityRepository.findById(any())).thenAnswer(invocation -> Optional.of(entity));
+
+        when(drinkMapper.toDto(entity)).thenReturn(dto);
+        when(drinkMapper.toDto(editedEntity)).thenReturn(expected);
+
+        when(imageService.saveImages(any(), any())).thenReturn(Collections.emptyList());
+
+
+        when(newDrinkMapper.toEntity(any())).thenReturn(editedEntity);
+
+        when(drinkEntityRepository.save(any())).thenAnswer(invocation -> invocation.getArguments()[0]);
+
+        DrinkDto actual = drinkService.editDrink(editedDto, 1);
+
+        verify(drinkEntityRepository, times(1)).save(any());
+
+        assertNotNull(actual);
     }
 }

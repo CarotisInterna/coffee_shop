@@ -24,7 +24,7 @@ public class TestUtils {
      *
      * @return дто нового напитка
      */
-    static NewDrinkDto createBananaCocktail() {
+    public static NewDrinkDto createBananaCocktail() {
 
         return createNewDrink("Банановый коктейль",
                 150,
@@ -35,7 +35,7 @@ public class TestUtils {
     }
 
 
-    static DrinkEntity createBananaCocktailEntity() {
+    public static DrinkEntity createBananaCocktailEntity() {
         return createDrinkEntity("Банановый коктейль",
                 150,
                 300,
@@ -44,12 +44,41 @@ public class TestUtils {
         );
     }
 
-    static DrinkDto createBananaCocktailDto() {
+    public static NewDrinkDto createEditedBananaCocktail() {
+
+        return createNewDrink("Банановый коктейль",
+                150,
+                300,
+                "НОВОЕ ОПИСАНИЕ НАПИТКА",
+                2, 5
+        );
+    }
+
+    public static DrinkEntity createEditedBananaCocktailEntity() {
+        return createDrinkEntity("Банановый коктейль",
+                150,
+                300,
+                "НОВОЕ ОПИСАНИЕ НАПИТКА",
+                2, 5
+        );
+    }
+
+    public static DrinkDto createBananaCocktailDto() {
         return createDrink(
                 "Банановый коктейль",
                 150,
                 300,
                 "Десертный напиток на основе молока и мороженого.",
+                "test_category_" + 2, "test_category_" + 5
+        );
+    }
+
+    public static DrinkDto createEditedBananaCocktailDto() {
+        return createDrink(
+                "Банановый коктейль",
+                150,
+                300,
+                "НОВОЕ ОПИСАНИЕ НАПИТКА",
                 "test_category_" + 2, "test_category_" + 5
         );
     }
@@ -73,14 +102,14 @@ public class TestUtils {
     }
 
 
-    static CategoryEntity getCategoryEntity(Integer category) {
+    public static CategoryEntity getCategoryEntity(Integer category) {
         CategoryEntity categoryEntity = new CategoryEntity();
         categoryEntity.setId(category);
         categoryEntity.setName("test_category_" + category);
         return categoryEntity;
     }
 
-    static DrinkEntity getDrinkEntity(Integer drink) {
+    public static DrinkEntity getDrinkEntity(Integer drink) {
         DrinkEntity drinkEntity = new DrinkEntity();
         drinkEntity.setId(drink);
         return drinkEntity;
@@ -96,7 +125,7 @@ public class TestUtils {
      * @param categories  категории напитка
      * @return дто нового напитка
      */
-    static NewDrinkDto createNewDrink(String name, Integer price, Integer volume, String description, Integer... categories) {
+    public static NewDrinkDto createNewDrink(String name, Integer price, Integer volume, String description, Integer... categories) {
 
         return NewDrinkDto.builder()
                 .name(name)
