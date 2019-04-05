@@ -166,8 +166,8 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>4.2.0</version>
                 <configuration>
-                    <locations>filesystem:src/main/resources/db/migration/common,
-                        filesystem:src/main/resources/db/migration/${profileName}
+                    <locations>classpath:src/main/resources/db/migration/common,
+                        classpath:src/main/resources/db/migration/${profileName}
                     </locations>
                     <configFile>src/main/resources/db/migration/flyway.properties</configFile>
                 </configuration>

@@ -1,4 +1,4 @@
-package ru.popova.practice.shop;
+package ru.popova.practice.shop.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -11,6 +11,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.popova.practice.shop.Application;
 import ru.popova.practice.shop.dto.NewDrinkDto;
 
 import java.math.BigDecimal;
