@@ -2,6 +2,7 @@ package ru.popova.practice.shop.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import ru.popova.practice.shop.dto.NewAppUserDto;
 import ru.popova.practice.shop.entity.AppUserEntity;
@@ -12,7 +13,7 @@ import ru.popova.practice.shop.repository.RoleEntityRepository;
 public class NewAppUserMapper implements AbstractMapper<AppUserEntity, NewAppUserDto> {
 
     private RoleEntityRepository roleEntityRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private PasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     public NewAppUserMapper(RoleEntityRepository roleEntityRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {

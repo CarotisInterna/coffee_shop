@@ -191,6 +191,12 @@
                 <profileName>prod</profileName>
             </properties>
         </profile>
+        <profile>
+            <id>docker</id>
+            <properties>
+                <profileName>docker</profileName>
+            </properties>
+        </profile>
     </profiles>
 
 </project>
