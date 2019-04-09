@@ -13,10 +13,14 @@ function onEdit(event) {
 }
 
 function sendForm(url, method, data) {
+    let object = {};
+    data.forEach((value, key) => {object[key] = value});
+    let json = JSON.stringify(object);
     return fetch(url,
         {
             method: method,
-            body: data
+            headers: {"Content-Type": "application/json"},
+            body: json
         })
         .then(response => {
         if (response.ok) {

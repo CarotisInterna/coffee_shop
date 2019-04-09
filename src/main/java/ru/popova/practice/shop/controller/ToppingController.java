@@ -1,14 +1,11 @@
 package ru.popova.practice.shop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.popova.practice.shop.dto.ListErrorDto;
-import ru.popova.practice.shop.dto.PageDto;
 import ru.popova.practice.shop.dto.ToppingDto;
 import ru.popova.practice.shop.dto.groups.NotEmptyValidationSequence;
 import ru.popova.practice.shop.exception.ValidationException;
@@ -59,8 +56,8 @@ public class ToppingController {
      * @param result
      * @return статус
      */
-    @PostMapping
-    public ResponseEntity<ToppingDto> saveTopping(@ModelAttribute("topping") @Validated(NotEmptyValidationSequence.class) ToppingDto toppingDto, BindingResult result) {
+    @PostMapping(consumes = "application/json")
+    public ResponseEntity<ToppingDto> saveTopping(@RequestBody @Validated(NotEmptyValidationSequence.class) ToppingDto toppingDto, BindingResult result) {
 
         ListErrorDto listErrorDto = toppingService.validateTopping(toppingDto);
 
