@@ -60,11 +60,11 @@ public class ToppingController {
      * @return статус
      */
     @PostMapping
-    public ResponseEntity<ToppingDto> saveTopping(@RequestBody @Validated(NotEmptyValidationSequence.class) ToppingDto toppingDto, BindingResult result) {
+    public ResponseEntity<ToppingDto> saveTopping(@ModelAttribute("topping") @Validated(NotEmptyValidationSequence.class) ToppingDto toppingDto, BindingResult result) {
 
         ListErrorDto listErrorDto = toppingService.validateTopping(toppingDto);
 
-        if (result.hasErrors() || listErrorDto.getErrorDtos().isEmpty()) {
+        if (result.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
             throw new ValidationException(result, listErrorDto);
         }
         ToppingDto saved = toppingService.saveTopping(toppingDto);
@@ -81,7 +81,7 @@ public class ToppingController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<ToppingDto> editTopping(@PathVariable Integer id,
-                                                  @RequestBody @Validated(NotEmptyValidationSequence.class) ToppingDto toppingDto,
+                                                  @ModelAttribute @Validated(NotEmptyValidationSequence.class) ToppingDto toppingDto,
                                                   BindingResult result) {
 
         ListErrorDto listErrorDto = toppingService.validateTopping(toppingDto);

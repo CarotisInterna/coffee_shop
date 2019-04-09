@@ -1,7 +1,9 @@
+<#import "spring.ftl" as spring />
 <html lang="en">
 <head>
     <title>${message}</title>
-<#include 'head.ftl'/>
+    <#include 'head.ftl'/>
+    <script src="<@spring.url '/js/topping.js'/>"></script>
 </head>
 <body>
 <#include 'navbar.ftl'/>
@@ -12,25 +14,35 @@
     <#if !topping??>
         Не найден топпинг
     <#else>
-        <div>
-            <label>Название</label>
+        <form id="create-topping" name="topping" class="form-horizontal"
+              <#if topping.id??>data-id="${topping.id}"</#if>>
+            <div class="form-group">
+                <label for="name" class="control-label col-sm-2">Название</label>
+                <div class="col-sm-10">
+                    <input id="name" name="name" value="${(topping.name)!''}" required
+                        <#if topping.id??>
+                           readonly
+                    </#if>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="price" class="control-label col-sm-2">Цена</label>
+                <div class="col-sm-10">
+                    <input id="price" name="price" value="${(topping.price)!''}" required/>
+                </div>
+            </div>
+
             <div>
-            <input value="${(topping.name)!''}" required
+                <button type="submit" onclick="
                 <#if topping.id??>
-                   disabled
-                </#if>
+                        onEdit(event);
+                <#else>
+                        onCreate(event);
+                </#if>">Сохранить
+                </button>
             </div>
-        </div>
-        <div>
-            <label>Цена</label>
-            <div>
-                <input value="${(topping.price)!''}" required/>
-            </div>
-        </div>
-        </div>
-        <div>
-            <button>Сохранить</button>
-        </div>
+        </form>
     </#if>
 </div>
 </body>
