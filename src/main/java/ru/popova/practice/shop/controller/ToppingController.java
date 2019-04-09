@@ -83,7 +83,8 @@ public class ToppingController {
 
         ListErrorDto listErrorDto = toppingService.validateTopping(toppingDto);
 
-        if (result.hasErrors() || listErrorDto.getErrorDtos().isEmpty()) {
+        if (result.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
+
             throw new ValidationException(result, listErrorDto);
         }
 

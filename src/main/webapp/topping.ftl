@@ -16,7 +16,7 @@
     <#else>
         <form id="create-topping" name="topping" class="form-horizontal"
               <#if topping.id??>data-id="${topping.id}"</#if>>
-            <div class="form-group">
+            <div id="name-div" class="form-group">
                 <label for="name" class="control-label col-sm-2">Название</label>
                 <div class="col-sm-10">
                     <input id="name" name="name" value="${(topping.name)!''}" required
@@ -26,8 +26,8 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="price" class="control-label col-sm-2">Цена</label>
+            <div id="price-div" class="form-group">
+                <label for="price" class="control-label col-sm-2">Цена в российских рублях</label>
                 <div class="col-sm-10">
                     <input id="price" name="price" value="${(topping.price)!''}" required/>
                 </div>

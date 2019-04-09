@@ -13,20 +13,54 @@ function onEdit(event) {
 }
 
 function sendForm(url, method, data) {
+
+    var errorMsgs = document.getElementsByName("error");
+
+    if (errorMsgs !== null && errorMsgs.length !== 0) {
+        errorMsgs.forEach(el => el.remove());
+    }
+
     let object = {};
-    data.forEach((value, key) => {object[key] = value});
+    data.forEach((value, key) => {
+        object[key] = value
+    });
     let json = JSON.stringify(object);
     return fetch(url,
         {
             method: method,
             headers: {"Content-Type": "application/json"},
             body: json
-        })
-        .then(response => {
+        }).then(function (response) {
         if (response.ok) {
-        console.log(response.code);
-    } else {
-        //TODO: отобразить ошибки
-    }
-});
+            window.location = window.location.origin + "/drinks";
+        } else if (response.status === 404 || response.status === 400) {
+            return response.json();
+        } else if (response.status === 500) {
+            alert("Ошибка сервера, повторите запрос позже")
+        }
+    }).then(function (json) {
+        if (json !== null) {
+            for (let i = 0; i < json.errorDtos.length; i++) {
+                let el = buildFieldErrorLabel(json.errorDtos[i].message);
+                let div;
+                if (json.errorDtos[i].field === "name") {
+                    div = document.getElementById("name-div");
+                } else if (json.errorDtos[i].field === "price") {
+                    div = document.getElementById("price-div");
+                }
+                div.appendChild(el)
+            }
+        }
+    })
+        .catch(function (error) {
+            console.log(error)
+        })
+
+}
+
+function buildFieldErrorLabel(message) {
+    let p = document.createElement("p");
+    p.setAttribute("name", "error");
+    p.innerHTML = message;
+    return p;
 }
