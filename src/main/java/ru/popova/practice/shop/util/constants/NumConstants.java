@@ -3,4 +3,35 @@ package ru.popova.practice.shop.util.constants;
 public interface NumConstants {
 
     int NUMBER_OF_ELEMENTS_ON_PAGE = 9;
+
+    int MIN_NUMBER_OF_LETTERS_IN_TOPPING_NAME = 3;
+
+    int MAX_NUMBER_OF_LETTERS_IN_TOPPING_NAME = 40;
+
+    int MIN_TOPPING_PRICE = 0;
+
+    int MAX_TOPPING_PRICE = 100;
+
+    int MIN_NUMBER_OF_LETTERS_IN_DRINK_NAME = 3;
+
+    int MAX_NUMBER_OF_LETTERS_IN_DRINK_NAME = 20;
+
+    int MIN_DRINK_PRICE = 0;
+
+    int MAX_DRINK_PRICE = 100;
+
+    int MIN_DRINK_VOLUME = 100;
+
+    int MAX_DRINK_VOLUME = 1000;
+
+    int MIN_NUMBER_OF_LETTERS_IN_DRINK_DESCRIPTION = 10;
+
+    int MAX_NUMBER_OF_LETTERS_IN_DRINK_DESCRIPTION = 300;
+
+    int MIN_CATEGORIES_NUM = 1;
+
+    int MAX_CATEGORIES_NUM = 5;
+
+    int MAX_NUMBER_OF_IMAGES = 3;
+
 }
