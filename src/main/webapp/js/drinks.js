@@ -101,6 +101,7 @@ function getDrinkImg(image) {
  */
 function getDrinkView(drink) {
     let div = document.createElement("form");
+    div.setAttribute('data-id' , drink.id);
     let item = document.createElement("div");
 
     let image = getDrinkImg(drink.images[0]);
