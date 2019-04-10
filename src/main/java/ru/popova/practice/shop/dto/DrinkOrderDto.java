@@ -1,7 +1,6 @@
 package ru.popova.practice.shop.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import ru.popova.practice.shop.dto.groups.NotEmptyGroup;
 
 import javax.validation.constraints.Max;
@@ -11,6 +10,9 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class DrinkOrderDto {
 
     private DrinkDto drink;

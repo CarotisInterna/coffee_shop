@@ -21,6 +21,11 @@
             <li class="nav-item active">
                 <a class="nav-link" href="<@spring.url '/drinks'/>">Меню <span class="sr-only">(current)</span></a>
             </li>
+            <@security.authorize  access="isAuthenticated()">
+                <li class="nav-item active">
+                    <a class="nav-link cui-cart" href="<@spring.url '/cart'/>"><span class="sr-only">(current)</span></a>
+                </li>
+            </@security.authorize>
             <@security.authorize  access="hasRole('ROLE_VENDOR')">
                 <li class="nav-item dropdown" id="edit">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -29,8 +34,8 @@
                         Редактировать
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/edit/drinks">Напиток</a>
-                        <a class="dropdown-item" href="/edit/toppings">Топпинг</a>
+                        <a class="dropdown-item" href="<@spring.url '/edit/drinks'/>">Напиток</a>
+                        <a class="dropdown-item" href="<@spring.url '/edit/toppings'/>">Топпинг</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown" id="create">
@@ -40,8 +45,8 @@
                         Создать
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/create/drinks">Напиток</a>
-                        <a class="dropdown-item" href="/create/toppings">Топпинг</a>
+                        <a class="dropdown-item" href="<@spring.url '/create/drinks'/>">Напиток</a>
+                        <a class="dropdown-item" href="<@spring.url '/create/toppings'/>">Топпинг</a>
                         <#--<div class="dropdown-divider"></div>-->
                         <#--<a class="dropdown-item" href="#">Something else here</a>-->
                     </div>

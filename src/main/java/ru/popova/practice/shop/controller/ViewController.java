@@ -15,4 +15,9 @@ public class ViewController {
     public String drinks() {
         return "drinks";
     }
+
+    @GetMapping("/cart")
+    public String cart() {
+        return "cart";
+    }
 }

@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import ru.popova.practice.shop.dto.DrinkOrderDto;
 import ru.popova.practice.shop.dto.OrderDto;
 import ru.popova.practice.shop.dto.groups.NotEmptyValidationSequence;
-import ru.popova.practice.shop.dto.groups.PlaceOrderGroup;
 import ru.popova.practice.shop.exception.ValidationException;
 import ru.popova.practice.shop.service.CartService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/cart")
@@ -22,17 +23,16 @@ public class CartController {
     /**
      * Добавление напитка в корзину
      *
-     * @param drinkOrderDto напиток в заказе
+     * @param drinkId    напиток в заказе
+     * @param toppingIds топпинги
      * @return статус
      */
     @PostMapping
-    public ResponseEntity<OrderDto> addToCart(@RequestBody @Validated(NotEmptyValidationSequence.class) DrinkOrderDto drinkOrderDto,
-                                              BindingResult result) {
-        if (result.hasErrors()) {
-            throw new ValidationException(result);
-        }
+    public ResponseEntity<OrderDto> addToCart(@RequestParam(value = "drinkId") Integer drinkId,
+                                              @RequestParam(value = "toppings", required = false)
+                                                      List<Integer> toppingIds) {
 
-        OrderDto saved = cartService.addProductToCart(drinkOrderDto);
+        OrderDto saved = cartService.addToCart(drinkId, toppingIds);
         return ResponseEntity.ok(saved);
     }
 

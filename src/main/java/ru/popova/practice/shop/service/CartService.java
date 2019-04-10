@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.popova.practice.shop.config.messages.MessageSourceDecorator;
+import ru.popova.practice.shop.dto.DrinkDto;
 import ru.popova.practice.shop.dto.DrinkOrderDto;
 import ru.popova.practice.shop.dto.OrderDto;
+import ru.popova.practice.shop.dto.ToppingForDrinkInOrderDto;
 import ru.popova.practice.shop.entity.*;
 import ru.popova.practice.shop.entity.code.OrderStatusCode;
 import ru.popova.practice.shop.exception.InvalidOperationException;
@@ -22,6 +24,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static ru.popova.practice.shop.util.constants.MessageConstants.*;
 import static ru.popova.practice.shop.util.constants.ObjectConstants.ORDER_OBJECT;
@@ -38,6 +41,8 @@ public class CartService {
     private final DrinkOrderEntityRepository drinkOrderEntityRepository;
     private final ToppingForDrinkInOrderEntityRepository toppingForDrinkInOrderEntityRepository;
     private final MessageSourceDecorator message;
+    private final DrinkService drinkService;
+    private final ToppingService toppingService;
 
     /**
      * Получение корзины текущего пользователя
@@ -63,6 +68,31 @@ public class CartService {
         cart.setTotal(calculateTotal(cart));
         OrderEntity saved = orderEntityRepository.save(cart);
         return orderMapper.toDto(saved);
+    }
+
+    @Transactional
+    public OrderDto addToCart(Integer drinkId, List<Integer> toppingIds) {
+
+        DrinkDto drink = drinkService.getDrinkById(drinkId)
+                .orElseThrow(() -> new NotFoundException(message.getMessage(DRINK_NOT_FOUND)));
+
+        List<ToppingForDrinkInOrderDto> toppings = toppingIds
+                .stream()
+                .map(toppingId ->
+                        toppingService.getToppingById(toppingId)
+                                .orElseThrow(
+                                        () -> new NotFoundException(message.getMessage(TOPPING_NOT_FOUND))
+                                )
+                )
+                .map(topping -> new ToppingForDrinkInOrderDto(topping, 1))
+                .collect(Collectors.toList());
+
+        DrinkOrderDto drinkOrderDto = DrinkOrderDto.builder().drink(drink)
+                .quantity(1)
+                .toppings(toppings)
+                .build();
+
+        return addProductToCart(drinkOrderDto);
     }
 
     /**
