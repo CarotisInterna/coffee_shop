@@ -17,7 +17,9 @@ function sendForm(url, method, data) {
     var errorMsgs = document.getElementsByName("error");
 
     if (errorMsgs !== null && errorMsgs.length !== 0) {
-        errorMsgs.forEach(el => el.remove());
+        for (let i = errorMsgs.length - 1; i >= 0; i--) {
+            errorMsgs[i].remove();
+        }
     }
 
     let object = {};
@@ -32,7 +34,7 @@ function sendForm(url, method, data) {
             body: json
         }).then(function (response) {
         if (response.ok) {
-            window.location = window.location.origin + "/drinks";
+            window.location = window.location.origin + "/edit/toppings";
         } else if (response.status === 404 || response.status === 400) {
             return response.json();
         } else if (response.status === 500) {
@@ -62,5 +64,6 @@ function buildFieldErrorLabel(message) {
     let p = document.createElement("p");
     p.setAttribute("name", "error");
     p.innerHTML = message;
+    p.style.color = "red";
     return p;
 }

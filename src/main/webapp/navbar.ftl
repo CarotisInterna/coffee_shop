@@ -50,7 +50,7 @@
         </ul>
         <ul class="navbar-nav ml-auto">
             <@security.authorize  access="isAuthenticated()">
-                <span class="navbar-text"> Привет, <@security.authentication property='principal.username'/> !</span>
+                <span class="navbar-text"> Привет, <@security.authentication property='principal.username'/>!</span>
                 <li class="nav-item" type="none">
                     <a class="nav-link btn btn-ghost-secondary my-2 my-sm-0" href="<@spring.url '/logout'/>">
                         <span class="cui-account-logout"></span>

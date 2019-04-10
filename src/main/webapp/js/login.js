@@ -3,7 +3,9 @@ function login() {
     var errorMsgs = document.getElementsByName("error");
 
     if (errorMsgs !== null && errorMsgs.length !== 0) {
-        errorMsgs.forEach(el => el.remove());
+        for (let i = errorMsgs.length - 1; i >= 0; i--) {
+            errorMsgs[i].remove();
+        }
     }
 
     let username = document.getElementsByName("f")[0].elements["username"].value;
@@ -56,5 +58,6 @@ function buildFieldErrorLabel(message) {
     let p = document.createElement("p");
     p.setAttribute("name", "error");
     p.innerHTML = message;
+    p.style.color = "red";
     return p;
 }

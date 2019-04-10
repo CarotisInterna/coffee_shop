@@ -67,7 +67,20 @@ function getTextDiv(text) {
     let p = document.createElement("p");
     p.innerHTML = text;
     div.appendChild(p);
-    div.style.cssText = 'text-align:center;font-family:courier;'
+    div.style.cssText = 'text-align:center;font-family:courier;';
+    return div;
+}
+
+function getButtonDiv(text) {
+    let div = document.createElement("div");
+    let button = document.createElement("button");
+    button.type="button";
+    button.classList.add("btn");
+    button.classList.add("btn-primary");
+    button.style.cssText = 'text-align:center;font-size:90%;font-family:courier;';
+    div.style.cssText = 'text-align:center;font-size:80%;font-family:courier;';
+    button.innerHTML = text;
+    div.appendChild(button);
     return div;
 }
 
@@ -87,18 +100,20 @@ function getDrinkImg(image) {
  * @param drink напиток
  */
 function getDrinkView(drink) {
-    let div = document.createElement("div");
+    let div = document.createElement("form");
     let item = document.createElement("div");
 
     let image = getDrinkImg(drink.images[0]);
 
     let name = getTextDiv(drink.name);
     name.style.cssText = 'font-size:160%;text-align:center;font-family:verdana;';
+    name.classList.add("form-group")
 
     item.appendChild(image);
     item.appendChild(name);
     item.appendChild(getTextDiv(drink.volume + " мл"));
     item.appendChild(getTextDiv(drink.price + " руб"));
+    item.appendChild(getButtonDiv("Добавить в корзину"));
 
     let ul = document.createElement("ul");
     ul.classList.add("options");

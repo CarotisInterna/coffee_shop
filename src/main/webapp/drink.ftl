@@ -29,13 +29,13 @@
             <div id="price-div" class="form-group">
                 <label for="price" class="control-label col-sm-2">Цена в российских рублях</label>
                 <div class="col-sm-10">
-                    <input id="price" name="price" value="${(drink.price)!''}" required/>
+                    <input type="number" id="price" name="price" value="${(drink.price)!''}" required/>
                 </div>
             </div>
             <div id="volume-div" class="form-group">
                 <label for="volume" class="control-label col-sm-2">Объем в миллилитрах</label>
                 <div class="col-sm-10">
-                    <input id="volume" name="volume" value="${(drink.volume)!''}" required/>
+                    <input type="number" id="volume" name="volume" value="${(drink.volume)!''}" required/>
                 </div>
             </div>
             <div id="description-div" class="form-group">

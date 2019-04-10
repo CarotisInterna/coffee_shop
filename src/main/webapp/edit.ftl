@@ -23,7 +23,7 @@
                     ${item.name}
                 </td>
                 <td>
-                    <a class="btn btn-warning" href="${link}/${item.id}">Изменить</a>
+                    <a class="btn btn btn-outline-warning" href="${link}/${item.id}">Изменить</a>
                 </td>
             </tr>
         </#list>

@@ -76,16 +76,14 @@ public class ToppingController {
      * @param result
      * @return статус
      */
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<ToppingDto> editTopping(@PathVariable Integer id,
-                                                  @ModelAttribute @Validated(NotEmptyValidationSequence.class) ToppingDto toppingDto,
+                                                  @RequestBody @Validated(NotEmptyValidationSequence.class) ToppingDto toppingDto,
                                                   BindingResult result) {
 
-        ListErrorDto listErrorDto = toppingService.validateTopping(toppingDto);
+        if (result.hasErrors()) {
 
-        if (result.hasErrors() || !listErrorDto.getErrorDtos().isEmpty()) {
-
-            throw new ValidationException(result, listErrorDto);
+            throw new ValidationException(result);
         }
 
         ToppingDto edited = toppingService.editTopping(toppingDto, id);
