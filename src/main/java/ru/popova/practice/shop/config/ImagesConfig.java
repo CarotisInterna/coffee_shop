@@ -21,5 +21,7 @@ public class ImagesConfig {
     private String path;
     @NotBlank
     private String suffix;
+    @NotBlank
+    private String tmpPath;
 
 }

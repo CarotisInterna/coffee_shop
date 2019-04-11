@@ -1,7 +1,6 @@
 package ru.popova.practice.shop.dto;
 
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 import ru.popova.practice.shop.dto.groups.NotEmptyGroup;
 
 import javax.validation.constraints.*;
@@ -33,11 +32,10 @@ public class NewDrinkDto {
     private Integer volume;
 
     @Size(max = MAX_NUMBER_OF_IMAGES)
-    private List<MultipartFile> images;
+    private List<String> images;
 
     @NotBlank(groups = NotEmptyGroup.class)
     @Size(min = MIN_NUMBER_OF_LETTERS_IN_DRINK_DESCRIPTION, max = MAX_NUMBER_OF_LETTERS_IN_DRINK_DESCRIPTION)
-    @Pattern(regexp = "^[a-zA-ZА-Яа-я0-9 ]+$", message = "{LetterString.message}")
     private String description;
 
     @NotEmpty(groups = NotEmptyGroup.class)

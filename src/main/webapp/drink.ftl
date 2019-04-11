@@ -14,7 +14,7 @@
     <#if !drink??>
         Не найден напиток
     <#else>
-        <form id="create-drink" enctype="multipart/form-data" name="drink" class="form-horizontal"
+        <form id="create-drink" name="drink" class="form-horizontal"
               <#if drink.id??>data-id="${drink.id}"</#if>>
             <div id="name-div" class="form-group">
                 <label for="name" class="control-label col-sm-2">Название</label>
@@ -58,25 +58,11 @@
                     </select>
                 </div>
             </div>
-            <div id="picture-div" class="form-group">
-                Изображение
-                <br>
-                <#if drink.images?has_content>
-                    <#list drink.images as image>
-                        <div class="form-check form-check-inline">
-                            <img src="<@spring.url '/api/images/' + image/>"/>
-                        </div>
-                    </#list>
-                </#if>
-                <#if !drink.id??>
-                    <div class="col-sm-10">
-                        <div id="photos" class="row">
-                            <div class="col-sm-6 btn-group">
-                                <input class="btn" type="file" name="images" <#if !drink.id??>required</#if>/>
-                            </div>
-                        </div>
-                    </div>
-                </#if>
+            <div id="uploaded-files" class="form-group">
+                <label for="uploaded-files-input">Загруженные файлы</label>
+                <div class="col-sm-10">
+                    <input id="uploaded-files-input" type="text" name="images">
+                </div>
             </div>
             <div>
                 <button type="submit" onclick="
@@ -88,7 +74,32 @@
                 </button>
             </div>
         </form>
+        <br>
+            <div id="picture-div" class="form-group">
+                Изображение
+                <br>
+                <#if drink.images?has_content>
+                    <#list drink.images as image>
+                        <div class="form-check form-check-inline">
+                            <img src="<@spring.url '/api/images/' + image/>"/>
+                        </div>
+                    </#list>
+                </#if>
+                <#if !drink.id??>
+                    <div id="picture-div" class="col-sm-10">
+                        <form id="add-img" enctype="multipart/form-data">
+                            <div id="photos" class="row">
+                                <div class="col-sm-6 btn-group">
+                                    <input class="btn" type="file" name="images" required/>
+                                </div>
+                            </div>
+                            <button type="submit" onclick="onUploadImage(event)">Загрузить</button>
+                        </form>
+                    </div>
+                </#if>
+            </div>
     </#if>
 </div>
+<#include 'modal.ftl'/>
 </body>
 </html>

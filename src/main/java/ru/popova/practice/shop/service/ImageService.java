@@ -14,7 +14,10 @@ import ru.popova.practice.shop.util.FileUtil;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -31,16 +34,33 @@ public class ImageService {
     private final ImagesConfig imagesConfig;
     private final DrinkImageRepository imageRepository;
 
-    public List<DrinkImageEntity> saveImages(List<MultipartFile> images, DrinkEntity drink) {
+    public List<DrinkImageEntity> saveImages(List<String> imagePaths, DrinkEntity drink) {
 
         AtomicInteger i = new AtomicInteger(0);
 
-        return images.stream()
-                .filter(multipartFile -> !multipartFile.isEmpty())
-                .map(multipartFile -> saveFile(multipartFile, IMAGE_NAME + PLACEHOLDER + drink.getId() + PLACEHOLDER + i.incrementAndGet() +  imagesConfig.getSuffix(), imagesConfig.getPath()))
-                .map(path -> new DrinkImageEntity(path, drink))
-                .map(imageRepository::save)
+        List<DrinkImageEntity> images = imagePaths.stream()
+                .peek(imagePath -> {
+                    String fullPath = imagesConfig.getTmpPath() + imagePath;
+                    File source = new File(fullPath);
+                    File dest =
+                            getFile(buildImageName(drink.getId(), i.incrementAndGet()));
+                    try {
+                        if (dest.createNewFile()) {
+                            copyFile(source, dest);
+                            removeFile(source);
+                        }
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .map(imagePath -> new DrinkImageEntity(imagePath, drink))
                 .collect(Collectors.toList());
+
+        return imageRepository.saveAll(images);
+    }
+
+    private String buildImageName(Integer id, int num) {
+        return IMAGE_NAME + PLACEHOLDER + id + PLACEHOLDER + num + imagesConfig.getSuffix();
     }
 
     public List<DrinkImageEntity> getImagesByDrinkId(Integer id) {
@@ -73,17 +93,26 @@ public class ImageService {
         return new File(imagesConfig.getPath() + fileName + imagesConfig.getSuffix());
     }
 
-    public void removeImages(List<DrinkImageEntity> oldImages) {
-        oldImages.forEach(image -> {
-            String fileName = image.getImage();
-            File file = getFile(fileName);
-            if (file.delete()) {
-                log.info("Successfully deleted image file {}", image);
-                imageRepository.delete(image);
-            } else {
-                //TODO: throw informative exception
-                throw new RuntimeException("Cannot remove image " + image);
-            }
-        });
+    public void removeFile(File file) {
+        if (file.delete()) {
+            log.info("Successfully deleted image file {}", file);
+        } else {
+            //TODO: throw informative exception
+            throw new RuntimeException("Cannot remove file " + file);
+        }
     }
+
+    public String saveTemporaryImage(MultipartFile image) {
+        return saveFile(image, image.getOriginalFilename(), imagesConfig.getTmpPath());
+    }
+
+    public void copyFile(File source, File dest) {
+        try (FileChannel sourceChannel = new FileInputStream(source).getChannel();
+             FileChannel destChannel = new FileOutputStream(dest).getChannel()) {
+            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
