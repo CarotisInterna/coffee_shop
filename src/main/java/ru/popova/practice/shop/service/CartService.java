@@ -22,6 +22,7 @@ import ru.popova.practice.shop.util.OrderAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -76,16 +77,20 @@ public class CartService {
         DrinkDto drink = drinkService.getDrinkById(drinkId)
                 .orElseThrow(() -> new NotFoundException(message.getMessage(DRINK_NOT_FOUND)));
 
-        List<ToppingForDrinkInOrderDto> toppings = toppingIds
-                .stream()
-                .map(toppingId ->
-                        toppingService.getToppingById(toppingId)
-                                .orElseThrow(
-                                        () -> new NotFoundException(message.getMessage(TOPPING_NOT_FOUND))
-                                )
-                )
-                .map(topping -> new ToppingForDrinkInOrderDto(topping, 1))
-                .collect(Collectors.toList());
+        List<ToppingForDrinkInOrderDto> toppings = Collections.emptyList();
+
+        if (toppingIds != null) {
+            toppings = toppingIds
+                    .stream()
+                    .map(toppingId ->
+                            toppingService.getToppingById(toppingId)
+                                    .orElseThrow(
+                                            () -> new NotFoundException(message.getMessage(TOPPING_NOT_FOUND))
+                                    )
+                    )
+                    .map(topping -> new ToppingForDrinkInOrderDto(topping, 1))
+                    .collect(Collectors.toList());
+        }
 
         DrinkOrderDto drinkOrderDto = DrinkOrderDto.builder().drink(drink)
                 .quantity(1)
