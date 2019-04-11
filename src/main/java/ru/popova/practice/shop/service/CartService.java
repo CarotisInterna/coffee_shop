@@ -108,13 +108,16 @@ public class CartService {
     @Transactional
     public void deleteProductFromCart(Integer drinkOrderId) {
         OrderEntity cart = getCurrentUserCartEntity().orElseThrow(() -> new InvalidOperationException("cart", message.getMessage(CART_IS_EMPTY)));
-        drinkOrderEntityRepository.findById(drinkOrderId).ifPresent(drinkOrderEntityRepository::delete);
+
+        Optional<DrinkOrderEntity> drinkOrder = drinkOrderEntityRepository.findById(drinkOrderId);
+        cart.getDrinks().remove(drinkOrder.get());
+        drinkOrder.ifPresent(drinkOrderEntityRepository::delete);
         cart.setTotal(calculateTotal(cart));
-        //TODO: save cart
+        orderEntityRepository.save(cart);
     }
 
     /**
-     * Редакетирование напитка в корзине
+     * Редактирование напитка в корзине
      *
      * @param drinkOrderDto дто напитка в корзине
      * @param drinkOrderId  идентификатор напитка в корзине
@@ -150,11 +153,11 @@ public class CartService {
     /**
      * Размещение заказа
      *
-     * @param orderDto дто заказа
      * @return дто размещенного заказа
      */
-    public OrderDto placeOrder(OrderDto orderDto) {
+    public OrderDto placeOrder() {
 
+        OrderDto orderDto = getCurrentUserCart();
         Integer orderId = orderDto.getId();
         String address = orderDto.getAddress();
         return changeOrderStatus(orderId, OrderAction.PLACE, address);

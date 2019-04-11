@@ -20,19 +20,12 @@ public class OrderController {
     /**
      * Размещение заказа
      *
-     * @param orderDto дто заказа
-     * @param result
      * @return статус
      */
     @PutMapping("/place")
-    public ResponseEntity<OrderDto> placeOrder(@RequestBody @Validated(NotEmptyValidationSequence.class) OrderDto orderDto,
-                                               BindingResult result) {
+    public ResponseEntity<OrderDto> placeOrder() {
 
-        if (result.hasErrors()) {
-            throw new ValidationException(result);
-        }
-
-        OrderDto placedOrderDto = cartService.placeOrder(orderDto);
+        OrderDto placedOrderDto = cartService.placeOrder();
         return ResponseEntity.ok(placedOrderDto);
     }
 
