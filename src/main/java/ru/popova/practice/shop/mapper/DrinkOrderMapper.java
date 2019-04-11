@@ -23,6 +23,7 @@ public class DrinkOrderMapper implements AbstractMapper<DrinkOrderEntity, DrinkO
             return null;
         } else {
             DrinkOrderDto drinkOrderDto = new DrinkOrderDto();
+            drinkOrderDto.setId(entity.getId());
             drinkOrderDto.setDrink(drinkMapper.toDto(entity.getDrink()));
             drinkOrderDto.setQuantity(entity.getQuantity());
             drinkOrderDto.setToppings(entity.getToppings()
@@ -39,6 +40,7 @@ public class DrinkOrderMapper implements AbstractMapper<DrinkOrderEntity, DrinkO
             return null;
         } else {
             DrinkOrderEntity drinkOrderEntity = new DrinkOrderEntity();
+            drinkOrderEntity.setId(dto.getId());
             drinkOrderEntity.setDrink(drinkEntityRepository.getOne(dto.getDrink().getId()));
             drinkOrderEntity.setQuantity(dto.getQuantity());
             dto.getToppings()

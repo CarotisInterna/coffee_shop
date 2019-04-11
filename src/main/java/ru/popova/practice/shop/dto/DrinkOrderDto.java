@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class DrinkOrderDto {
 
+    private Integer id;
     private DrinkDto drink;
     //    private OrderDto order;
     @NotNull(groups = NotEmptyGroup.class)
