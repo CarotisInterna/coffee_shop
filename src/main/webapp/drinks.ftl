@@ -27,6 +27,7 @@
     <div id="drinks" class="row">
     </div>
     <#include 'pagination.ftl'/>
+    <#include 'modal.ftl'/>
 </div>
 </body>
 </html>

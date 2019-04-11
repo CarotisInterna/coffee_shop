@@ -12,5 +12,6 @@
     </div>
     <div id="cart"></div>
 </div>
+<#include 'modal.ftl'/>
 </body>
 </html>

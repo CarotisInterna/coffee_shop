@@ -1,7 +1,7 @@
 function onCreate(event) {
     event.preventDefault();
     let data = new FormData(document.getElementById('create-topping'));
-    sendForm('/api/toppings', 'POST', data);
+    sendForm('/api/toppings', 'POST', data, "Новый топпинг успешно создан");
 }
 
 function onEdit(event) {
@@ -9,10 +9,10 @@ function onEdit(event) {
     let form = document.getElementById('create-topping');
     let id = form.dataset["id"];
     let data = new FormData(form);
-    sendForm('/api/toppings/' + id, 'PUT', data);
+    sendForm('/api/toppings/' + id, 'PUT', data, "Изменения успешно сохранены");
 }
 
-function sendForm(url, method, data) {
+function sendForm(url, method, data, msg) {
 
     var errorMsgs = document.getElementsByName("error");
 
@@ -34,7 +34,21 @@ function sendForm(url, method, data) {
             body: json
         }).then(function (response) {
         if (response.ok) {
-            window.location = window.location.origin + "/edit/toppings";
+
+            let title = document.getElementById("modal-title");
+            title.innerHTML = "Сохранение топпинга";
+
+            let body = document.getElementById("modal-body");
+            body.innerHTML = msg;
+
+            $('#overlay').modal('show');
+
+            setTimeout(function() {
+                $('#overlay').modal('hide');
+            }, 2000);
+            setTimeout(function () {
+                window.location = window.location.origin + "/edit/toppings";
+            }, 2000);
         } else if (response.status === 404 || response.status === 400) {
             return response.json();
         } else if (response.status === 500) {
@@ -66,4 +80,8 @@ function buildFieldErrorLabel(message) {
     p.innerHTML = message;
     p.style.color = "red";
     return p;
+}
+
+function changeLocation() {
+    window.location = window.location.origin + "/edit/toppings";
 }

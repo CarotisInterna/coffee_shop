@@ -14,18 +14,15 @@
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
                 <div class="form-inline my-1 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Найти" aria-label="Search" id="search">
-                    <button class="btn btn-outline-primary my-2 my-sm-0" onclick="search()" id="search-button">Найти</button>
+                    <input class="form-control mr-sm-2" type="search" placeholder="Найти" aria-label="Search"
+                           id="search">
+                    <button class="btn btn-outline-primary my-2 my-sm-0" onclick="search()" id="search-button">Найти
+                    </button>
                 </div>
             </li>
             <li class="nav-item active">
                 <a class="nav-link" href="<@spring.url '/drinks'/>">Меню <span class="sr-only">(current)</span></a>
             </li>
-            <@security.authorize  access="isAuthenticated()">
-                <li class="nav-item active">
-                    <a class="nav-link cui-cart" href="<@spring.url '/cart'/>"><span class="sr-only">(current)</span></a>
-                </li>
-            </@security.authorize>
             <@security.authorize  access="hasRole('ROLE_VENDOR')">
                 <li class="nav-item dropdown" id="edit">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -56,18 +53,24 @@
         <ul class="navbar-nav ml-auto">
             <@security.authorize  access="isAuthenticated()">
                 <span class="navbar-text"> Привет, <@security.authentication property='principal.username'/>!</span>
+                <li class="nav-item type=" none">
+                <a class="nav-link btn btn-ghost-secondary my-2 my-sm-0" href="<@spring.url '/cart'/>">
+                    <span class="cui-cart"></span>
+                    Корзина
+                </a>
+                </li>
                 <li class="nav-item" type="none">
                     <a class="nav-link btn btn-ghost-secondary my-2 my-sm-0" href="<@spring.url '/logout'/>">
                         <span class="cui-account-logout"></span>
-                        Выход
+                           Выход
                     </a>
                 </li>
             </@security.authorize>
             <@security.authorize  access="isAnonymous()">
                 <li class="nav-item" type="none">
                     <a class="nav-link btn btn-ghost-secondary my-2 my-sm-0" href="<@spring.url '/login'/>"">
-                        <span class="cui-user"></span>
-                        Войти
+                    <span class="cui-user"></span>
+                    Войти
                     </a>
                 </li>
             </@security.authorize>

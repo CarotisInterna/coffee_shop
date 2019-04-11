@@ -143,6 +143,12 @@ function addToCart(form) {
         toppings.push(dataset);
     }
 
+    if (options !== null && options.children.length !== 0) {
+        for (let i = options.children.length; i > 0; i--) {
+            options.children.item(i-1).remove();
+        }
+    }
+
     fetchAddToCart(drinkId, toppings)
 
 }
@@ -161,12 +167,28 @@ function fetchAddToCart(drinkId, toppings) {
     return fetch(url, {method: "POST"})
         .then(function (response) {
         if (response.ok) {
-            alert("Продукт добавлен в корзину");
+            showModal("Добавление в корзину", "Продукт добавлен в корзину");
         } else if (response.status === 403) {
             window.location = window.location.origin + "/login";
-            alert("Необходимо авторизоваться");
+            showModal("Добавление в корзину","Необходимо авторизоваться")
         }
     });
+}
+
+function showModal(titleMsg, message) {
+
+    let title = document.getElementById("modal-title");
+    title.innerHTML = titleMsg;
+
+    let body = document.getElementById("modal-body");
+    body.innerHTML = message;
+
+    $('#overlay').modal('show');
+
+    setTimeout(function() {
+        $('#overlay').modal('hide');
+    }, 2000);
+
 }
 
 function fetchCategories() {

@@ -20,8 +20,8 @@
                 <label for="name" class="control-label col-sm-2">Название</label>
                 <div id="name-div" class="col-sm-10">
                     <input id="name" name="name" value="${(topping.name)!''}" required
-                        <#--<#if topping.id??>-->
-                           <#--readonly-->
+                    <#--<#if topping.id??>-->
+                    <#--readonly-->
                     <#--</#if>-->
                 </div>
             </div>
@@ -45,5 +45,6 @@
         </form>
     </#if>
 </div>
+<#include 'modal.ftl'/>
 </body>
 </html>
