@@ -18,7 +18,7 @@ public class ToppingDto {
 
     @NotBlank(groups = NotEmptyGroup.class)
     @Size(min = MIN_NUMBER_OF_LETTERS_IN_TOPPING_NAME, max = MAX_NUMBER_OF_LETTERS_IN_TOPPING_NAME)
-    @Pattern(regexp = "^[a-zA-ZА-Яа-я]+$", message = "{LetterString.message}")
+    @Pattern(regexp = "^[a-zA-ZА-Яа-я ]+$", message = "{LetterString.message}")
     private String name;
 
     @NotNull(groups = NotEmptyGroup.class)
