@@ -19,7 +19,7 @@
             <div class="form-group">
                 <label for="name" class="control-label col-sm-2">Название</label>
                 <div id="name-div" class="col-sm-10">
-                    <input id="name" name="name" value="${(topping.name)!''}" required
+                    <input id="name" name="name" maxlength="40" minlength="3" value="${(topping.name)!''}" required
                     <#--<#if topping.id??>-->
                     <#--readonly-->
                     <#--</#if>-->
@@ -29,7 +29,7 @@
             <div id="price-div" class="form-group">
                 <label for="price" class="control-label col-sm-2">Цена в российских рублях</label>
                 <div class="col-sm-10">
-                    <input type="number" id="price" name="price" value="${(topping.price)!''}" required/>
+                    <input type="number" id="price" name="price" min="0" max="100" value="${(topping.price)!''}" required/>
                 </div>
             </div>
 

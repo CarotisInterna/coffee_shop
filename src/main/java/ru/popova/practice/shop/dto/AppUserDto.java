@@ -7,6 +7,8 @@ import ru.popova.practice.shop.dto.groups.NotEmptyGroup;
 
 import javax.validation.constraints.*;
 
+import static ru.popova.practice.shop.util.constants.NumConstants.*;
+
 /**
  * полная информация о пользователе
  */
@@ -16,11 +18,12 @@ import javax.validation.constraints.*;
 public class AppUserDto extends AppUserLoginDto {
 
     @NotBlank(groups = NotEmptyGroup.class)
-    @Size(min = 3, max = 100)
+    @Size(min = MIN_FULL_NAME_LENGTH, max = MAX_FULL_NAME_LENGTH)
     String fullName;
 
     @NotBlank(groups = NotEmptyGroup.class)
-    @Pattern(regexp = "\\(?([0-9]{3})\\)?([ .-]?)([0-9]{3})([0-9]{4})", message = "{InvalidPhoneNumber.message}")
+    @Pattern(regexp = "^[0-9]+$", message = "{InvalidPhoneNumber.message}")
+    @Size(min = MIN_PHONE_NUMBER_LENGTH, max = MAX_PHONE_NUMBER_LENGTH)
     String phoneNumber;
 
     @NotBlank(groups = NotEmptyGroup.class)

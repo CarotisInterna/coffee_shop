@@ -39,11 +39,11 @@ public class ImageService {
         AtomicInteger i = new AtomicInteger(0);
 
         List<DrinkImageEntity> images = imagePaths.stream()
-                .peek(imagePath -> {
+                .map(imagePath -> {
                     String fullPath = imagesConfig.getTmpPath() + imagePath;
                     File source = new File(fullPath);
-                    File dest =
-                            getFile(buildImageName(drink.getId(), i.incrementAndGet()));
+                    String imageName = buildImageName(drink.getId(), i.incrementAndGet());
+                    File dest = getFile(imageName);
                     try {
                         if (dest.createNewFile()) {
                             copyFile(source, dest);
@@ -52,8 +52,9 @@ public class ImageService {
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
+                    return imageName;
                 })
-                .map(imagePath -> new DrinkImageEntity(imagePath, drink))
+                .map(imagePath -> new DrinkImageEntity(imagePath.replaceAll(".jpg", ""), drink))
                 .collect(Collectors.toList());
 
         return imageRepository.saveAll(images);

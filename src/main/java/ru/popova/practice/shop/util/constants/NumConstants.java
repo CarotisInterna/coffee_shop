@@ -18,11 +18,11 @@ public interface NumConstants {
 
     int MIN_DRINK_PRICE = 10;
 
-    int MAX_DRINK_PRICE = 10000;
+    int MAX_DRINK_PRICE = 999;
 
-    int MIN_DRINK_VOLUME = 100;
+    int MIN_DRINK_VOLUME = 49;
 
-    int MAX_DRINK_VOLUME = 1000;
+    int MAX_DRINK_VOLUME = 999;
 
     int MIN_NUMBER_OF_LETTERS_IN_DRINK_DESCRIPTION = 2;
 
@@ -33,5 +33,13 @@ public interface NumConstants {
     int MAX_CATEGORIES_NUM = 5;
 
     int MAX_NUMBER_OF_IMAGES = 3;
+
+    int MIN_FULL_NAME_LENGTH = 3;
+
+    int MAX_FULL_NAME_LENGTH = 100;
+
+    int MIN_PHONE_NUMBER_LENGTH = 7;
+
+    int MAX_PHONE_NUMBER_LENGTH = 11;
 
 }

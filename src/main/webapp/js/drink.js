@@ -101,6 +101,17 @@ function onUploadImage(event) {
         .then(response => {
             if (response.ok) {
                 console.log(response.code);
+                let title = document.getElementById("modal-title");
+                title.innerHTML = "Загрузка файла";
+
+                let body = document.getElementById("modal-body");
+                body.innerHTML = "Файл успешно загружен";
+
+                $('#overlay').modal('show');
+
+                setTimeout(function () {
+                    $('#overlay').modal('hide');
+                }, 2000);
                 return response.text();
             } else {
                 //TODO: отобразить ошибки
