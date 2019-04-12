@@ -58,12 +58,14 @@
                     </select>
                 </div>
             </div>
+        <#if !drink.id??>
             <div id="uploaded-files" class="form-group">
                 <label for="uploaded-files-input">Загруженные файлы</label>
                 <div class="col-sm-10">
                     <input id="uploaded-files-input" type="text" name="images">
                 </div>
             </div>
+        </#if>
             <div>
                 <button type="submit" onclick="
                 <#if drink.id??>

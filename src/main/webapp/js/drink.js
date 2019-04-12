@@ -31,7 +31,9 @@ function sendForm(url, method, data, msg) {
         categories.push(parseInt(object.categories[i]));
     }
     object.categories = categories;
-    object.images = [document.getElementById("uploaded-files-input").value];
+    if (method === "POST") {
+        object.images = [document.getElementById("uploaded-files-input").value];
+    }
     let json = JSON.stringify(object);
     return fetch(url,
         {
@@ -40,28 +42,28 @@ function sendForm(url, method, data, msg) {
             headers: {"Content-Type": "application/json"}
         })
         .then(response => {
-                if (response.ok) {
+            if (response.ok) {
 
-                    let title = document.getElementById("modal-title");
-                    title.innerHTML = "Сохранение напитка";
+                let title = document.getElementById("modal-title");
+                title.innerHTML = "Сохранение напитка";
 
-                    let body = document.getElementById("modal-body");
-                    body.innerHTML = msg;
+                let body = document.getElementById("modal-body");
+                body.innerHTML = msg;
 
-                    $('#overlay').modal('show');
+                $('#overlay').modal('show');
 
-                    setTimeout(function () {
-                        $('#overlay').modal('hide');
-                    }, 2000);
-                    setTimeout(function () {
-                        window.location = window.location.origin + "/edit/drinks";
-                    }, 2000);
-                } else if (response.status === 404 || response.status === 400) {
-                    return response.json();
-                } else if (response.status === 500) {
-                    alert("Ошибка сервера, повторите запрос позже")
-                }
-            }).then(function (json) {
+                setTimeout(function () {
+                    $('#overlay').modal('hide');
+                }, 2000);
+                setTimeout(function () {
+                    window.location = window.location.origin + "/edit/drinks";
+                }, 2000);
+            } else if (response.status === 404 || response.status === 400) {
+                return response.json();
+            } else if (response.status === 500) {
+                alert("Ошибка сервера, повторите запрос позже")
+            }
+        }).then(function (json) {
             if (json !== null) {
                 for (let i = 0; i < json.errorDtos.length; i++) {
                     let el = buildFieldErrorLabel(json.errorDtos[i].message);
